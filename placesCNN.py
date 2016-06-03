@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import caffe
 import re
 
-def placesCNNlabel_singleframe(caffe_path, model_path, image_file):
+def placesCNNlabel(caffe_path, model_path, image_files):
 
 	sys.path.insert(0, caffe_path + 'python')
 
@@ -29,54 +29,81 @@ def placesCNNlabel_singleframe(caffe_path, model_path, image_file):
 	transformer.set_mean('data', mu)            # subtract the dataset-mean value in each channel
 	transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
 	transformer.set_channel_swap('data', (2,1,0))
-	net.blobs['data'].reshape(1,         # batch size
+	net.blobs['data'].reshape(10,         # batch size
 	                          3,         # 3-channel (BGR) images
 	                          227, 227)
 
-	
-	input_image = caffe.io.load_image(image_file)
-	transformed_image = transformer.preprocess('data', input_image)
-	plt.imshow(input_image)
+	final_labelset = []
+	final_label_list = []
+	scene_type_list = []
 
-	net.blobs['data'].data[...] = transformed_image
+	for image_file in image_files:
 
-	output = net.forward()
+		input_image = caffe.io.load_image(image_file)
+		transformed_image = transformer.preprocess('data', input_image)
+		#plt.imshow(input_image)
 
-	output_prob = output['prob'][0]  # the output probability vector for the first image in the batch
+		net.blobs['data'].data[...] = transformed_image
 
-	#print 'predicted class is:', output_prob.argmax()
+		output = net.forward()
 
-	places_labels = model_path + 'IndoorOutdoor_places205.csv'
+		output_prob = output['prob'][0]  # the output probability vector for the first image in the batch
 
-	labels = np.loadtxt(places_labels, str, delimiter='\t')
+		#print 'predicted class is:', output_prob.argmax()
 
-	toplabels_idx = output_prob.argsort()[::-1][:5]  # reverse sort and take five largest items
+		places_labels = model_path + 'IndoorOutdoor_places205.csv'
 
-	maxprob_label = labels[output_prob.argmax()]
-	maxprob_label = re.findall(r"[\w]+",maxprob_label)
+		labels = np.loadtxt(places_labels, str, delimiter='\t')
 
-	if output_prob[toplabels_idx[0]] > .2 :			 # threshold for bad labels
-		final_label = maxprob_label[1]
-		#print 'output label:' , maxprob_label[1]
-		scene_type_no = maxprob_label[-1]
-		if scene_type_no == '1':
-			scene_type = 'indoor'
-			#print 'scene type:', scene_type
+		toplabels_idx = output_prob.argsort()[::-1][:5]  # reverse sort and take five largest items
+
+		maxprob_label = labels[output_prob.argmax()]
+		maxprob_label = re.findall(r"[\w]+",maxprob_label)
+
+
+		if output_prob[toplabels_idx[0]] > .1 :			 # threshold for bad labels
+			#print 'output label:' , maxprob_label[1]
+			scene_type_no = maxprob_label[-1]
+			if scene_type_no == '1':
+				scene_type = 'indoor'
+				#print 'scene type:', scene_type
+			else:
+				scene_type = 'outdoor'
+				#print 'scene type:', scene_type
+
+			if output_prob[toplabels_idx[0]] > .2 :
+				final_label = maxprob_label[1]
+			else:
+				final_label = "Unknown"
 		else:
-			scene_type = 'outdoor'
-			#print 'scene type:', scene_type
-	else:
-		scene_type = 'unknown'
-		#print "Did not return reasonably accurate label!"
+			final_label = "Unknown"
+			scene_type = 'unknown'
+			#print "Did not return reasonably accurate label!"
 
-	label_set = []
-	prob_set = []
+		final_label_list.append(final_label)
+		scene_type_list.append(scene_type)	
 
-	for label_prob, label_idx in zip(output_prob[toplabels_idx],toplabels_idx):
-		if label_prob > .2 :
-			label_set.append(re.findall(r"[\w]+",labels[label_idx])[1])
-			prob_set.append(label_prob)
-			final_set = zip(label_set,prob_set)
-			#print "probabilities and labels: %.3f %s" %(label_prob, re.findall(r"[\w]+",labels[label_idx])[1])
+		label_set = []
+		prob_set = []	
 
-	return final_label, scene_type, final_set
+		no_label_flag = 0 
+
+		for label_prob, label_idx in zip(output_prob[toplabels_idx],toplabels_idx):
+			if label_prob > .2 :
+				label_set.append(re.findall(r"[\w]+",labels[label_idx])[1])
+				prob_set.append(label_prob)
+				no_label_flag = 1
+
+			label_list = zip(label_set,prob_set)
+		
+		if no_label_flag == 0:
+			 label_set.append('None')
+			 prob_set.append(0.000)
+			 label_list = zip(label_set,prob_set)
+				
+		#print "probabilities and labels: %.3f %s" %(label_prob, re.findall(r"[\w]+",labels[label_idx])[1])
+			
+		label_list = "; ".join( "%s, %s" %tup for tup in label_list )
+		final_labelset.append(label_list)
+
+	return final_label_list, scene_type_list, final_labelset

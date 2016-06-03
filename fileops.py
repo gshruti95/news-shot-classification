@@ -16,3 +16,16 @@ def get_video_filename(clip_dir):
 				exit(0)
 
 	return clip_name
+
+
+def get_keyframeslist(clip_dir):
+
+	keyframes_list = []
+	source = os.listdir(clip_dir)
+
+	for file in source:
+		if file.endswith(".jpg"):
+			image = clip_dir + os.path.basename(file)
+			keyframes_list.append(image)
+
+	return keyframes_list

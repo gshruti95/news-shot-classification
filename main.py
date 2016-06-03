@@ -16,14 +16,13 @@ def main():
  
 	caffe_path = '/home/shruti/gsoc/caffehome/caffe/' 
 	model_path = caffe_path + 'models/placesCNN_upgraded/'
-	image_file = clip_dir + 'keyframe039.jpg'
+	image_files = fileops.get_keyframeslist(clip_dir)
 	
-	output_label, scene_type, label_list = placesCNN.placesCNNlabel_singleframe(caffe_path, model_path, image_file)
-
-	label_list = "|".join( "%s, %s" %tup for tup in label_list )
-
+	output_label_list, scene_type_list, label_list = placesCNN.placesCNNlabel(caffe_path, model_path, image_files)
+ 
 	with open(clip_dir + 'outputfile.txt', 'w') as file:
-			file.write(output_label + '|' + scene_type + '|' + label_list + '\n')
+		for idx, output_label in enumerate(output_label_list): 
+			file.write(scene_type_list[idx] + '|' + output_label + '|' + label_list[idx] + '\n')
 
 
 if __name__ == '__main__':
