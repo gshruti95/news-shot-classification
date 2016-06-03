@@ -29,40 +29,44 @@ def placesCNNlabel(caffe_path, model_path, image_files):
 	transformer.set_mean('data', mu)            # subtract the dataset-mean value in each channel
 	transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
 	transformer.set_channel_swap('data', (2,1,0))
-	net.blobs['data'].reshape(10,         # batch size
-	                          3,         # 3-channel (BGR) images
-	                          227, 227)
+	#net.blobs['data'].reshape(10,         # batch size
+	#                          3,         # 3-channel (BGR) images
+	#                          227, 227)
+
+
+	# set test batchsize
+	batchsize = len(image_files)
+	data_blob_shape = net.blobs['data'].data.shape
+	data_blob_shape = list(data_blob_shape)
+	net.blobs['data'].reshape(batchsize, data_blob_shape[1], data_blob_shape[2], data_blob_shape[3])
+
+	# load data, len(images) = batchsize
+
+	net.blobs['data'].data[...] = map(lambda x: transformer.preprocess('data',caffe.io.load_image(x)), image_files)
+
+	output = net.forward()
+
+	#output_prob = output['prob'][0]  # the output probability vector for the first image in the batch
+
+	#print 'predicted class is:', output_prob.argmax()
+
+	places_labels = model_path + 'IndoorOutdoor_places205.csv'
+
+	labels = np.loadtxt(places_labels, str, delimiter='\t')
 
 	final_labelset = []
 	final_label_list = []
 	scene_type_list = []
 
-	for image_file in image_files:
-
-		input_image = caffe.io.load_image(image_file)
-		transformed_image = transformer.preprocess('data', input_image)
-		#plt.imshow(input_image)
-
-		net.blobs['data'].data[...] = transformed_image
-
-		output = net.forward()
-
-		output_prob = output['prob'][0]  # the output probability vector for the first image in the batch
-
-		#print 'predicted class is:', output_prob.argmax()
-
-		places_labels = model_path + 'IndoorOutdoor_places205.csv'
-
-		labels = np.loadtxt(places_labels, str, delimiter='\t')
+	for output_prob in output['prob']:
 
 		toplabels_idx = output_prob.argsort()[::-1][:5]  # reverse sort and take five largest items
 
 		maxprob_label = labels[output_prob.argmax()]
 		maxprob_label = re.findall(r"[\w]+",maxprob_label)
 
-
 		if output_prob[toplabels_idx[0]] > .1 :			 # threshold for bad labels
-			#print 'output label:' , maxprob_label[1]
+			
 			scene_type_no = maxprob_label[-1]
 			if scene_type_no == '1':
 				scene_type = 'indoor'
@@ -73,8 +77,10 @@ def placesCNNlabel(caffe_path, model_path, image_files):
 
 			if output_prob[toplabels_idx[0]] > .2 :
 				final_label = maxprob_label[1]
+				#print 'output label:' , maxprob_label[1]
 			else:
 				final_label = "Unknown"
+				#print 'output label: Unknown'
 		else:
 			final_label = "Unknown"
 			scene_type = 'unknown'
