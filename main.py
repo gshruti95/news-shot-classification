@@ -6,7 +6,10 @@ import placesCNN
 
 def main():
 
-	clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465/'
+	clip_dir = '/home/shruti/gsoc/misc/frames'
+	if clip_dir[-1] is not '/':
+		clip_dir = clip_dir + '/'
+		print clip_dir
 	clip_name = fileops.get_video_filename(clip_dir)
 	
 	#shot_detect.shot_detect(clip_dir, clip_name)

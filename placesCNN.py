@@ -2,9 +2,11 @@ import os, sys
 import numpy as np
 import matplotlib.pyplot as plt
 import caffe
-import re
+import re, time
 
 def placesCNN(caffe_path, model_path, image_files):
+
+	start = time.time()
 
 	sys.path.insert(0, caffe_path + 'python')
 
@@ -29,40 +31,56 @@ def placesCNN(caffe_path, model_path, image_files):
 	transformer.set_mean('data', mu)            # subtract the dataset-mean value in each channel
 	transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
 	transformer.set_channel_swap('data', (2,1,0))
-	#net.blobs['data'].reshape(10,         # batch size
-	#                          3,         # 3-channel (BGR) images
-	#                          227, 227)
-
-
-	# set test batchsize; load data, len(images) = batchsize
-	batchsize = len(image_files)
+	
+	# Assign batchsize
+	batch_size = 10
 	data_blob_shape = net.blobs['data'].data.shape
 	data_blob_shape = list(data_blob_shape)
-	net.blobs['data'].reshape(batchsize, data_blob_shape[1], data_blob_shape[2], data_blob_shape[3])
+	net.blobs['data'].reshape(batch_size, data_blob_shape[1], data_blob_shape[2], data_blob_shape[3])
 
+	scores = None
 
-	net.blobs['data'].data[...] = map(lambda x: transformer.preprocess('data',caffe.io.load_image(x)), image_files)
+	chunks_done = 0
+	for chunk in [image_files[x:x+batch_size] for x in xrange(0, len(image_files), batch_size)]:
+		print "Processing %.2f %%done ..." %((len(chunk)*chunks_done*100)/float(len(image_files)))
+		chunks_done = chunks_done + 1
 
-	output = net.forward()
+		if len(chunk) < batch_size:
+			net.blobs['data'].reshape(len(chunk), data_blob_shape[1], data_blob_shape[2], data_blob_shape[3])
 
-	fc8 = net.blobs['fc8'].data[...].copy()
-	fc7 = net.blobs['fc7'].data[...].copy()
-	fc6 = net.blobs['fc6'].data[...].copy()
-	print len(fc8[0]), len(fc7[0]), len(fc6[0])
-	#features = features.tolist()
+		net.blobs['data'].data[...] = map(lambda y: transformer.preprocess('data', caffe.io.load_image(y)), chunk)		
+		output = net.forward()
 
-	
+		if scores is None:
+			scores = {}
+			scores['prob'] = output['prob'].copy()
+			fc8 = net.blobs['fc8'].data[...].copy()
+			fc7 = net.blobs['fc7'].data[...].copy()
+			fc6 = net.blobs['fc6'].data[...].copy()
+		else:
+			scores['prob'] = np.vstack((scores['prob'],output['prob']))
+			fc8 = np.vstack((fc8, net.blobs['fc8'].data[...].copy()))
+			fc7 = np.vstack((fc7, net.blobs['fc7'].data[...].copy()))
+			fc6 = np.vstack((fc6, net.blobs['fc6'].data[...].copy()))
+		
 	places_labels = model_path + 'IndoorOutdoor_places205.csv'
-
 	labels = np.loadtxt(places_labels, str, delimiter='\t')
+	final_label_list, scene_type_list, final_labelset = get_labels(labels, scores)
 
+	end = time.time()
+
+	print "Time : %.3f \n"  %(end - start)
+
+	return	fc8, fc7, fc6, final_label_list, scene_type_list, final_labelset
+
+
+def get_labels(labels, scores):
+	
 	final_labelset = []
 	final_label_list = []
 	scene_type_list = []
 
-	index = 0
-
-	for output_prob in output['prob']:
+	for output_prob in scores['prob']:
 
 		vote = 0
 		#count = 0
@@ -84,20 +102,20 @@ def placesCNN(caffe_path, model_path, image_files):
 			else:
 				scene_type = 'outdoor'
 
-			'''scene_type_no = maxprob_label[-1]
-			if scene_type_no == '1':
-				scene_type = 'indoor'
-				print 'scene type:', scene_type
-			else:
-				scene_type = 'outdoor'
-				print 'scene type:', scene_type_no'''
+			# scene_type_no = maxprob_label[-1]
+			# if scene_type_no == '1':
+			# 	scene_type = 'indoor'
+			# 	print 'scene type:', scene_type
+			# else:
+			# 	scene_type = 'outdoor'
+			# 	print 'scene type:', scene_type_no
 
 			if output_prob[toplabels_idx[0]] > .2 :
 				final_label = maxprob_label[1]
-				#print 'output label:' , final_label
+				#print 'scores label:' , final_label
 			else:
 				final_label = "Unknown"
-				#print 'output label: Unknown'
+				#print 'scores label: Unknown'
 		else:
 			final_label = "Unknown"
 			scene_type = 'unknown'
@@ -129,4 +147,4 @@ def placesCNN(caffe_path, model_path, image_files):
 		label_list = "; ".join( "%s, %s" %tup for tup in label_list )
 		final_labelset.append(label_list)
 
-	return	fc8, fc7, fc6, final_label_list, scene_type_list, final_labelset
+	return final_label_list, scene_type_list, final_labelset
