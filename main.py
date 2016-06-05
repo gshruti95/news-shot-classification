@@ -18,13 +18,13 @@ def main():
 	model_path = caffe_path + 'models/placesCNN_upgraded/'
 	image_files = fileops.get_keyframeslist(clip_dir)
 	
-	output_label_list, scene_type_list, label_list = placesCNN.placesCNNlabel(caffe_path, model_path, image_files)
-	#placesCNN.placesCNNlabel(caffe_path, model_path, image_files)
- 
-	with open(clip_dir + 'outputfile.txt', 'w') as file:
-		for idx, output_label in enumerate(output_label_list): 
-			file.write(scene_type_list[idx] + '|' + output_label + '|' + label_list[idx] + '\n')
+	[fc8, fc7, fc6, output_label_list, scene_type_list, label_list] = placesCNN.placesCNN(caffe_path, model_path, image_files)
 
+	fileops.save_features(clip_dir + 'fc8', fc7)
+	fileops.save_features(clip_dir + 'fc7', fc7)
+	fileops.save_features(clip_dir + 'fc6', fc6)
+
+	fileops.save_placesCNN_labels(clip_dir + 'placesCNN_labels', output_label_list, scene_type_list, label_list)
 
 if __name__ == '__main__':
 	main()
