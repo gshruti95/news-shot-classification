@@ -42,7 +42,7 @@ def googlenet(caffe_path, model_path, image_files):
 
 	chunks_done = 0
 	for chunk in [image_files[x:x+batch_size] for x in xrange(0, len(image_files), batch_size)]:
-		print "Processing %.2f %%done ..." %((batch_size*chunks_done*100)/float(len(image_files)))
+		print "Processing %.2f%% done ..." %((batch_size*chunks_done*100)/float(len(image_files)))
 		chunks_done = chunks_done + 1
 
 		if len(chunk) < batch_size:
@@ -50,8 +50,6 @@ def googlenet(caffe_path, model_path, image_files):
 
 		net.blobs['data'].data[...] = map(lambda y: transformer.preprocess('data', caffe.io.load_image(y)), chunk)		
 		output = net.forward()
-
-		print output
 
 		if scores is None:
 			scores = {}
@@ -67,10 +65,7 @@ def googlenet(caffe_path, model_path, image_files):
 		maxprob_label = labels[output_prob.argmax()].split(' ',1)[1]
 		label_list.append(maxprob_label)
 
-	#print label_list
-
 	end = time.time()
-
-	print "Time : %.3f \n"  %(end - start)
+	print "Googlenet Time : %.3f \n"  %(end - start)
 
 	return label_list

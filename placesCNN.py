@@ -42,7 +42,7 @@ def placesCNN(caffe_path, model_path, image_files):
 
 	chunks_done = 0
 	for chunk in [image_files[x:x+batch_size] for x in xrange(0, len(image_files), batch_size)]:
-		print "Processing %.2f %%done ..." %((batch_size*chunks_done*100)/float(len(image_files)))
+		print "Processing %.2f%% done ..." %((batch_size*chunks_done*100)/float(len(image_files)))
 		chunks_done = chunks_done + 1
 
 		if len(chunk) < batch_size:
@@ -62,25 +62,30 @@ def placesCNN(caffe_path, model_path, image_files):
 			fc8 = np.vstack((fc8, net.blobs['fc8'].data[...].copy()))
 			fc7 = np.vstack((fc7, net.blobs['fc7'].data[...].copy()))
 			fc6 = np.vstack((fc6, net.blobs['fc6'].data[...].copy()))
-		
+			
 	places_labels = model_path + 'IndoorOutdoor_places205.csv'
 	labels = np.loadtxt(places_labels, str, delimiter='\t')
-	final_label_list, scene_type_list, final_labelset = get_labels(labels, scores)
+
+	scene_attributeValues = np.loadtxt(model_path + 'attributeValues.csv', delimiter = ',')
+	scene_attributeNames = np.loadtxt(model_path + 'attributeNames.csv', delimiter = '\n', dtype = str)
+	attribute_responses = get_scene_attribute_responses(scene_attributeValues, fc7)
+
+	final_label_list, scene_type_list, final_labelset, scene_attributes_list = get_labels(labels, scores, attribute_responses, scene_attributeNames)
 
 	end = time.time()
-
 	print "Time : %.3f \n"  %(end - start)
 
-	return	fc8, fc7, fc6, final_label_list, scene_type_list, final_labelset
+	return	fc8, fc7, fc6, final_label_list, scene_type_list, final_labelset, scene_attributes_list
 
 
-def get_labels(labels, scores):
+def get_labels(labels, scores, attribute_responses, scene_attributeNames):
 	
 	final_labelset = []
 	final_label_list = []
 	scene_type_list = []
+	scene_attributes_list = []
 
-	for output_prob in scores['prob']:
+	for idx, output_prob in enumerate(scores['prob']):
 
 		vote = 0
 		#count = 0
@@ -147,4 +152,18 @@ def get_labels(labels, scores):
 		label_list = "; ".join( "%s, %s" %tup for tup in label_list )
 		final_labelset.append(label_list)
 
-	return final_label_list, scene_type_list, final_labelset
+		## Scene attributes
+		attribute_response = attribute_responses[idx]
+		attribute_index = attribute_response.argsort()[::-1][:5]
+		scene_attributes = scene_attributeNames[attribute_index]
+		scene_attributes = ",".join(scene_attributes)
+		scene_attributes_list.append(scene_attributes)
+
+	return final_label_list, scene_type_list, final_labelset, scene_attributes_list
+
+def get_scene_attribute_responses(scene_attributeValues, fc7):
+	'''Returs the scene attributes for the fc7 features'''
+	scene_attributeValues = np.transpose(scene_attributeValues)
+	attribute_responses = np.dot(fc7, scene_attributeValues)
+
+	return attribute_responses
