@@ -5,6 +5,7 @@ import os, sys, time
 def get_keyframes(clip_dir, clip_name, output_filename):
 
 	start = time.time()
+	print "Processing keyframes..."
 
 	os.system("ffmpeg -i " + clip_dir + clip_name \
 		+ " -vf \"select='eq(pict_type,PICT_TYPE_I)'\" -keyint_min 1 -g 5 -q:v 5 -vsync 2 -f image2 " \
@@ -17,19 +18,14 @@ def get_keyframes(clip_dir, clip_name, output_filename):
 		for line in data:
 			line = line.split('t:')[1]
 			line = line.split(' ')[0]
-			# if line[0] == 't':
-			# 	line = line.split(':')[1]
 			line = "%0.3f\n" % round(float(line),2)
 			new_lines.append(line)
 
-	with open(clip_dir + 'original' + ".vis",'w') as file:
-		file.writelines(data)
-	
 	with open(clip_dir + output_filename + ".vis",'w') as file:
 		file.writelines(new_lines)
 
-	with open(clip_dir + 'copy' + ".vis",'w') as file:
-		file.writelines(new_lines)
+	with open(clip_dir + "faces.vis",'w') as file:
+		file.writelines(new_lines)	
 
 	end = time.time()
 	print "Keyframes extracted in %.2f!\n" %(end-start)
