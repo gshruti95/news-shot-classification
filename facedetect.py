@@ -32,21 +32,14 @@ def get_faces(clip_dir, image_files):
 			io.imsave(temp_dir + str(frame) + '.jpg', img_cropped)
 			faces.append(temp_dir + str(frame) + '.jpg')
 
-		# for i, d in enumerate(dets):
-		# 	print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
-		# 		i, d.left(), d.top(), d.right(), d.bottom()))
-
 		win.clear_overlay()
 		win.set_image(img)
 		win.add_overlay(dets)
-		
-		#if (len(sys.argv[1:]) > 0):
-		#	img = io.imread(sys.argv[1])
+	
 		dets, scores, idx = detector.run(img, 1)
 		for i, d in enumerate(dets):
 			print("Detection {}, score: {}, face_type:{}".format(
 				d, scores[i], idx[i]))
 		
-		#dlib.hit_enter_to_continue()
 	return faces_count, faces, faces_frameno
 		

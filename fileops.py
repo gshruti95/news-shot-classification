@@ -55,12 +55,12 @@ def save_placesCNN_labels(filename, csvname, output_label_list, scene_type_list,
 
 	with open(filename + ".vis",'w') as file:
 		for idx, output_label in enumerate(output_label_list):
-			new_lines[idx] += ('|' "Scene_type= " + (scene_type_list[idx] + '|' + output_label + '|' + label_list[idx] + '|' + "Scene_attributes: " +  scene_attributes_list[idx]) + '\t' +'\n')
+			new_lines[idx] += ('| Scene_type= ' + (scene_type_list[idx] + '| ' + output_label + '| ' + label_list[idx] + '| Scene_attributes: ' +  scene_attributes_list[idx]) + '\t' +'\n')
 		file.writelines(new_lines)
 
 	with open(csvname + '.csv', 'w') as file:
 		for idx, output_label in enumerate(output_label_list): 
-			file.write(scene_type_list[idx] + '|' + output_label + '|' + label_list[idx] + '|' + scene_attributes_list[idx] + '\n')
+			file.write(scene_type_list[idx] + '| ' + output_label + '| ' + label_list[idx] + '| ' + scene_attributes_list[idx] + '\n')
 
 def save_googlenet_labels(filename, csvname, label_list):
 
@@ -76,7 +76,7 @@ def save_googlenet_labels(filename, csvname, label_list):
 
 	with open(filename + ".vis",'w') as file:
 		for idx, output_label in enumerate(label_list): 
-			new_lines[idx] += ('|' + "Objects: " + (output_label) + '\t' + '\n')
+			new_lines[idx] += ('| ' + "Objects: " + (output_label) + '\t' + '\n')
 		file.writelines(new_lines)
 
 	with open(csvname + '.csv', 'w') as file:
@@ -96,17 +96,20 @@ def save_age_gender_labels(filename, csvname, age_label_list, gender_label_list,
 			timestamps.append(timestamp.split('\n')[0])
 
 	with open(filename + ".vis",'w') as file:
-		for idx, count in enumerate(faces_count): 
-			new_lines[idx] += ('| Face count:' + str(count) + '\t' + '\n')
+		for idx, count in enumerate(faces_count):
+			if count > 0: 
+				new_lines[idx] += ('| Face count:' + str(count) + '\t' + '\n')
+			else:
+				new_lines[idx] += '\t\n'
 
 		for idx, gender_label, age_label in zip(faces_frameno, gender_label_list,age_label_list):
 			temp = new_lines[idx-1].split('\t')	
-			new_lines[idx-1] = temp[0] + ('|' + (gender_label + '|' + age_label) + '\t' + '\n')
+			new_lines[idx-1] = temp[0] + ('| ' + (gender_label + '| ' + age_label) + '\t' + '\n')
 		file.writelines(new_lines)
 
 	with open(csvname + '.csv', 'w') as file:
 		for idx, gender_label in enumerate(gender_label_list): 
-			file.write(gender_label + '|' + age_label_list[idx] + '\n')
+			file.write(gender_label + '| ' + age_label_list[idx] + '\n')
 
 def get_video_filename(clip_dir):
 

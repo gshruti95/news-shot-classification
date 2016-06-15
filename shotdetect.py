@@ -1,6 +1,6 @@
 import scenedetect, time
 
-def shot_detect(clip_dir, clip_name):
+def shotdetect(clip_dir, clip_name):
 
 	start = time.time()
 	#clip_name = '/home/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465.mp4'  # Path to video file.
