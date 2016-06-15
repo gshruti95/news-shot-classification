@@ -5,7 +5,7 @@ from skimage import io
 def get_faces(clip_dir, image_files):
 
 	detector = dlib.get_frontal_face_detector()
-	win = dlib.image_window()
+	# win = dlib.image_window()
 
 	faces_count = []
 	faces = []
@@ -17,13 +17,13 @@ def get_faces(clip_dir, image_files):
 
 	for image in image_files:
 		frame += 1
-		print("Processing file: {}".format(image))
+		# print("Processing file: {}".format(image))
 		img = io.imread(image)
 		# The 1 in the second argument indicates that we should upsample the image
 		# 1 time.  This will make everything bigger and allow us to detect more
 		# faces.
 		dets = detector(img, 1)
-		print("Number of faces detected: {}".format(len(dets)))
+		# print("Number of faces detected: {}".format(len(dets)))
 		faces_count.append(len(dets))
 
 		if 0 < len(dets) < 2:
@@ -32,14 +32,14 @@ def get_faces(clip_dir, image_files):
 			io.imsave(temp_dir + str(frame) + '.jpg', img_cropped)
 			faces.append(temp_dir + str(frame) + '.jpg')
 
-		win.clear_overlay()
-		win.set_image(img)
-		win.add_overlay(dets)
+		# win.clear_overlay()
+		# win.set_image(img)
+		# win.add_overlay(dets)
 	
-		dets, scores, idx = detector.run(img, 1)
-		for i, d in enumerate(dets):
-			print("Detection {}, score: {}, face_type:{}".format(
-				d, scores[i], idx[i]))
+		# dets, scores, idx = detector.run(img, 1)
+		# for i, d in enumerate(dets):
+			# print("Detection {}, score: {}, face_type:{}".format(
+				# d, scores[i], idx[i]))
 		
 	return faces_count, faces, faces_frameno
 		

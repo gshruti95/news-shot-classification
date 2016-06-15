@@ -5,6 +5,7 @@ from skimage import io
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
 from sklearn.cluster import KMeans
+import facedetect
 
 def get_hist(image):
 
@@ -20,11 +21,8 @@ def get_hist(image):
 	hists_b = []
 	for i in xrange(4):
 		for j in xrange(4):
-			# print i*w/4,(i*w/4)+w/4,j*h/4,(j*h/4)+h/4
 			sub_im = img[j*h/4:(j*h/4)+h/4,i*w/4:(i*w/4)+w/4]
 			sub_ims.append ( sub_im )
-			# io.imsave('temp'+str(i)+str(j)+'.jpg',sub_im)
-			# hist = np.histogram(sub_im)
 			hist_r = np.histogram(sub_im[:,:,0])
 			hist_g = np.histogram(sub_im[:,:,1])
 			hist_b = np.histogram(sub_im[:,:,2])
@@ -91,7 +89,7 @@ def get_cluster_threshold(weights):
 	# print threshold
 	return threshold
 
-def get_graph_clusters(image_files):
+def get_graph_clusters(clip_dir, image_files):
 
 	hists = []
 	adj_mat = []
@@ -110,14 +108,33 @@ def get_graph_clusters(image_files):
 		adj_mat.append(row)
 
 	mst, weights = get_mst(adj_mat)
-
 	threshold = get_cluster_threshold(weights)
 	mst[np.where(mst > threshold)] = 0	
 
-	print len(connected_components(mst)[1]), len(image_files)
+	# print len(connected_components(mst)[1]), len(image_files)
 
-	for i in xrange(len(image_files)):
-		print connected_components(mst)[1][i], image_files[i].split('/')[-1]
+	# for i in xrange(len(image_files)):
+		# print connected_components(mst, directed = False)[1][i], image_files[i].split('/')[-1]
+
+	n_components, components = connected_components(mst, directed = False)
+	for i in xrange(n_components):
+		indices = np.argwhere(components == i)
+		# print type(indices)
+		# indices = np.asarray(indices.tolist())
+		faces_list = []
+		cluster_lifetime = max(indices) - min(indices) + 1
+		if cluster_lifetime >= 50 and len(indices) >= 5:
+			for i in xrange(len(indices)):
+				faces_list.append(image_files[indices[i][0]])
+
+			faces_count, faces, faces_frameno = facedetect.get_faces(clip_dir, faces_list)
+			print np.mean(faces_count)
+			if np.mean(faces_count) >= 1: # At least one face detected in the cluster per image
+				print 'Candidate cluster: ',cluster_lifetime, len(indices)
+				print faces_list
+			else:
+				print 'Cluster Rejected: ', cluster_lifetime, len(indices)
+				print faces_list[0]
 
 
 

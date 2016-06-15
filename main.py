@@ -13,10 +13,10 @@ def main():
 	root = '/home/shruti/gsoc/news-shot-classification'
 
 	#clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465/'
-	clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_CNN_Anderson_Cooper_360_0-3595/'
-	#clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0100_US_KABC_Eyewitness_News_6PM_0-1793/'
-	#clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_FOX-News_The_OReilly_Factor_0-3595/'
-	#clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0100_US_KCBS_CBS_2_News_at_6_0-1735/'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_CNN_Anderson_Cooper_360_0-3595/'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0100_US_KABC_Eyewitness_News_6PM_0-1793/'
+	clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_FOX-News_The_OReilly_Factor_0-3595/'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0100_US_KCBS_CBS_2_News_at_6_0-1735/'
 	if clip_dir[-1] is not '/':
 		clip_dir = clip_dir + '/'
 		print clip_dir
@@ -31,11 +31,11 @@ def main():
 	image_files = fileops.get_keyframeslist(clip_dir)
 	#image_files = ['/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465/keyframe039.jpg']
 
-	graphcluster.get_graph_clusters(image_files)
+	graphcluster.get_graph_clusters(clip_dir, image_files)
 
 	## Detect faces
 
-	faces_count, faces_list, faces_frameno = facedetect.get_faces(clip_dir, image_files)
+	# faces_count, faces_list, faces_frameno = facedetect.get_faces(clip_dir, image_files)
 	#fileops.save_faces_count(clip_dir + output_filename, faces_count)
 
 	## Run a model and get labels for keyframe
