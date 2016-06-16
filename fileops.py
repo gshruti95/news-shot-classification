@@ -83,7 +83,7 @@ def save_googlenet_labels(filename, csvname, label_list):
 		for idx, output_label in enumerate(label_list): 
 			file.write(output_label + '\n')
 
-def save_age_gender_labels(filename, csvname, age_label_list, gender_label_list, faces_frameno, faces_count):
+def save_age_gender_labels(filename, csvname, age_label_list, gender_label_list, single_faces_frameno, faces_count, multi_faces_frameno):
 
 	with open(filename + ".vis",'r') as file:
 		new_lines = []
@@ -96,15 +96,14 @@ def save_age_gender_labels(filename, csvname, age_label_list, gender_label_list,
 			timestamps.append(timestamp.split('\n')[0])
 
 	with open(filename + ".vis",'w') as file:
-		for idx, count in enumerate(faces_count):
+		for idx, count in zip(multi_faces_frameno, faces_count):
 			if count > 0: 
-				new_lines[idx] += ('| Face count:' + str(count) + '\t' + '\n')
-			else:
-				new_lines[idx] += '\t\n'
+				new_lines[idx[0]] += ('| Face count:' + str(count) )
+			
+		for idx, gender_label, age_label in zip(single_faces_frameno, gender_label_list,age_label_list):
+			new_lines[idx] += ('| ' + (gender_label + '| ' + age_label) )
 
-		for idx, gender_label, age_label in zip(faces_frameno, gender_label_list,age_label_list):
-			temp = new_lines[idx-1].split('\t')	
-			new_lines[idx-1] = temp[0] + ('| ' + (gender_label + '| ' + age_label) + '\t' + '\n')
+		new_lines = [new_line + '\t\n' for new_line in new_lines]
 		file.writelines(new_lines)
 
 	with open(csvname + '.csv', 'w') as file:

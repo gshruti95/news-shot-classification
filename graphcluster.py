@@ -1,4 +1,4 @@
-import os, sys	
+import os, sys, time	
 import numpy as np
 import scipy
 from skimage import io
@@ -6,14 +6,14 @@ from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import minimum_spanning_tree, connected_components
 from sklearn.cluster import KMeans
 import facedetect
+import age_genderCNN, fileops
 
 def get_hist(image):
 
 	img = io.imread(image)
 	h = img.shape[0]
 	w = img.shape[1]
-	# print (w*h/16)
-	# print img[0][0] #[r g b]
+	
 	sub_ims = []
 	hist = []
 	hists_r = []
@@ -29,12 +29,11 @@ def get_hist(image):
 			hists_r.append(hist_r[0])
 			hists_g.append(hist_g[0])
 			hists_b.append(hist_b[0])
-			# print sum(hist_r[0])
-			# print sum(hist[0])
+			
 	hist.append(hists_r)
 	hist.append(hists_g)
 	hist.append(hists_b)
-	# print hist[0],len(hist[0])
+
 	return hist
 
 def get_edge(hist1, hist2):
@@ -59,7 +58,6 @@ def get_mst(adj_mat):
 		for value in row[np.nonzero(row)]:
 			weights.append(value)
 	# print weights
-
 	return mst, weights
 
 def get_cluster_threshold(weights):
@@ -85,18 +83,21 @@ def get_cluster_threshold(weights):
 			low_cluster.append(data[idx])
 		threshold = max(low_cluster)
 		threshold = threshold[0][0]
-
 	# print threshold
 	return threshold
 
 def get_graph_clusters(clip_dir, image_files):
 
+	start = time.time()
+
 	hists = []
 	adj_mat = []
+	print "Calculating histograms..."
 	for image in image_files:
 		new_hist = get_hist(image)
 		hists.append(new_hist)
 	
+	print "Calculating edge weights..."
 	for i in xrange(len(hists)):
 		row = []
 		for j in xrange(len(hists)):
@@ -108,34 +109,51 @@ def get_graph_clusters(clip_dir, image_files):
 		adj_mat.append(row)
 
 	mst, weights = get_mst(adj_mat)
+	print "MST created..."
 	threshold = get_cluster_threshold(weights)
 	mst[np.where(mst > threshold)] = 0	
-
+	print "Clusters formed..."
 	# print len(connected_components(mst)[1]), len(image_files)
-
 	# for i in xrange(len(image_files)):
 		# print connected_components(mst, directed = False)[1][i], image_files[i].split('/')[-1]
 
-	n_components, components = connected_components(mst, directed = False)
+	n_components, components = connected_components(mst, directed = False)	
 	for i in xrange(n_components):
-		indices = np.argwhere(components == i)
-		# print type(indices)
-		# indices = np.asarray(indices.tolist())
-		faces_list = []
-		cluster_lifetime = max(indices) - min(indices) + 1
-		if cluster_lifetime >= 50 and len(indices) >= 5:
-			for i in xrange(len(indices)):
-				faces_list.append(image_files[indices[i][0]])
+		component_indices = np.argwhere(components == i)
+		# print type(component_indices)
+		# indices = np.asarray(component_indices.tolist())
+		cluster_faces = []
+		cluster_lifetime = max(component_indices) - min(component_indices) + 1
 
-			faces_count, faces, faces_frameno = facedetect.get_faces(clip_dir, faces_list)
+		print "Pruning clusters..."
+		if cluster_lifetime >= 50 and len(component_indices) >= 5:
+			
+			for i in xrange(len(component_indices)):
+				cluster_faces.append(image_files[component_indices[i][0]])
+
+			faces_count, single_faces, single_faces_frameno = facedetect.get_faces(clip_dir, cluster_faces, component_indices)		
+			print "Getting faces..."
 			print np.mean(faces_count)
-			if np.mean(faces_count) >= 1: # At least one face detected in the cluster per image
-				print 'Candidate cluster: ',cluster_lifetime, len(indices)
-				print faces_list
-			else:
-				print 'Cluster Rejected: ', cluster_lifetime, len(indices)
-				print faces_list[0]
 
+			if np.mean(faces_count) >= 1: # At least one face detected in the cluster per image
+				print 'Candidate cluster: '#, cluster_lifetime, len(component_indices)
+				print component_indices
+				# print cluster_faces
+				print "Single faces len, face count len, img files len: \n", len(single_faces_frameno), len(faces_count), len(image_files)
+				# print "Singles faces no and names: ", single_faces_frameno, single_faces 
+				## Get gender labels for single face frames
+				print "Getting gender labels..."
+				caffe_path = '/home/shruti/gsoc/caffehome/caffe/' 
+				[age_labels, gender_labels] = age_genderCNN.age_genderCNN(caffe_path, caffe_path + 'models/age_gender/', single_faces)
+				print "Saving gender labels..."
+				output_filename = clip_dir.split('/')[-2]	
+				fileops.save_age_gender_labels(clip_dir + output_filename, clip_dir + 'age_gender_labels', age_labels, gender_labels, single_faces_frameno, faces_count, component_indices)
+			else:
+				print 'Cluster Rejected: ', cluster_lifetime, len(component_indices)
+				print cluster_faces[0]
+
+	end = time.time()
+	print "Time taken for clusters and genders: %.2f \n" %(end-start)
 
 
  # get_hist('/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_CNN_Anderson_Cooper_360_0-3595/keyframe0002.jpg')

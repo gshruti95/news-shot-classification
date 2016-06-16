@@ -12,10 +12,10 @@ import graphcluster
 def main():
 	root = '/home/shruti/gsoc/news-shot-classification'
 
-	#clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465/'
-	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_CNN_Anderson_Cooper_360_0-3595/'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465/'
+	clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_CNN_Anderson_Cooper_360_0-3595/'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0100_US_KABC_Eyewitness_News_6PM_0-1793/'
-	clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_FOX-News_The_OReilly_Factor_0-3595/'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_FOX-News_The_OReilly_Factor_0-3595/'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0100_US_KCBS_CBS_2_News_at_6_0-1735/'
 	if clip_dir[-1] is not '/':
 		clip_dir = clip_dir + '/'
@@ -23,34 +23,25 @@ def main():
 	
 	overall_start = time.time()
 
+	output_filename = clip_dir.split('/')[-2]	
 	clip_name = fileops.get_video_filename(clip_dir)
-	#shotdetect.shotdetect(clip_dir, clip_name)
+	# shotdetect.shotdetect(clip_dir, clip_name)
+	keyframes.get_keyframes(clip_dir, clip_name, output_filename)
 
-	output_filename = clip_name.split('.')[0]	
-	# keyframes.get_keyframes(clip_dir, clip_name, output_filename)
 	image_files = fileops.get_keyframeslist(clip_dir)
 	#image_files = ['/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465/keyframe039.jpg']
 
 	graphcluster.get_graph_clusters(clip_dir, image_files)
 
-	## Detect faces
-
-	# faces_count, faces_list, faces_frameno = facedetect.get_faces(clip_dir, image_files)
-	#fileops.save_faces_count(clip_dir + output_filename, faces_count)
-
 	## Run a model and get labels for keyframe
  	
 	caffe_path = '/home/shruti/gsoc/caffehome/caffe/' 
-	model_path = caffe_path + 'models/placesCNN/'
+	# model_path = caffe_path + 'models/placesCNN/'
 		
-	# [age_labels, gender_labels] = age_genderCNN.age_genderCNN(caffe_path, caffe_path + 'models/age_gender/', faces_list)
-	# print len(gender_labels), len(faces_frameno)	
-	# fileops.save_age_gender_labels(clip_dir + output_filename, clip_dir + 'age_gender_labels_test', age_labels, gender_labels, faces_frameno, faces_count)
-
-	# [fc8, fc7, fc6, output_label_list, scene_type_list, label_list, scene_attributes_list] = placesCNN.placesCNN(caffe_path, model_path, image_files)
-	# fileops.save_placesCNN_labels(clip_dir + output_filename, clip_dir + 'placesCNN_labels', output_label_list, scene_type_list, label_list, scene_attributes_list)
-	# fileops.save_features(clip_dir + 'fc8', fc8)
-	# fileops.save_features(clip_dir + 'fc7 ', fc7)
+	[fc8, fc7, fc6, output_label_list, scene_type_list, label_list, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files)
+	fileops.save_placesCNN_labels(clip_dir + output_filename, clip_dir + 'placesCNN_labels', output_label_list, scene_type_list, label_list, scene_attributes_list)
+	fileops.save_features(clip_dir + 'fc8', fc8)
+	fileops.save_features(clip_dir + 'fc7 ', fc7)
 	# fileops.save_features(clip_dir + 'fc6', fc6)
 
 	# label_list = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
