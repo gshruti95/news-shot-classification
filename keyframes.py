@@ -9,7 +9,7 @@ def get_keyframes(clip_dir, clip_name, output_filename):
 
 	os.system("ffmpeg -i " + clip_dir + clip_name \
 		+ " -vf \"select='eq(pict_type,PICT_TYPE_I)'\" -keyint_min 1 -g 5 -q:v 5 -vsync 2 -f image2 " \
-		+ clip_dir + "keyframe%03d.jpg -loglevel debug 2>&1 | grep \"pict_type:I\" > " \
+		+ clip_dir + "keyframe%04d.jpg -loglevel debug 2>&1 | grep \"pict_type:I\" > " \
 		+ clip_dir + output_filename + ".vis")
 
 	with open(clip_dir + output_filename + ".vis",'r') as file:

@@ -2,6 +2,26 @@ import os,sys
 import numpy as np
 import csv
 
+def save_studio(filename, label_list):
+	with open(filename + ".vis",'r') as file:
+		new_lines = []
+		timestamps = []
+		data = file.readlines()
+		print len(data), len(label_list)
+
+		for line in data:
+			line = line.split('\n')[0]
+			new_lines.append(line)
+			timestamp = line.split('|')[0]
+			timestamps.append(timestamp.split('\n')[0])
+
+	with open(filename + ".vis",'w') as file:
+		for output_label_index in label_list: 
+			print output_label_index
+			new_lines[output_label_index] += ('| Studio' + '\t' + '\n')
+		file.writelines(new_lines)
+	
+
 def save_faces_count(filename, faces_count):
 	with open(filename + ".vis",'r') as file:
 		new_lines = []

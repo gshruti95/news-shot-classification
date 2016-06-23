@@ -90,6 +90,7 @@ def get_graph_clusters(clip_dir, image_files):
 
 	start = time.time()
 
+	studio = []
 	hists = []
 	adj_mat = []
 	print "Calculating histograms..."
@@ -113,20 +114,17 @@ def get_graph_clusters(clip_dir, image_files):
 	threshold = get_cluster_threshold(weights)
 	mst[np.where(mst > threshold)] = 0	
 	print "Clusters formed..."
-	# print len(connected_components(mst)[1]), len(image_files)
-	# for i in xrange(len(image_files)):
-		# print connected_components(mst, directed = False)[1][i], image_files[i].split('/')[-1]
-
+	
 	n_components, components = connected_components(mst, directed = False)	
 	for i in xrange(n_components):
 		component_indices = np.argwhere(components == i)
 		# print type(component_indices)
 		# indices = np.asarray(component_indices.tolist())
 		cluster_faces = []
-		cluster_lifetime = max(component_indices) - min(component_indices) + 1
-
+		cluster_lifetime = (max(component_indices) - min(component_indices) + 1)*100/float(len(image_files))
+		print cluster_lifetime
 		print "Pruning clusters..."
-		if cluster_lifetime >= 50 and len(component_indices) >= 5:
+		if cluster_lifetime >= 5 and len(component_indices) >= 5:
 			
 			for i in xrange(len(component_indices)):
 				cluster_faces.append(image_files[component_indices[i][0]])
@@ -144,10 +142,13 @@ def get_graph_clusters(clip_dir, image_files):
 				## Get gender labels for single face frames
 				print "Getting gender labels..."
 				caffe_path = '/home/shruti/gsoc/caffehome/caffe/' 
-				[age_labels, gender_labels] = age_genderCNN.age_genderCNN(caffe_path, caffe_path + 'models/age_gender/', single_faces)
-				print "Saving gender labels..."
-				output_filename = clip_dir.split('/')[-2]	
-				fileops.save_age_gender_labels(clip_dir + output_filename, clip_dir + 'age_gender_labels', age_labels, gender_labels, single_faces_frameno, faces_count, component_indices)
+				# [age_labels, gender_labels] = age_genderCNN.age_genderCNN(caffe_path, caffe_path + 'models/age_gender/', single_faces)
+				# print "Saving gender labels..."
+				# output_filename = clip_dir.split('/')[-2]	
+				# fileops.save_age_gender_labels(clip_dir + output_filename, clip_dir + 'age_gender_labels', age_labels, gender_labels, single_faces_frameno, faces_count, component_indices)
+				
+				for idx, val in enumerate(component_indices):
+					studio.append(component_indices[idx][0])
 			else:
 				print 'Cluster Rejected: ', cluster_lifetime, len(component_indices)
 				print cluster_faces[0]
@@ -155,7 +156,7 @@ def get_graph_clusters(clip_dir, image_files):
 	end = time.time()
 	print "Time taken for clusters and genders: %.2f \n" %(end-start)
 
-
+	return studio
  # get_hist('/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_CNN_Anderson_Cooper_360_0-3595/keyframe0002.jpg')
 # get_graph_clusters(['/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_CNN_Anderson_Cooper_360_0-3595/keyframe0002.jpg',
 #  '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_CNN_Anderson_Cooper_360_0-3595/keyframe0003.jpg',
