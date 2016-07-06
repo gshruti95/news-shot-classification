@@ -26,7 +26,7 @@ test_labels = test_labels.values
 
 print 'Training data'
 
-mysvm = svm.SVC(decision_function_shape='ovr')
+mysvm = svm.SVC(decision_function_shape='ovo')
 
 mysvm = mysvm.fit(train_data, label_data)	
  

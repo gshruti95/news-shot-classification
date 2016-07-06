@@ -8,7 +8,7 @@ import placesCNN
 import googlenet
 import age_genderCNN
 import graphcluster, accuracy
-import cropframes
+# import cropframes
 
 def main():
 	root = '/home/shruti/gsoc/news-shot-classification/'
@@ -28,10 +28,11 @@ def main():
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2014-01-31_0230_US_KNBC_NBC_Nightly_News'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2014-05-10_2200_US_CNN_Situation_Room'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2014-05-10_0000_US_CNN_Anderson_Cooper_360'
-	
-	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-21_1000_US_MSNBC_Morning_Joe'
-	clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-21_0635_US_KABC_Jimmy_Kimmel_Live'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2014-05-10_2300_US_KABC_Eyewitness_News_4PM'
+
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-21_1000_US_MSNBC_Morning_Joe'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-21_0635_US_KABC_Jimmy_Kimmel_Live'
+	clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-07-01_0000_US_HLN_Nancy_Grace'
 	
 	if clip_dir[-1] is not '/':
 		clip_dir = clip_dir + '/'
@@ -42,10 +43,10 @@ def main():
 	output_filename = clip_dir.split('/')[-2]	
 	clip_name = fileops.get_video_filename(clip_dir)
 	# shotdetect.shotdetect(clip_dir, clip_name)
-	# keyframes.get_keyframes(clip_dir, clip_name, output_filename)
+	keyframes.get_keyframes(clip_dir, clip_name, output_filename)
 
 	image_files = fileops.get_keyframeslist(clip_dir)
-	image_files = cropframes.cropframes(clip_dir, image_files)
+	# image_files = cropframes.cropframes(clip_dir, image_files)
 	#image_files = ['/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465/keyframe039.jpg']
 
 	# studio_shots = graphcluster.get_graph_clusters(clip_dir, image_files)
