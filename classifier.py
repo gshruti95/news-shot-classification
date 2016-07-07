@@ -4,9 +4,7 @@ import csv as csv
 from sklearn import svm
 from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import normalize
-from sklearn.metrics import accuracy_score
 import time
-
 
 def classifier(train_data, train_labels, orig_train_labels, test_data, test_labels, orig_test_labels): 
 
@@ -37,19 +35,17 @@ def classifier(train_data, train_labels, orig_train_labels, test_data, test_labe
 	# df_train_data = normalize(df_train_data)
 	# df_test_data = normalize(df_test_data)
 	# print (df_test_data)
-	# print df_train_labels
-	# print df_test_labels
+
 	print 'Training data'
 
-	# mysvm = svm.SVC(decision_function_shape='ovo')
-	mysvm = svm.OneClassSVM()
+	mysvm = svm.SVC(decision_function_shape='ovr')
 
-	mysvm = mysvm.fit(df_train_data)	
+	mysvm = mysvm.fit(df_train_data, df_train_labels)	
 	 
 	print 'Predicting...'
 
-	output = mysvm.predict(df_test_data)
-	print len(output)
+	output = mysvm.predict(df_test_data).astype(str)
+
 	end = time.time()
 	print "Time taken: %.2f" %(end-start) 
 
@@ -69,66 +65,69 @@ def classifier(train_data, train_labels, orig_train_labels, test_data, test_labe
 	c = 0
 	g = 0
 	n = 0
+	crt_s = 0
+	crt_r = 0
+	crt_h = 0
+	crt_bg = 0
+	crt_sp = 0
+	crt_w = 0
+	crt_c = 0
+	crt_g = 0
 	prob = 0
 	crt_studio = 0
 	crt_not = 0
 	# print output
-
-
 	for i in range(len(output)):
-		if output[i] == 1 and df_test_labels[i][0] == 'Studio':
-			crt_outp += 1
-	# 	# if output[i] != 'Not':
-	# 	# 	crt_outp = crt_outp + 1
-	# 	# else:
-	# 	# 	# new_train_data.append(train_data[i])
-	# 	# 	new_test_data.append(test_data[i])
-	# 	# 	# new_train_labels.append(orig_train_labels[i])
-	# 	# 	new_test_labels.append(orig_test_labels[i]) 
-	# 	# 	not_count += 1
-	# 	if output[i] == 'Studio':
-	# 		s += 1
-	# 		if df_test_labels[i][0] == output[i]:
-	# 			crt_studio += 1
-	# 	elif output[i] == 'Reporter':
-	# 		r += 1
-	# 		# if df_test_labels[i][0] == output[i]:
-	# 		# 	crt_studio += 1
-	# 	elif output[i] == 'Hybrid':
-	# 		h += 1
-	# 		# if df_test_labels[i][0] == output[i]:
-	# 		# 	crt_studio += 1
-	# 	elif output[i] == 'Graphic':
-	# 		g += 1 
-	# 		# if df_test_labels[i][0] == output[i]:
-	# 		# 	crt_studio += 1
-	# 	elif output[i] == 'Weather':
-	# 		w += 1
-	# 		# if df_test_labels[i][0] == output[i]:
-	# 		# 	crt_studio += 1
-	# 	elif output[i] == "Sports":
-	# 		sp += 1
-	# 		# if df_test_labels[i][0] == output[i]:
-	# 		# 	crt_studio += 1
-	# 	elif output[i] == "Background_roll":
-	# 		bg += 1
-	# 	elif output[i] == 'Commercial':
-	# 		c += 1
-	# 	elif output[i] == 'Problem/Unclassified':
-	# 		prob += 1
-	# 	elif output[i] == 'Not':
-	# 		n += 1
-	# 		if df_test_labels[i][0] == output[i]:
-	# 			crt_not += 1
+		# if output[i] != 'Not':
+		# 	crt_outp = crt_outp + 1
+		# else:
+		# 	# new_train_data.append(train_data[i])
+		# 	new_test_data.append(test_data[i])
+		# 	# new_train_labels.append(orig_train_labels[i])
+		# 	new_test_labels.append(orig_test_labels[i]) 
+		# 	not_count += 1
+		if output[i] == 'Studio':
+			s += 1
+			if df_test_labels[i][0] == output[i]:
+				crt_s += 1
+		elif output[i] == 'Reporter':
+			r += 1
+			if df_test_labels[i][0] == output[i]:
+				crt_r += 1
+		elif output[i] == 'Hybrid':
+			h += 1
+			if df_test_labels[i][0] == output[i]:
+				crt_h += 1
+		elif output[i] == 'Graphic':
+			g += 1 
+			if df_test_labels[i][0] == output[i]:
+				crt_g += 1
+		elif output[i] == 'Weather':
+			w += 1
+			if df_test_labels[i][0] == output[i]:
+				crt_w += 1
+		elif output[i] == "Sports":
+			sp += 1
+			if df_test_labels[i][0] == output[i]:
+				crt_sp += 1
+		elif output[i] == "Background_roll":
+			bg += 1
+		elif output[i] == 'Commercial':
+			c += 1
+		elif output[i] == 'Problem/Unclassified':
+			prob += 1
+		elif output[i] == 'Not':
+			n += 1
+			if df_test_labels[i][0] == output[i]:
+				crt_not += 1
 
-	# 	if df_test_labels[i][0] == output[i]:
-	# 		total_crt_outp = total_crt_outp + 1
+		if df_test_labels[i][0] == output[i]:
+			total_crt_outp = total_crt_outp + 1
 
-	# print "totalcrtoutp: " , total_crt_outp
-	# print "orig per: ", total_crt_outp*100/float(len(output))
-	# # print "crtoutp %d not_count %d" %(crt_outp, not_count)
+	print "totalcrtoutp: " , total_crt_outp
+	print "orig per: ", total_crt_outp*100/float(len(output))
+	# print "crtoutp %d not_count %d" %(crt_outp, not_count)
 	# print s , r, h, g, w, sp , bg, c, prob, n
-	# print "crt_studio %d crt_not %d" %(crt_studio, crt_not)
-
+	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp
 	return crt_outp , new_test_data, new_test_labels 
 

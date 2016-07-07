@@ -14,7 +14,7 @@ def dataset(main_dir):
 	for dir_name in dir_list:
 		if os.path.isdir(main_dir + dir_name):
 			for file in os.listdir(main_dir + dir_name):
-				if fnmatch.fnmatch(file,'new_places_fc7 .csv'):
+				if fnmatch.fnmatch(file,'new_places_fc8.csv'):
 					with open(main_dir + dir_name+'/'+file) as features_file:
 						features = features_file.readlines()
 					features = [feature.split('\n')[0] for feature in features]
@@ -43,8 +43,8 @@ def dataset(main_dir):
 
 	# features_data = [data.split('\n')[0] for data in features_data]
 	# label_data = [data.split('\n')[0] for data in label_data]
-	print "orig total " , len(label_data), len(features_data)
-	print "final total ", len(labels) , len(features)
+	# print "orig total " , len(label_data), len(features_data)
+	# print "final total ", len(labels) , len(features)
 
 	return features, labels
 
