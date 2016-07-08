@@ -13,7 +13,9 @@ def classifier(train_data, train_labels, orig_train_labels, test_data, test_labe
 
 	# train_data = pd.read_csv(train_dir + 'new_train_data.csv', header=-1)
 	df_train_data = [data.split(',') for data in train_data]
+	# df_train_data = train_data
 	df_train_data = pd.DataFrame(df_train_data)
+	print type(df_train_data)
 	df_train_data = df_train_data.astype(float)
 	df_train_data = df_train_data.values
 
@@ -23,6 +25,7 @@ def classifier(train_data, train_labels, orig_train_labels, test_data, test_labe
 
 	# test_data = pd.read_csv(test_dir + 'new_train_data.csv', header=-1)
 	df_test_data = [data.split(',') for data in test_data]
+	# df_test_data = test_data
 	df_test_data = pd.DataFrame(df_test_data)
 	df_test_data = df_test_data.astype(float)
 	df_test_data = df_test_data.values

@@ -16,7 +16,7 @@ def main():
 	root = '/home/shruti/gsoc/news-shot-classification/'
 
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_CNN_Anderson_Cooper_360_0-3595/'
-	clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0100_US_KABC_Eyewitness_News_6PM_0-1793/'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0100_US_KABC_Eyewitness_News_6PM_0-1793/'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0000_US_FOX-News_The_OReilly_Factor_0-3595/'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-07_0100_US_KCBS_CBS_2_News_at_6_0-1735/'
 	
@@ -34,7 +34,7 @@ def main():
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-21_1000_US_MSNBC_Morning_Joe'
 	
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-06-21_0635_US_KABC_Jimmy_Kimmel_Live'
-	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-07-01_0000_US_HLN_Nancy_Grace'
+	clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-07-01_0000_US_HLN_Nancy_Grace'
 	
 	if clip_dir[-1] is not '/':
 		clip_dir = clip_dir + '/'
@@ -60,7 +60,7 @@ def main():
 	caffe_path = '/home/shruti/gsoc/caffehome/caffe/' 
 		
 	# [pool5, conv5, conv4, conv3,fc8, fc7, fc6, output_label_list, scene_type_list, label_list, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files)
-	[pool5, conv5, conv4, conv3] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files)
+	# [pool5, conv5, conv4, conv3] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files)
 
 	# accuracy.get_accuracy(clip_dir + output_filename, '_scene', scene_type_list)
 	# fileops.save_placesCNN_labels(clip_dir + output_filename, clip_dir + 'placesCNN_labels', output_label_list, scene_type_list, label_list, scene_attributes_list)
@@ -88,7 +88,7 @@ def main():
 	train_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/train/'
 	test_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/test/'
 	
-	# pipeline.pipeline(train_dir, test_dir)
+	pipeline.pipeline(train_dir, test_dir)
 	
 	overall_end = time.time()	
 	print "Total time taken: %.2f" %(overall_end-overall_start)
