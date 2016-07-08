@@ -7,8 +7,6 @@ def pipeline(train_dir, test_dir):
 	[train_data, train_labels] = dataset.dataset(train_dir)
 	[test_data, test_labels] = dataset.dataset(test_dir)
 	new_train_labels = []
-	# new_test_labels = []
-	# new_train_data = []
 	
 	total = len(test_labels)
 	s = 0
@@ -43,26 +41,24 @@ def pipeline(train_dir, test_dir):
 
 	correct = 0
 	not_count = 0
-	# new_test_labels = test_labels
-	# new_train_labels = train_labels
 
-	for label, feature in zip(train_labels, train_data):
-		if label != 'Studio':
-			label = 'Not'
+	# for label, feature in zip(train_labels, train_data):
+	# 	if label != 'Studio':
+	# 		label = 'Not'
 		
-		new_train_labels.append(label)
-		# new_train_data.append(feature)
+	# 	new_train_labels.append(label)
+	# 	# new_train_data.append(feature)
 
-	for label in test_labels:
-		if label != 'Studio':
-			not_count += 1
-		# new_test_labels.append(label)
+	# for label in test_labels:
+	# 	if label != 'Studio':
+	# 		not_count += 1
+	# 	# new_test_labels.append(label)
 
-	print "notcount: ", not_count
+	# print "notcount: ", not_count
 
-	[outp_len, test_data, test_labels] = classifier.classifier(train_data, new_train_labels, test_data, test_labels)
+	[outp_len, test_data, test_labels] = classifier.classifier(train_data, train_labels, test_data, test_labels)
 	
-	print "Total: " , s , r, h, g, w, sp , bg, c, prob
+	# print "Total: " , s , r, h, g, w, sp , bg, c, prob
 	# correct += outp_len
 	# print "correct: ", outp_len
 	# # print "total %d true studio %d : "  %(total, total-not_count)

@@ -13,7 +13,7 @@ def classifier(train_data, train_labels, test_data, test_labels):
 
 	df_train_data = [data.split(',') for data in train_data]
 	df_train_data = pd.DataFrame(df_train_data)
-	print type(df_train_data)
+	# print type(df_train_data)
 	df_train_data = df_train_data.astype(float)
 	
 	df_test_data = [data.split(',') for data in test_data]
@@ -22,7 +22,7 @@ def classifier(train_data, train_labels, test_data, test_labels):
 	
 	df_train_labels = pd.DataFrame(train_labels)
 	df_test_labels = pd.DataFrame(test_labels)
-	print df_train_labels
+	# print df_train_labels
 
 	df_trainset = [df_train_data, df_train_labels]
 	comb_train = pd.concat(df_trainset, axis = 1)
@@ -30,8 +30,10 @@ def classifier(train_data, train_labels, test_data, test_labels):
 	comb_test = pd.concat(df_testset, axis = 1)
 	df_comb = [comb_train, comb_test]
 	final_train = pd.concat(df_comb)
+	# print final_train
+	final_train = final_train.values
 
-	dt, dv = train_test_split(final_train,test_size=.33,random_state=42)
+	dtrain, dvalidate = train_test_split(final_train,test_size=.33,random_state=3)
 
 	df_train_data = df_train_data.values
 	df_train_labels = df_train_labels.values
@@ -40,13 +42,13 @@ def classifier(train_data, train_labels, test_data, test_labels):
 
 	print 'Training data'
 
-	mysvm = svm.SVC(decision_function_shape='ovo')
+	mysvm = svm.SVC(decision_function_shape='ovr')
 
-	mysvm = mysvm.fit(df_train_data, df_train_labels)	
+	mysvm = mysvm.fit(dtrain[:,:-1], dtrain[:,-1])	
 	 
 	print 'Predicting...'
 
-	output = mysvm.predict(df_test_data).astype(str)
+	output = mysvm.predict(dvalidate[:,:-1]).astype(str)
 
 	end = time.time()
 	print "Time taken: %.2f" %(end-start) 
@@ -58,6 +60,16 @@ def classifier(train_data, train_labels, test_data, test_labels):
 	new_test_data = []
 	new_train_labels = []
 	new_test_labels = []
+	p_s = 0
+	p_r = 0
+	p_h = 0
+	p_bg = 0
+	p_sp = 0
+	p_w = 0
+	p_c = 0
+	p_g = 0
+	p_n = 0
+
 	s = 0
 	r = 0
 	h = 0
@@ -68,6 +80,7 @@ def classifier(train_data, train_labels, test_data, test_labels):
 	g = 0
 	n = 0
 	prob = 0
+
 	crt_s = 0
 	crt_r = 0
 	crt_h = 0
@@ -88,51 +101,69 @@ def classifier(train_data, train_labels, test_data, test_labels):
 		# 	new_test_labels.append(orig_test_labels[i]) 
 		# 	not_count += 1
 		if output[i] == 'Studio':
-			s += 1
-			if df_test_labels[i][0] == output[i]:
+			p_s += 1
+			# if df_test_labels[i][0] == output[i]:
+			# 	crt_s += 1
+			if dvalidate[:,-1][i] == output[i]:
 				crt_s += 1
 		elif output[i] == 'Reporter':
-			r += 1
-			if df_test_labels[i][0] == output[i]:
+			p_r += 1
+			if dvalidate[:,-1][i] == output[i]:
 				crt_r += 1
 		elif output[i] == 'Hybrid':
-			h += 1
-			if df_test_labels[i][0] == output[i]:
+			p_h += 1
+			if dvalidate[:,-1][i] == output[i]:
 				crt_h += 1
 		elif output[i] == 'Graphic':
-			g += 1 
-			if df_test_labels[i][0] == output[i]:
+			p_g += 1 
+			if dvalidate[:,-1][i] == output[i]:
 				crt_g += 1
 		elif output[i] == 'Weather':
-			w += 1
-			if df_test_labels[i][0] == output[i]:
+			p_w += 1
+			if dvalidate[:,-1][i] == output[i]:
 				crt_w += 1
 		elif output[i] == "Sports":
-			sp += 1
-			if df_test_labels[i][0] == output[i]:
+			p_sp += 1
+			if dvalidate[:,-1][i] == output[i]:
 				crt_sp += 1
 		elif output[i] == "Background_roll":
-			bg += 1
+			p_bg += 1
 		elif output[i] == 'Commercial':
-			c += 1
+			p_c += 1
 		elif output[i] == 'Problem/Unclassified':
 			prob += 1
 		elif output[i] == 'Not':
-			n += 1
+			p_n += 1
 			if df_test_labels[i][0] == output[i]:
 				crt_not += 1
 
-		if df_test_labels[i][0] == output[i]:
+		if dvalidate[:,-1][i] == 'Studio':
+			s += 1
+		elif dvalidate[:,-1][i] == 'Reporter':
+			r += 1
+		elif dvalidate[:,-1][i] == 'Hybrid':
+			h += 1
+		elif dvalidate[:,-1][i] == 'Graphic':
+			g += 1		
+		elif dvalidate[:,-1][i] == 'Weather':
+			w += 1
+		elif dvalidate[:,-1][i] == 'Sports':
+			sp += 1
+
+		if dvalidate[:,-1][i] == output[i]:
 			total_crt_outp = total_crt_outp + 1
 
 	print "totalcrtoutp: " , total_crt_outp
 	print "orig per: ", total_crt_outp*100/float(len(output))
-	# print "crtoutp %d not_count %d" %(crt_outp, not_count)
-	print "Predicted: " , s , r, h, g, w, sp , bg, c, prob, n
-	print "Accuracy score: ", accuracy_score(df_test_labels, output)
-	print "Recall score: ", recall_score(df_test_labels, output)
-	print "F score: ", f1_score(df_test_labels, output)
-	print "Precision score: ", precision_score(df_test_labels, output)
+
+	print "Predicted: " , p_s , r, h, g, w, sp , bg, c, prob, n
+	print "Accuracy score: ", accuracy_score(dvalidate[:,-1], output)
+	print "Recall score: ", recall_score(dvalidate[:,-1], output)
+	print "F score: ", f1_score(dvalidate[:,-1], output)
+	print "Precision score: ", precision_score(dvalidate[:,-1], output)
+
 	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp, crt_not
+	print "Total: ", s, r, h, g, w, sp
+
 	return crt_outp , new_test_data, new_test_labels 
 
