@@ -41,8 +41,13 @@ def save_faces_count(filename, faces_count):
 
 def save_features(filename, features):
 	
-	np.savetxt(filename + ".csv", features, fmt='%.6f', delimiter=',')
-	
+	# with open(filename + '.csv','wb') as f:
+	for i in range(len(features)):
+		np.savetxt(filename + '.csv', features[i], fmt = '%2.6f', delimiter=',')
+		# writer = csv.writer(f, delimiter = ',')
+		# for row in features:
+		# 	writer.writerows(row)
+
 def write_separate_labels(filename):
 
 	with open(filename + ".vis",'r') as file:

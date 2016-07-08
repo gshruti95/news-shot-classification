@@ -4,6 +4,7 @@ import csv as csv
 from sklearn import svm
 from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import normalize
+from sklearn.metrics import accuracy_score
 import time
 
 def classifier(train_data, train_labels, orig_train_labels, test_data, test_labels, orig_test_labels): 
@@ -128,6 +129,7 @@ def classifier(train_data, train_labels, orig_train_labels, test_data, test_labe
 	print "orig per: ", total_crt_outp*100/float(len(output))
 	# print "crtoutp %d not_count %d" %(crt_outp, not_count)
 	# print s , r, h, g, w, sp , bg, c, prob, n
+	print "Accuracy score: ", accuracy_score(df_test_labels, output)
 	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp
 	return crt_outp , new_test_data, new_test_labels 
 
