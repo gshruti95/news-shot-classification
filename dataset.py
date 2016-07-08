@@ -57,7 +57,7 @@ def dataset(main_dir):
 	features = []
 	for label, feature in zip(label_data, features_data):
 		label = label.split('\t')[0]
-		if label not in ['Commercial', 'Problem/Unclassified', 'Background_roll']:
+		if label not in ['Commercial', 'Problem/Unclassified', 'Background_roll','Background roll']:
 			labels.append(label)
 			features.append(feature)					
 	

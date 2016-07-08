@@ -19,13 +19,17 @@ def pipeline(train_dir, test_dir):
 	g = 0
 	prob = 0
 
-	for label in test_labels:
+	for idx, label in enumerate(test_labels):
 		if label == 'Studio':
 			s += 1
 		elif label == 'Reporter':
 			r += 1
+			label = 'Studio'
+			test_labels[idx] = label
 		elif label == 'Hybrid':
 			h += 1
+			# label = 'Studio'
+			# train_labels[idx] = label
 		elif label == 'Graphic':
 			g += 1
 		elif label == 'Weather':
@@ -39,25 +43,31 @@ def pipeline(train_dir, test_dir):
 		elif label == 'Problem/Unclassified':
 			prob += 1
 
-	correct = 0
-	not_count = 0
+	## To change train labels to single SVM ovo format
 
+	# not_count = 0
 	# for label, feature in zip(train_labels, train_data):
 	# 	if label != 'Studio':
-	# 		label = 'Not'
-		
+	# 		label = 'Not'		
 	# 	new_train_labels.append(label)
-	# 	# new_train_data.append(feature)
 
 	# for label in test_labels:
 	# 	if label != 'Studio':
 	# 		not_count += 1
 	# 	# new_test_labels.append(label)
-
 	# print "notcount: ", not_count
 
+	## Combine studio repo and/or hybrid
+
+	for idx, label in enumerate(train_labels):
+		if label == 'Reporter':
+			label = 'Studio'
+			train_labels[idx] = label
+		# elif label == 'Hybrid':
+			# label = 'Studio'
+
 	[outp_len, test_data, test_labels] = classifier.classifier(train_data, train_labels, test_data, test_labels)
-	
+	correct = 0
 	# print "Total: " , s , r, h, g, w, sp , bg, c, prob
 	# correct += outp_len
 	# print "correct: ", outp_len
