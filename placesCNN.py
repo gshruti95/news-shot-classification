@@ -54,24 +54,24 @@ def placesCNN(caffe_path, model_path, image_files):
 		if scores is None:
 			scores = {}
 			scores['prob'] = output['prob'].copy()
-			# fc8 = net.blobs['fc8'].data[...].copy()
-			# fc7 = net.blobs['fc7'].data[...].copy()
-			# fc6 = net.blobs['fc6'].data[...].copy()
-			pool5 = net.blobs['pool5'].data[...].copy()
-			conv5 = net.blobs['conv5'].data[...].copy()			
-			conv4 = net.blobs['conv4'].data[...].copy()
-			conv3 = net.blobs['conv3'].data[...].copy()
+			fc8 = net.blobs['fc8'].data[...].copy()
+			fc7 = net.blobs['fc7'].data[...].copy()
+			fc6 = net.blobs['fc6'].data[...].copy()
+			# pool5 = net.blobs['pool5'].data[...].copy()
+			# conv5 = net.blobs['conv5'].data[...].copy()			
+			# conv4 = net.blobs['conv4'].data[...].copy()
+			# conv3 = net.blobs['conv3'].data[...].copy()
 		else:
 			scores['prob'] = np.vstack((scores['prob'],output['prob']))
-			# fc8 = np.vstack((fc8, net.blobs['fc8'].data[...].copy()))
-			# fc7 = np.vstack((fc7, net.blobs['fc7'].data[...].copy()))
-			# fc6 = np.vstack((fc6, net.blobs['fc6'].data[...].copy()))
-			pool5 = np.vstack((pool5, net.blobs['pool5'].data[...].copy()))
-			conv5 = np.vstack((conv5, net.blobs['conv5'].data[...].copy()))
-			conv4 = np.vstack((conv4, net.blobs['conv4'].data[...].copy()))
-			conv3 = np.vstack((conv3, net.blobs['conv3'].data[...].copy()))
+			fc8 = np.vstack((fc8, net.blobs['fc8'].data[...].copy()))
+			fc7 = np.vstack((fc7, net.blobs['fc7'].data[...].copy()))
+			fc6 = np.vstack((fc6, net.blobs['fc6'].data[...].copy()))
+			# pool5 = np.vstack((pool5, net.blobs['pool5'].data[...].copy()))
+			# conv5 = np.vstack((conv5, net.blobs['conv5'].data[...].copy()))
+			# conv4 = np.vstack((conv4, net.blobs['conv4'].data[...].copy()))
+			# conv3 = np.vstack((conv3, net.blobs['conv3'].data[...].copy()))
 
-	places_labels = model_path + 'IndoorOutdoor_places205.csv'
+	# places_labels = model_path + 'IndoorOutdoor_places205.csv'
 	# labels = np.loadtxt(places_labels, str, delimiter='\t')
 
 	# scene_attributeValues = np.loadtxt(model_path + 'attributeValues.csv', delimiter = ',')
@@ -79,27 +79,28 @@ def placesCNN(caffe_path, model_path, image_files):
 	# attribute_responses = get_scene_attribute_responses(scene_attributeValues, fc7)
 
 	# final_label_list, scene_type_list, final_labelset, scene_attributes_list = get_labels(labels, scores, attribute_responses, scene_attributeNames)
-	a = []
-	b = []
-	c = []
-	for i in range(len(pool5)):
-		for j in range(len(pool5[i])):
-			for k in range(len(pool5[i][j])):
-				new = pool5[i][j][k]
-				print new
-				c = np.concatenate(c,new)
-				print c
-			b = np.concatenate(b,c)
-		a.append(b)
+	# a = []
+	# b = []
+	# c = []
+	# for i in range(len(pool5)):
+	# 	for j in range(len(pool5[i])):
+	# 		for k in range(len(pool5[i][j])):
+	# 			new = pool5[i][j][k]
+	# 			print new
+	# 			c = np.concatenate(c,new)
+	# 			print c
+	# 		b = np.concatenate(b,c)
+	# 	a.append(b)
 
-	a = np.asarray(a)
-	pool5 = a
+	# a = np.asarray(a)
+	# pool5 = a
 	end = time.time()
 	print "Time : %.3f \n"  %(end - start)
 	# print fc7
-	print type(pool5), type(pool5[0]), type(pool5[0][0]), type(pool5[0][0][0])
-	print len(pool5), len(pool5[0]), len(pool5[0][0]), len(pool5[0][0][0])
-	return pool5, conv5, conv4, conv3#, final_label_list, scene_type_list, final_labelset, scene_attributes_list
+	# print type(pool5), type(pool5[0]), type(pool5[0][0]), type(pool5[0][0][0])
+	# print len(pool5), len(pool5[0]), len(pool5[0][0]), len(pool5[0][0][0])
+
+	return fc8, fc7, fc6#, final_label_list, scene_type_list, final_labelset, scene_attributes_list
 
 
 def get_labels(labels, scores, attribute_responses, scene_attributeNames):

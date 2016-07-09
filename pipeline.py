@@ -6,9 +6,9 @@ def pipeline(train_dir, test_dir):
 
 	[train_data, train_labels] = dataset.dataset(train_dir)
 	[test_data, test_labels] = dataset.dataset(test_dir)
-	new_train_labels = []
 	
 	total = len(test_labels)
+	
 	s = 0
 	r = 0
 	h = 0
@@ -19,13 +19,15 @@ def pipeline(train_dir, test_dir):
 	g = 0
 	prob = 0
 
+	## Combine studio repo and/or hybrid
+
 	for idx, label in enumerate(test_labels):
 		if label == 'Studio':
 			s += 1
 		elif label == 'Reporter':
 			r += 1
-			label = 'Studio'
-			test_labels[idx] = label
+			# label = 'Studio'
+			# test_labels[idx] = label
 		elif label == 'Hybrid':
 			h += 1
 			# label = 'Studio'
@@ -43,9 +45,18 @@ def pipeline(train_dir, test_dir):
 		elif label == 'Problem/Unclassified':
 			prob += 1
 
+	# for idx, label in enumerate(train_labels):
+	# 	if label == 'Reporter':
+	# 		label = 'Studio'
+	# 		train_labels[idx] = label
+		# elif label == 'Hybrid':
+			# label = 'Studio'
+
 	## To change train labels to single SVM ovo format
 
+	# new_train_labels = []
 	# not_count = 0
+
 	# for label, feature in zip(train_labels, train_data):
 	# 	if label != 'Studio':
 	# 		label = 'Not'		
@@ -57,17 +68,13 @@ def pipeline(train_dir, test_dir):
 	# 	# new_test_labels.append(label)
 	# print "notcount: ", not_count
 
-	## Combine studio repo and/or hybrid
+	##		
+	print "Train test split..."
+	classifier.dataset_split(train_data, train_labels, test_data, test_labels)	
+	print "Manual..."
+	classifier.manual(train_data, train_labels, test_data, test_labels)
 
-	for idx, label in enumerate(train_labels):
-		if label == 'Reporter':
-			label = 'Studio'
-			train_labels[idx] = label
-		# elif label == 'Hybrid':
-			# label = 'Studio'
-
-	[outp_len, test_data, test_labels] = classifier.classifier(train_data, train_labels, test_data, test_labels)
-	correct = 0
+	# correct = 0
 	# print "Total: " , s , r, h, g, w, sp , bg, c, prob
 	# correct += outp_len
 	# print "correct: ", outp_len
