@@ -41,7 +41,7 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 
 	print 'Training data'
 
-	mysvm = svm.SVC(decision_function_shape = 'ovo')
+	mysvm = svm.SVC(decision_function_shape = 'ovo', kernel = 'linear')
 
 	mysvm = mysvm.fit(dtrain[:,:-1], dtrain[:,-1])	
 	 
@@ -253,7 +253,7 @@ def manual(train_data, train_labels, test_data, test_labels):
 
 	print 'Training data'
 
-	mysvm = svm.SVC(decision_function_shape='ovo')
+	mysvm = svm.SVC(decision_function_shape='ovo', kernel = 'linear')
 
 	mysvm = mysvm.fit(df_train_data, df_train_labels)	
 	 

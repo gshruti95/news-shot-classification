@@ -20,10 +20,10 @@ def dataset(main_dir):
 			# print main_dir + dir_name
 			# print main_dir + dir_name + '/' + dir_name + '_shot_type_testuser.txt'
 
-			if os.path.exists(main_dir + dir_name + '/' + dir_name + '_crowd_testuser.txt'):
+			if os.path.exists(main_dir + dir_name + '/' + dir_name + '_vehicle_navi.txt'):
 
 				
-				with open(main_dir + dir_name + '/' + dir_name + '_crowd_testuser.txt') as labels_file:
+				with open(main_dir + dir_name + '/' + dir_name + '_vehicle_navi.txt') as labels_file:
 					labels = labels_file.readlines()				
 				labels = [label.split('\t')[0] for label in labels]
 				label_data += labels
