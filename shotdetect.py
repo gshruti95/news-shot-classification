@@ -18,17 +18,17 @@ def shotdetect(clip_dir, clip_name):
 	print scene_list
 
 	# create new list with scene boundaries in milliseconds instead of frame #.
-	scene_list_msec = [(1000.0 * x) / float(video_fps) for x in scene_list]
+	scene_list_sec = [(x) / float(video_fps) for x in scene_list]
 
 	# create new list with scene boundaries in timecode strings ("HH:MM:SS.nnn").
-	scene_list_tc = [scenedetect.timecodes.get_string(x) for x in scene_list_msec]
+	# scene_list_tc = [scenedetect.timecodes.get_string(x) for x in scene_list_msec]
 
-	with open(clip_dir + 'scene_list_tc.txt','w') as file:
-		for item in scene_list_tc:
-			print >> file, item
+	# with open(clip_dir + 'scene_list_tc.txt','w') as file:
+	# 	for item in scene_list_tc:
+	# 		print >> file, item
 
-	with open(clip_dir + 'scene_list.txt','w') as file:
-		for item in scene_list:
+	with open(clip_dir + 'scene_list_sec.txt','w') as file:
+		for item in scene_list_sec:
 			print >> file, item
 
 	end = time.time()

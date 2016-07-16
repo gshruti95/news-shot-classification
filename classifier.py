@@ -41,7 +41,7 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 
 	print 'Training data'
 
-	mysvm = svm.SVC(decision_function_shape = 'ovr', kernel = 'linear')
+	mysvm = svm.SVC(decision_function_shape = 'ovo')
 
 	mysvm = mysvm.fit(dtrain[:,:-1], dtrain[:,-1])	
 	 
@@ -69,6 +69,10 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 	p_g = 0
 	p_n = 0
 	p_prob = 0
+	p_v = 0
+	p_notv = 0
+	p_cr = 0
+	p_notcr = 0
 
 	s = 0
 	r = 0
@@ -80,6 +84,10 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 	g = 0
 	n = 0
 	prob = 0
+	v = 0
+	notv = 0
+	cr = 0
+	notcr = 0
 
 	crt_s = 0
 	crt_r = 0
@@ -91,8 +99,11 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 	crt_g = 0
 	crt_not = 0
 	crt_prob = 0
-
-	# print output
+	crt_v = 0
+	crt_notv = 0
+	crt_cr = 0
+	crt_notcr = 0
+	print output
 	for i in range(len(output)):
 		# if output[i] != 'Not':
 		# 	crt_outp = crt_outp + 1
@@ -144,6 +155,22 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 			p_n += 1
 			if dvalidate[:,-1][i] == output[i]:
 				crt_not += 1
+		elif output[i] == 'Vehicle/Accident':
+			p_v += 1
+			if dvalidate[:,-1][i] == 'Vehicle/Accident':
+				crt_v += 1
+		elif output[i] == 'Not Vehicle/Accident':
+			p_notv += 1
+			if dvalidate[:,-1][i] == 'Not Vehicle/Accident':
+				crt_notv += 1
+		elif output[i] == 'Crowd':
+			p_cr += 1
+			if dvalidate[:,-1][i] == 'Crowd':
+				crt_cr += 1
+		elif output[i] == 'Not crowd':
+			p_notcr += 1
+			if dvalidate[:,-1][i] == 'Not crowd':
+				crt_notcr += 1		
 
 		if dvalidate[:,-1][i] == 'Studio':
 			s += 1
@@ -169,9 +196,18 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 		elif dvalidate[:,-1][i] == 'Problem/Unclassified':
 			prob += 1
 			# print 'sp ', sp
+		elif dvalidate[:,-1][i] == 'Vehicle/Accident':
+			v += 1
+		elif dvalidate[:,-1][i] == 'Not Vehicle/Accident':
+			notv += 1
+		elif dvalidate[:,-1][i] == 'Crowd':
+			cr += 1
+		elif dvalidate[:,-1][i] == 'Not crowd':
+			notcr += 1
 
-		if dvalidate[:,-1][i] == output[i]:
-			total_crt_outp = total_crt_outp + 1
+
+		# if dvalidate[:,-1][i] == output[i]:
+		# 	total_crt_outp = total_crt_outp + 1
 
 		# print i, dvalidate[:,-1][i]	
 		
@@ -185,12 +221,12 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 	print "F score: ", f1_score(dvalidate[:,-1], output)
 	print "Precision score: ", precision_score(dvalidate[:,-1], output)
 
-	print "Predicted: " , p_s , p_r, p_h, p_g, p_w, p_sp, p_bg, p_c, p_prob	
-	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp, crt_bg, crt_c, crt_prob
-	print "Total: ", s, r, h, g, w, sp, bg, c, prob
+	print "Predicted: " , p_s , p_r, p_h, p_g, p_w, p_sp, p_bg, p_c, p_prob, p_v, p_notv, p_cr, p_notcr	
+	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp, crt_bg, crt_c, crt_prob, crt_v, crt_notv, crt_cr, crt_notcr
+	print "Total: ", s, r, h, g, w, sp, bg, c, prob, v, notv, cr, notcr
 	
-	print "Label P: ", crt_s*100/float(p_s), crt_r*100/float(p_r), crt_h*100/float(p_h), crt_g*100/float(p_g), crt_w*100/float(p_w), crt_sp*100/float(p_sp)#, crt_bg*100/float(p_bg), crt_c*100/float(p_c), crt_prob*100/float(p_prob)
-	print "Label R: ", crt_s*100/float(s), crt_r*100/float(r), crt_h*100/float(h), crt_g*100/float(g), crt_w*100/float(w), crt_sp*100/float(sp)#, crt_bg*100/float(bg), crt_c*100/float(c), crt_prob*100/float(prob)
+	# print "Label P: ", crt_s*100/float(p_s), crt_r*100/float(p_r), crt_h*100/float(p_h), crt_g*100/float(p_g), crt_w*100/float(p_w), crt_sp*100/float(p_sp)#, crt_bg*100/float(p_bg), crt_c*100/float(p_c), crt_prob*100/float(p_prob)
+	# print "Label R: ", crt_s*100/float(s), crt_r*100/float(r), crt_h*100/float(h), crt_g*100/float(g), crt_w*100/float(w), crt_sp*100/float(sp)#, crt_bg*100/float(bg), crt_c*100/float(c), crt_prob*100/float(prob)
 	
 	# return crt_outp , new_test_data, new_test_labels 
 
@@ -217,7 +253,7 @@ def manual(train_data, train_labels, test_data, test_labels):
 
 	print 'Training data'
 
-	mysvm = svm.SVC(decision_function_shape='ovr', kernel = 'linear')
+	mysvm = svm.SVC(decision_function_shape='ovo')
 
 	mysvm = mysvm.fit(df_train_data, df_train_labels)	
 	 
@@ -245,6 +281,10 @@ def manual(train_data, train_labels, test_data, test_labels):
 	p_g = 0
 	p_n = 0
 	p_prob = 0
+	p_v = 0
+	p_notv = 0
+	p_cr = 0
+	p_notcr = 0
 
 	s = 0
 	r = 0
@@ -256,6 +296,10 @@ def manual(train_data, train_labels, test_data, test_labels):
 	g = 0
 	n = 0
 	prob = 0
+	v = 0
+	notv = 0
+	cr = 0
+	notcr = 0
 
 	crt_s = 0
 	crt_r = 0
@@ -267,6 +311,10 @@ def manual(train_data, train_labels, test_data, test_labels):
 	crt_g = 0
 	crt_not = 0
 	crt_prob = 0
+	crt_v = 0
+	crt_notv = 0
+	crt_cr = 0
+	crt_notcr = 0
 
 	for i in range(len(output)):
 		if output[i] == 'Studio':
@@ -309,6 +357,22 @@ def manual(train_data, train_labels, test_data, test_labels):
 			p_n += 1
 			if df_test_labels[i][0] == output[i]:
 				crt_not += 1
+		elif output[i] == 'Vehicle/Accident':
+			p_v += 1
+			if df_test_labels[i][0] == output[i]:
+				crt_v += 1
+		elif output[i] == 'Not Vehicle/Accident':
+			p_notv += 1
+			if df_test_labels[i][0] == output[i]:
+				crt_notv += 1
+		elif output[i] == 'Crowd':
+			p_cr += 1
+			if df_test_labels[i][0] == output[i]:
+				crt_cr += 1
+		elif output[i] == 'Not crowd':
+			p_notcr += 1
+			if df_test_labels[i][0] == output[i]:
+				crt_notcr += 1
 
 		if df_test_labels[i][0] == 'Studio':
 			s += 1
@@ -333,19 +397,28 @@ def manual(train_data, train_labels, test_data, test_labels):
 			c += 1
 		elif df_test_labels[i][0] == 'Problem/Unclassified':
 			prob += 1		
+		elif df_test_labels[i][0] == 'Vehicle/Accident':
+			v += 1
+		elif df_test_labels[i][0] == 'Not Vehicle/Accident':
+			notv += 1
+		elif df_test_labels[i][0] == 'Crowd':
+			cr += 1
+		elif df_test_labels[i][0] == 'Not crowd':
+			notcr += 1	
+
 		# if df_test_labels[i][0] == output[i]:
 		# 	total_crt_outp = total_crt_outp + 1
 
 	print "Accuracy score: ", accuracy_score(test_labels, output)
-	print "Recall score: ", recall_score(test_labels, output)
-	print "F score: ", f1_score(test_labels, output)
-	print "Precision score: ", precision_score(test_labels, output)
+	# print "Recall score: ", recall_score(test_labels, output)
+	# print "F score: ", f1_score(test_labels, output)
+	# print "Precision score: ", precision_score(test_labels, output)
 
-	print "Predicted: " , p_s , p_r, p_h, p_g, p_w, p_sp, p_bg, p_c, p_prob
-	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp, crt_bg, crt_c, crt_prob
-	print "Total: ", s, r, h, g, w, sp, bg, c, prob
+	print "Predicted: " , p_s , p_r, p_h, p_g, p_w, p_sp, p_bg, p_c, p_prob, p_v, p_notv, p_cr, p_notcr
+	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp, crt_bg, crt_c, crt_prob, crt_v, crt_notv, crt_cr, crt_notcr
+	print "Total: ", s, r, h, g, w, sp, bg, c, prob, v, notv, cr, notcr
 	
-	print "Label P: ", crt_s*100/float(p_s), crt_r*100/float(p_r), crt_h*100/float(p_h), crt_g*100/float(p_g), crt_w*100/float(p_w), crt_sp*100/float(p_sp)#, crt_bg*100/float(p_bg), crt_c*100/float(p_c), crt_prob*100/float(p_prob)
-	print "Label R: ", crt_s*100/float(s), crt_r*100/float(r), crt_h*100/float(h), crt_g*100/float(g), crt_w*100/float(w), crt_sp*100/float(sp)#, crt_bg*100/float(bg), crt_c*100/float(c), crt_prob*100/float(prob)
+	# print "Label P: ", crt_s*100/float(p_s), crt_r*100/float(p_r), crt_h*100/float(p_h), crt_g*100/float(p_g), crt_w*100/float(p_w), crt_sp*100/float(p_sp)#, crt_bg*100/float(p_bg), crt_c*100/float(p_c), crt_prob*100/float(p_prob)
+	# print "Label R: ", crt_s*100/float(s), crt_r*100/float(r), crt_h*100/float(h), crt_g*100/float(g), crt_w*100/float(w), crt_sp*100/float(sp)#, crt_bg*100/float(bg), crt_c*100/float(c), crt_prob*100/float(prob)
 	
 	# return crt_outp , new_test_data, new_test_labels 

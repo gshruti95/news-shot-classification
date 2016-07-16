@@ -26,12 +26,12 @@ def pipeline(train_dir, test_dir):
 			s += 1
 		elif label == 'Reporter':
 			r += 1
-			# label = 'Studio'
-			# test_labels[idx] = label
+			label = 'Studio'
+			test_labels[idx] = label
 		elif label == 'Hybrid':
 			h += 1
-			# label = 'Studio'
-			# train_labels[idx] = label
+			label = 'Studio'
+			test_labels[idx] = label
 		elif label == 'Graphic':
 			g += 1
 		elif label == 'Weather':
@@ -45,12 +45,13 @@ def pipeline(train_dir, test_dir):
 		elif label == 'Problem/Unclassified':
 			prob += 1
 
-	# for idx, label in enumerate(train_labels):
-	# 	if label == 'Reporter':
-	# 		label = 'Studio'
-	# 		train_labels[idx] = label
-		# elif label == 'Hybrid':
-			# label = 'Studio'
+	for idx, label in enumerate(train_labels):
+		if label == 'Reporter':
+			label = 'Studio'
+			train_labels[idx] = label
+		elif label == 'Hybrid':
+			label = 'Studio'
+			train_labels[idx] = label
 
 	## To change train labels to single SVM ovo format
 
