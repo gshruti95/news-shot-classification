@@ -20,15 +20,15 @@ def dataset(main_dir):
 			# print main_dir + dir_name
 			# print main_dir + dir_name + '/' + dir_name + '_shot_type_testuser.txt'
 
-			if os.path.exists(main_dir + dir_name + '/' + dir_name + '_vehicle_navi.txt'):
+			if os.path.exists(main_dir + dir_name + '/' + dir_name + '_crowd_testuser.txt'):
 
 				
-				with open(main_dir + dir_name + '/' + dir_name + '_vehicle_navi.txt') as labels_file:
+				with open(main_dir + dir_name + '/' + dir_name + '_crowd_testuser.txt') as labels_file:
 					labels = labels_file.readlines()				
 				labels = [label.split('\t')[0] for label in labels]
 				label_data += labels
 
-				with open(main_dir + dir_name + '/' + 'new_places_fc7 .csv') as features_file:
+				with open(main_dir + dir_name + '/' + 'new_places_fc6.csv') as features_file:
 					features = features_file.readlines()
 				features = [feature.split('\n')[0] for feature in features]
 				features_data += features
