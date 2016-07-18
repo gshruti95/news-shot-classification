@@ -204,7 +204,8 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 			cr += 1
 		elif dvalidate[:,-1][i] == 'Not crowd':
 			notcr += 1
-
+		elif dvalidate[:,-1][i] == 'Not':
+			n += 1
 
 		# if dvalidate[:,-1][i] == output[i]:
 		# 	total_crt_outp = total_crt_outp + 1
@@ -221,9 +222,9 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 	print "F score: ", f1_score(dvalidate[:,-1], output, pos_label = None)
 	print "Precision score: ", precision_score(dvalidate[:,-1], output, pos_label = None)
 
-	print "Predicted: " , p_s , p_r, p_h, p_g, p_w, p_sp, p_bg, p_c, p_prob, p_v, p_notv, p_cr, p_notcr	
-	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp, crt_bg, crt_c, crt_prob, crt_v, crt_notv, crt_cr, crt_notcr
-	print "Total: ", s, r, h, g, w, sp, bg, c, prob, v, notv, cr, notcr
+	print "Predicted: " , p_s , p_r, p_h, p_g, p_w, p_sp, p_bg, p_c, p_prob, p_v, p_notv, p_cr, p_notcr, p_n	
+	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp, crt_bg, crt_c, crt_prob, crt_v, crt_notv, crt_cr, crt_notcr, crt_not
+	print "Total: ", s, r, h, g, w, sp, bg, c, prob, v, notv, cr, notcr, n
 	
 	# print "Label P: ", crt_s*100/float(p_s), crt_r*100/float(p_r), crt_h*100/float(p_h), crt_g*100/float(p_g), crt_w*100/float(p_w), crt_sp*100/float(p_sp)#, crt_bg*100/float(p_bg), crt_c*100/float(p_c), crt_prob*100/float(p_prob)
 	# print "Label R: ", crt_s*100/float(s), crt_r*100/float(r), crt_h*100/float(h), crt_g*100/float(g), crt_w*100/float(w), crt_sp*100/float(sp)#, crt_bg*100/float(bg), crt_c*100/float(c), crt_prob*100/float(prob)
@@ -404,7 +405,9 @@ def manual(train_data, train_labels, test_data, test_labels):
 		elif df_test_labels[i][0] == 'Crowd':
 			cr += 1
 		elif df_test_labels[i][0] == 'Not crowd':
-			notcr += 1	
+			notcr += 1
+		elif df_test_labels[i][0] == 'Not':
+			n += 1	
 
 		# if df_test_labels[i][0] == output[i]:
 		# 	total_crt_outp = total_crt_outp + 1
@@ -414,9 +417,9 @@ def manual(train_data, train_labels, test_data, test_labels):
 	# print "F score: ", f1_score(test_labels, output)
 	# print "Precision score: ", precision_score(test_labels, output)
 
-	print "Predicted: " , p_s , p_r, p_h, p_g, p_w, p_sp, p_bg, p_c, p_prob, p_v, p_notv, p_cr, p_notcr
-	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp, crt_bg, crt_c, crt_prob, crt_v, crt_notv, crt_cr, crt_notcr
-	print "Total: ", s, r, h, g, w, sp, bg, c, prob, v, notv, cr, notcr
+	print "Predicted: " , p_s , p_r, p_h, p_g, p_w, p_sp, p_bg, p_c, p_prob, p_v, p_notv, p_cr, p_notcr, p_n
+	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp, crt_bg, crt_c, crt_prob, crt_v, crt_notv, crt_cr, crt_notcr, crt_not
+	print "Total: ", s, r, h, g, w, sp, bg, c, prob, v, notv, cr, notcr, n
 	
 	# print "Label P: ", crt_s*100/float(p_s), crt_r*100/float(p_r), crt_h*100/float(p_h), crt_g*100/float(p_g), crt_w*100/float(p_w), crt_sp*100/float(p_sp)#, crt_bg*100/float(p_bg), crt_c*100/float(p_c), crt_prob*100/float(p_prob)
 	# print "Label R: ", crt_s*100/float(s), crt_r*100/float(r), crt_h*100/float(h), crt_g*100/float(g), crt_w*100/float(w), crt_sp*100/float(sp)#, crt_bg*100/float(bg), crt_c*100/float(c), crt_prob*100/float(prob)

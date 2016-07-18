@@ -7,8 +7,6 @@ def pipeline(train_dir, test_dir):
 	[train_data, train_labels] = dataset.dataset(train_dir)
 	[test_data, test_labels] = dataset.dataset(test_dir)
 	
-	total = len(test_labels)
-	
 	s = 0
 	r = 0
 	h = 0
@@ -55,25 +53,27 @@ def pipeline(train_dir, test_dir):
 
 	## To change train labels to single SVM ovo format
 
-	# new_train_labels = []
-	# not_count = 0
+	new_train_labels = []
+	new_test_labels = []
+	not_count = 0
 
-	# for label, feature in zip(train_labels, train_data):
-	# 	if label != 'Studio':
-	# 		label = 'Not'		
-	# 	new_train_labels.append(label)
+	for label, feature in zip(train_labels, train_data):
+		if label != 'Background_roll':
+			label = 'Not'		
+		new_train_labels.append(label)
 
-	# for label in test_labels:
-	# 	if label != 'Studio':
-	# 		not_count += 1
-	# 	# new_test_labels.append(label)
-	# print "notcount: ", not_count
+	for label in test_labels:
+		if label != 'Background_roll':
+			not_count += 1
+			label = 'Not'
+		new_test_labels.append(label)
+	print "notcount: ", not_count
 
 	##		
-	print "Train test split..."
-	classifier.dataset_split(train_data, train_labels, test_data, test_labels)	
+	# print "Train test split..."
+	# classifier.dataset_split(train_data, new_train_labels, test_data, new_test_labels)	
 	print "Manual..."
-	classifier.manual(train_data, train_labels, test_data, test_labels)
+	classifier.manual(train_data, new_train_labels, test_data, new_test_labels)
 
 	# correct = 0
 	# print "Total: " , s , r, h, g, w, sp , bg, c, prob
