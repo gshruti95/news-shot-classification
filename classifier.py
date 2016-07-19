@@ -13,7 +13,6 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 	
 	df_train_data = [data.split(',') for data in train_data]
 	df_train_data = pd.DataFrame(df_train_data)
-	# print type(df_train_data)
 	df_train_data = df_train_data.astype(float)
 	
 	df_test_data = [data.split(',') for data in test_data]
@@ -22,7 +21,6 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 	
 	df_train_labels = pd.DataFrame(train_labels)
 	df_test_labels = pd.DataFrame(test_labels)
-	# print df_train_labels
 
 	df_trainset = [df_train_data, df_train_labels]
 	comb_train = pd.concat(df_trainset, axis = 1)
@@ -247,7 +245,6 @@ def manual(train_data, train_labels, test_data, test_labels):
 	df_test_data = pd.DataFrame(df_test_data)
 	df_test_data = df_test_data.astype(float)
 	df_test_data = df_test_data.values
-	# print (df_test_data)
 
 	df_test_labels = pd.DataFrame(test_labels)
 	df_test_labels = df_test_labels.values

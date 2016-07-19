@@ -71,7 +71,7 @@ def pipeline(train_dir, test_dir):
 
 	##		
 	# print "Train test split..."
-	# classifier.dataset_split(train_data, new_train_labels, test_data, new_test_labels)	
+	classifier.dataset_split(train_data, new_train_labels, test_data, new_test_labels)	
 	print "Manual..."
 	classifier.manual(train_data, new_train_labels, test_data, new_test_labels)
 

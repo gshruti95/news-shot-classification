@@ -4,6 +4,20 @@ import matplotlib.pyplot as plt
 import caffe
 import re, time
 
+vehicle_dict = ['airliner', 'warplane', 'military plane', 'airship', 'dirigible', 'space shuttle', 'fireboat', 'gondola', 
+'speedboat', 'lifeboat', 'canoe', 'container ship', 'containership', 'container vessel', 'liner', 'ocean liner', 'aircraft carrier', 'carrier', 'flattop',
+  'attack aircraft carrier', 'submarine', 'pigboat', 'sub', 'U-boat', 'tank', 'army tank', 'armored combat vehicle', 'armoured combat vehicle', 
+  'wreck', 'freight car', 'passenger car', 'coach', 'carriage', 'motor scooter', 'scooter', 'bicycle-built-for-two', 'tandem bicycle', 'tandem mountain bike', 
+  'all-terrain bike', 'off-roader', 'electric locomotive', 'steam locomotive', 'ambulance', 'beach wagon', 'station wagon', 'wagon',
+  'estate car', 'beach waggon', 'station waggon', 'waggon', 'cab', 'hack', 'taxi', 'taxicab', 'convertible', 'jeep', 'landrover', 'limousine', 'limo',
+   'minivan', 'Model T', 'racer', 'race car', 'racing car', 'sports car', 'sport car', 'go-kart', 'golfcart', 'golf cart',
+    'moped', 'snowplow', 'snowplough', 'fire engine', 'fire truck', 'garbage truck', 'dustcart', 'pickup', 'pickup truck',
+     'tow truck', 'tow car', 'wrecker', 'trailer truck', 'tractor trailer', 'trucking rig', 'rig', 'articulated lorry', 'semi',
+      'moving van', 'police van', 'police wagon', 'paddy wagon', 'patrol wagon', 'wagon', 'black Maria', 'recreational vehicle',
+       'RV', 'R.V.', 'streetcar', 'tram', 'tramcar', 'trolley', 'trolley car', 'snowmobile', 'tractor', 'mobile home', 'manufactured home',
+        'tricycle', 'trike', 'velocipede', 'unicycle', 'monocycle', 'horse cart', 'horse-cart', 'car wheel', 'traffic light', 'traffic signal', 'stoplight',
+         'trolleybus', 'trolley coach', 'trackless trolley', 'bullet train', 'bullet','amphibious vehicle']
+
 def googlenet(caffe_path, model_path, image_files):
 
 	start = time.time()
@@ -60,12 +74,30 @@ def googlenet(caffe_path, model_path, image_files):
 	places_labels = model_path + 'synset_words.txt'
 	labels = np.loadtxt(places_labels, str, delimiter='\t')
 	label_list = []
+	class_list = []
+	print "images len: ", len(image_files)
 
-	for output_prob in scores['prob']:
+	for idx, output_prob in enumerate(scores['prob']):
+		toplabels_idx = output_prob.argsort()[::-1][:5]
+		toplabels = [labels[toplabel_idx].split(' ',1)[1] for toplabel_idx in toplabels_idx]
 		maxprob_label = labels[output_prob.argmax()].split(' ',1)[1]
+		print "max label: ", maxprob_label, idx
+		print "top labels: ", toplabels
 		label_list.append(maxprob_label)
+		class_list.append('not vehicle')
+		for toplabel in toplabels:
+			if toplabel in vehicle_dict:
+				class_list[idx] = 'vehicle'
+				break
+
 
 	end = time.time()
 	print "Googlenet Time : %.3f \n"  %(end - start)
+
+	new_lines = []
+	with open('vehicle_lables' + ".vis",'w') as file:
+		for output, output_label in zip(label_list, class_list): 
+			new_lines.append(output_label + ' ' + output + '\n')
+		file.writelines(new_lines)
 
 	return label_list

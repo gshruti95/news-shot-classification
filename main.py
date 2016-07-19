@@ -63,7 +63,7 @@ def main():
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_263-743'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_560-1040'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_1192-1672'
-	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KNBC_NBC_Nightly_News_0-479'
+	clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KNBC_NBC_Nightly_News_0-479'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KNBC_NBC_Nightly_News_281-761'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KNBC_NBC_Nightly_News_702-1182'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KNBC_NBC_Nightly_News_792-1272'
@@ -73,7 +73,7 @@ def main():
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0100_US_KCBS_CBS_2_News_at_6_258-738'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0100_US_KCBS_CBS_2_News_at_6_1030-1510'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_263-743'
-	clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465'
 
 	if clip_dir[-1] is not '/':
 		clip_dir = clip_dir + '/'
@@ -88,7 +88,7 @@ def main():
 	# print 'lalala'
 	# shotdetect.shotdetect(clip_dir, clip_name)
 
-	# image_files = fileops.get_keyframeslist(clip_dir)
+	image_files = fileops.get_keyframeslist(clip_dir)
 	# # image_files = cropframes.cropframes(clip_dir, image_files)
 
 	# studio_shots = graphcluster.get_graph_clusters(clip_dir, image_files)
@@ -98,7 +98,7 @@ def main():
 	
 	## Run a model and get labels for keyframe
  	
-	# caffe_path = '/home/shruti/gsoc/caffehome/caffe/'
+	caffe_path = '/home/shruti/gsoc/caffehome/caffe/'
 	# [fc8, fc7, fc6] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files) 	
 	# [pool5, conv5, conv4, conv3,fc8, fc7, fc6, output_label_list, scene_type_list, label_list, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files)
 
@@ -121,13 +121,14 @@ def main():
 	# fileops.save_features(clip_dir + 'new_places_fc6', fc6)
 	# print "done fc6"
 
-	# label_list = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
+	label_list = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
+
 	# fileops.save_googlenet_labels(clip_dir + output_filename, clip_dir + 'googlenet_labels', label_list)
 	# fileops.write_separate_labels(clip_dir + output_filename)
 
 	train_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/train/'
 	test_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/test/'	
-	pipeline.pipeline(train_dir, test_dir)
+	# pipeline.pipeline(train_dir, test_dir)
 	
 	overall_end = time.time()	
 	print "Total time taken: %.2f" %(overall_end-overall_start)
