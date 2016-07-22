@@ -62,43 +62,64 @@ def googlenet(caffe_path, model_path, image_files):
 
 	count = 0
 
-	scores = None
-	chunks_done = 0
-	for chunk in [image_files[x:x+batch_size] for x in xrange(0, len(image_files), batch_size)]:
-		print "Processing %.2f%% done ..." %((batch_size*chunks_done*100)/float(len(image_files)))
-		chunks_done = chunks_done + 1
+	# for image in image_files:
+	print image_files[69]
+	input_image = caffe.io.load_image(image_files[69])	
+	another = net2.predict([input_image], oversample = True).flatten()
+	count += 1
 
-		# if len(chunk) < batch_size:
-			# net.blobs['data'].reshape(len(chunk), data_blob_shape[1], data_blob_shape[2], data_blob_shape[3])
+	bet['infogain'] -= np.array(bet['preferences']) * 0.1
+	expected_infogain = np.dot(bet['probmat'], another[bet['idmapping']])
+	expected_infogain *= bet['infogain']
 
-		# net.blobs['data'].data[...] = map(lambda y: transformer.preprocess('data', caffe.io.load_image(y)), chunk)
-		input_images = map(lambda y: caffe.io.load_image(y), chunk)
-		print chunk
-		# input_image = caffe.io.load_image(image_files[0])	
-		# print input_image
-		# output = net.forward()
-		another = net2.predict(input_images, oversample = True).flatten()
-		print len(another), type(another)
+	print len(expected_infogain)
+	# sort the scores
+	infogain_sort = expected_infogain.argsort()[::-1]
+	bet_result = [(bet['words'][v], '%.5f' % expected_infogain[v]) for v in infogain_sort[:5]]
+
+	print str(count) + ' bet result: %s', str(bet_result)
+
+	# scores = None
+	# chunks_done = 0
+	# for chunk in [image_files[x:x+batch_size] for x in xrange(0, len(image_files), batch_size)]:
+	# 	print "Processing %.2f%% done ..." %((batch_size*chunks_done*100)/float(len(image_files)))
+	# 	chunks_done = chunks_done + 1
+
+	# 	# if len(chunk) < batch_size:
+	# 		# net.blobs['data'].reshape(len(chunk), data_blob_shape[1], data_blob_shape[2], data_blob_shape[3])
+
+	# 	# net.blobs['data'].data[...] = map(lambda y: transformer.preprocess('data', caffe.io.load_image(y)), chunk)
+	# 	input_images = map(lambda y: caffe.io.load_image(y), chunk)
+	# 	print chunk
+	# 	# input_image = caffe.io.load_image(image_files[0])	
+	# 	# print input_image
+	# 	# output = net.forward()
+	# 	another = net2.predict(input_images, oversample = True).flatten()
+	# 	print len(another), type(another)
 		
-		# places_labels = model_path + 'synset_words.txt'
-		# labels = np.loadtxt(places_labels, str, delimiter='\t')
+	# 	# places_labels = model_path + 'synset_words.txt'
+	# 	# labels = np.loadtxt(places_labels, str, delimiter='\t')
 		
-		print len(another[bet['idmapping']])
+	# 	print len(another[bet['idmapping']])
 
-		vect = 1000
-		for another_img in [another[k:k+vect] for k in xrange(0,len(another),vect)]:
+	# 	vect = 1000
+	# 	for another_img in [another[k:k+vect] for k in xrange(0,len(another),vect)]:
 
-			count += 1
-			bet['infogain'] -= np.array(bet['preferences']) * 0.1
-			expected_infogain = np.dot(bet['probmat'], another_img[bet['idmapping']])
-			expected_infogain *= bet['infogain']
+	# 		count += 1
+	# 		bet['infogain'] -= np.array(bet['preferences']) * 0.1
+	# 		expected_infogain = np.dot(bet['probmat'], another_img[bet['idmapping']])
+	# 		expected_infogain *= bet['infogain']
 
-			print len(expected_infogain)
-			# sort the scores
-			infogain_sort = expected_infogain.argsort()[::-1]
-			bet_result = [(bet['words'][v], '%.5f' % expected_infogain[v]) for v in infogain_sort[:5]]
+	# 		print len(expected_infogain)
+	# 		# sort the scores
+	# 		infogain_sort = expected_infogain.argsort()[::-1]
+	# 		bet_result = [(bet['words'][v], '%.5f' % expected_infogain[v]) for v in infogain_sort[:5]]
 
-			print str(count) + ' bet result: %s', str(bet_result)
+	# 		print str(count) + ' bet result: %s', str(bet_result)
+
+
+
+
 
 		# if scores is None:
 		# 	scores = {}
