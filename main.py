@@ -56,14 +56,14 @@ def main():
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_148-628'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_1255-1735'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_1615-2095'
-	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_1809-2289'
+	clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_1809-2289'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_2840-3320'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_0-472'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_0-478'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_263-743'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_560-1040'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_1192-1672'
-	clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KNBC_NBC_Nightly_News_0-479'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KNBC_NBC_Nightly_News_0-479'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KNBC_NBC_Nightly_News_281-761'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KNBC_NBC_Nightly_News_702-1182'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KNBC_NBC_Nightly_News_792-1272'
@@ -121,7 +121,7 @@ def main():
 	# fileops.save_features(clip_dir + 'new_places_fc6', fc6)
 	# print "done fc6"
 
-	label_list = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
+	googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
 
 	# fileops.save_googlenet_labels(clip_dir + output_filename, clip_dir + 'googlenet_labels', label_list)
 	# fileops.write_separate_labels(clip_dir + output_filename)
