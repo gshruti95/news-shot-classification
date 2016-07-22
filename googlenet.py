@@ -58,26 +58,27 @@ def googlenet(caffe_path, model_path, image_files):
 	# data_blob_shape = list(data_blob_shape)
 	# net.blobs['data'].reshape(batch_size, data_blob_shape[1], data_blob_shape[2], data_blob_shape[3])
 
-	bet = cPickle.load(open('/home/shruti/gsoc/caffehome/caffe/data/ilsvrc12/imagenet.bet.pickle'))
 
 	count = 0
 
-	# for image in image_files:
-	print image_files[69]
-	input_image = caffe.io.load_image(image_files[69])	
-	another = net2.predict([input_image], oversample = True).flatten()
-	count += 1
+	for image in image_files:
+		# print image_files[69]
+		bet = cPickle.load(open('/home/shruti/gsoc/caffehome/caffe/data/ilsvrc12/imagenet.bet.pickle'))
 
-	bet['infogain'] -= np.array(bet['preferences']) * 0.1
-	expected_infogain = np.dot(bet['probmat'], another[bet['idmapping']])
-	expected_infogain *= bet['infogain']
+		input_image = caffe.io.load_image(image)	
+		another = net2.predict([input_image], oversample = True).flatten()
+		count += 1
 
-	print len(expected_infogain)
-	# sort the scores
-	infogain_sort = expected_infogain.argsort()[::-1]
-	bet_result = [(bet['words'][v], '%.5f' % expected_infogain[v]) for v in infogain_sort[:5]]
+		bet['infogain'] -= np.array(bet['preferences']) * 0.1
+		expected_infogain = np.dot(bet['probmat'], another[bet['idmapping']])
+		expected_infogain *= bet['infogain']
 
-	print str(count) + ' bet result: %s', str(bet_result)
+		print len(expected_infogain)
+		# sort the scores
+		infogain_sort = expected_infogain.argsort()[::-1]
+		bet_result = [(bet['words'][v], '%.5f' % expected_infogain[v]) for v in infogain_sort[:5]]
+
+		print str(count) + ' bet result: %s', str(bet_result)
 
 	# scores = None
 	# chunks_done = 0
