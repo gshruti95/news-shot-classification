@@ -10,6 +10,7 @@ import age_genderCNN
 import graphcluster, accuracy
 import dataset, classifier
 import pipeline
+import cPickle
 # import cropframes
 
 def main():
@@ -122,6 +123,22 @@ def main():
 	# print "done fc6"
 
 	googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
+
+
+	# bet = cPickle.load(open('/home/shruti/gsoc/caffehome/caffe/data/ilsvrc12/imagenet.bet.pickle'))	
+	# bet_words = ['\'' + word + '\'' + '\n' for word in bet['words']]
+	# with open('betlist.txt','w') as file:
+	# 	file.writelines(bet_words)
+	
+	# new_labels = []
+	# with open('vehicle_dict.txt','r') as file:
+	# 	data = file.readlines()
+	# 	for label in data:
+	# 		label = label.split('\n')[0]
+	# 		label = label.strip("'")
+	# 		new_labels.append(label)
+	# print new_labels
+
 
 	# fileops.save_googlenet_labels(clip_dir + output_filename, clip_dir + 'googlenet_labels', label_list)
 	# fileops.write_separate_labels(clip_dir + output_filename)
