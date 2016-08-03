@@ -89,7 +89,7 @@ def main():
 	# print 'lalala'
 	# shotdetect.shotdetect(clip_dir, clip_name)
 
-	image_files = fileops.get_keyframeslist(clip_dir)
+	# image_files = fileops.get_keyframeslist(clip_dir)
 	# # image_files = cropframes.cropframes(clip_dir, image_files)
 
 	# studio_shots = graphcluster.get_graph_clusters(clip_dir, image_files)
@@ -122,14 +122,16 @@ def main():
 	# fileops.save_features(clip_dir + 'new_places_fc6', fc6)
 	# print "done fc6"
 
-	googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
+	googlenet_dir = '/home/shruti/gsoc/news-shot-classification/clips/test/'
+	dataset.dataset(googlenet_dir, caffe_path)
+	# googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
 
 
 	# bet = cPickle.load(open('/home/shruti/gsoc/caffehome/caffe/data/ilsvrc12/imagenet.bet.pickle'))	
 	# bet_words = ['\'' + word + '\'' + '\n' for word in bet['words']]
 	# with open('betlist.txt','w') as file:
 	# 	file.writelines(bet_words)
-	
+
 	# new_labels = []
 	# with open('vehicle_dict.txt','r') as file:
 	# 	data = file.readlines()

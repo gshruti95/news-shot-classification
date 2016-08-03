@@ -1,10 +1,12 @@
 import os, sys
 import fnmatch
-# import classifier
+import googlenet
+import fileops
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # main_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/train/'
 # main_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/test/'
-def dataset(main_dir):
+def dataset(main_dir, caffe_path):
 
 	dir_list = sorted(os.listdir(main_dir))
 
@@ -12,6 +14,7 @@ def dataset(main_dir):
 	label_data = []
 	fc6_data = []
 	mean_feat = []
+	googlenet_data = []
 	
 
 	for dir_name in dir_list:
@@ -20,10 +23,10 @@ def dataset(main_dir):
 			# print main_dir + dir_name
 			# print main_dir + dir_name + '/' + dir_name + '_shot_type_testuser.txt'
 
-			if os.path.exists(main_dir + dir_name + '/' + dir_name + '_shot_type_testuser.txt'):
+			if os.path.exists(main_dir + dir_name + '/' + dir_name + '_vehicle_navi.txt'):
 
 				
-				with open(main_dir + dir_name + '/' + dir_name + '_shot_type_testuser.txt') as labels_file:
+				with open(main_dir + dir_name + '/' + dir_name + '_vehicle_navi.txt') as labels_file:
 					labels = labels_file.readlines()				
 				labels = [label.split('\t')[0] for label in labels]
 				label_data += labels
@@ -33,6 +36,10 @@ def dataset(main_dir):
 				features = [feature.split('\n')[0] for feature in features]
 				features_data += features
 
+				image_files = fileops.get_keyframeslist(main_dir + dir_name + '/')
+				print main_dir + dir_name + '/'
+				googlenet_labels = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
+				googlenet_data += googlenet_labels
 
 				# for file in os.listdir(main_dir + dir_name):
 					
@@ -74,13 +81,20 @@ def dataset(main_dir):
 
 	labels = []
 	features = []
-	for label, feature in zip(label_data, features_data):
+	glabels = []
+	for label, glabel in zip(label_data, googlenet_data):
 		# label = label.split('\t')[0]
-		if label not in ['Commercial','Problem/Unclassified']:#, 'Background_roll','Background roll']:
-			labels.append(label)
-			features.append(feature)	
+		if label not in ['Commercial','Problem/Unclassified']:
+			if label == 'Vehicle/Accident':#, 'Background_roll','Background roll']:
+				labels.append(label)
+			else:
+				labels.append('Not')
+			# features.append(feature)
+			glabels.append(glabel)	
 
+	print len(labels), len(glabels)
+	print "Accuracy score: ", accuracy_score(labels, glabels)
 
-	return features, labels
+	# return features, labels
 
 

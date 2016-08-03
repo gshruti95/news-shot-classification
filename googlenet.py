@@ -23,7 +23,7 @@ label_dict = {}
 label_dict['natural'] = ['geological formation', 'natural depression', 'natural elevation', 'mountain', 
 		'ridge','reef','shore','spring','location','point','geographic point','natural object']
 
-label_dict['vehicle'] = ['airliner', 'warplane', 'airship', 'balloon', 'space shuttle', 'fireboat', 
+label_dict['vehicle'] = ['airliner', 'warplane', 'airship', 'space shuttle', 'fireboat', 
 		'gondola', 'speedboat', 'lifeboat', 'canoe', 'yawl', 'catamaran', 'trimaran', 'container ship',
 		 'liner', 'aircraft carrier', 'submarine', 'wreck', 'half track', 'tank', 'missile', 'bobsled', 
 		 'dogsled', 'bicycle-built-for-two', 'mountain bike', 'freight car', 'passenger car', 
@@ -44,9 +44,9 @@ label_dict['vehicle'] = ['airliner', 'warplane', 'airship', 'balloon', 'space sh
 label_dict['weapon'] = ['revolver','cannon','assault rifle','rifle','projectile','bulletproof vest','weapon','gun',
 			'firearm','autoloader','automatic firearm','automatic rifle','machine gun','pistol']
 
-label_dict['clothing'] = ['covering', 'military uniform', 'uniform', 'vestment', 'abaya', 'robe', 'gown', 'outerwear', 'crash helmet', 'helmet', 'headdress', 'necktie', 'suit', 'Windsor tie', 'neckwear', 'necktie', 'bow tie', 'academic gown', 'clothing', 'attire', 'disguise', 'hairpiece', 'protective garment', 'accessory', 'belt', 'outerwear', 'gown', 'garment', 'vest', 'swimsuit', 'trouser', 'scarf', 'neckwear', 'necktie', 'skirt', 'overgarment', 'cloak', 'coat', 'raincoat', 'sweater', 'pullover', 'robe', 'shirt', 'undergarment', 'handwear', 'glove', 'headdress', 'helmet', 'cap', 'hat', 'footwear', 'hosiery', 'tights', 'stocking', 'uniform', 'nightwear', 'apparel', 'workwear', "woman's clothing", 'dress']
+label_dict['clothing'] = ['covering', 'sunglass', 'military uniform', 'uniform', 'vestment', 'abaya', 'robe', 'gown', 'outerwear', 'crash helmet', 'helmet', 'headdress', 'necktie', 'suit', 'Windsor tie', 'neckwear', 'necktie', 'bow tie', 'academic gown', 'clothing', 'attire', 'disguise', 'hairpiece', 'protective garment', 'accessory', 'belt', 'outerwear', 'gown', 'garment', 'vest', 'swimsuit', 'trouser', 'scarf', 'neckwear', 'necktie', 'skirt', 'overgarment', 'cloak', 'coat', 'raincoat', 'sweater', 'pullover', 'robe', 'shirt', 'undergarment', 'handwear', 'glove', 'headdress', 'helmet', 'cap', 'hat', 'footwear', 'hosiery', 'tights', 'stocking', 'uniform', 'nightwear', 'apparel', 'workwear', "woman's clothing", 'dress']
 
-label_dict['place/buidling'] = ['structure', 'arch', 'area', 'bridge', 'building', 'farm building', 'house', 'residence', 'religious residence', 'outbuilding', 'shed', 'place of worship', 'shrine', 'theater', 'building complex', 'factory', 'column', 'defensive structure', 'fortification', 'establishment', 'institution', 'penal institution', 'correctional institution', 'place of business', 'mercantile establishment', 'marketplace', 'shop', 'housing', 'dwelling', 'landing', 'memorial']
+label_dict['place/buidling'] = ['structure', 'street sign', 'sign', 'arch', 'area', 'bridge', 'building', 'farm building', 'house', 'residence', 'religious residence', 'outbuilding', 'shed', 'place of worship', 'shrine', 'theater', 'building complex', 'factory', 'column', 'defensive structure', 'fortification', 'establishment', 'institution', 'penal institution', 'correctional institution', 'place of business', 'mercantile establishment', 'marketplace', 'shop', 'housing', 'dwelling', 'landing', 'memorial']
 
 def googlenet(caffe_path, model_path, image_files):
 
@@ -74,19 +74,20 @@ def googlenet(caffe_path, model_path, image_files):
 	# Assign batchsize
 	batch_size = 10
 	num = 0
+	final_label = []
 
 	chunks_done = 0
 	for chunk in [image_files[x:x+batch_size] for x in xrange(0, len(image_files), batch_size)]:
 		print "Processing %.2f%% done ..." %((batch_size*chunks_done*100)/float(len(image_files)))
 		chunks_done = chunks_done + 1
 
-		bet = cPickle.load(open('/home/shruti/gsoc/caffehome/caffe/data/ilsvrc12/imagenet.bet.pickle'))
 		input_images = map(lambda y: caffe.io.load_image(y), chunk)
-		output = net.predict(input_images, oversample = True).flatten()
+		output = net.predict(input_images, oversample = False).flatten()
 		
 		vect = 1000
 		for single_output in [output[k:k+vect] for k in xrange(0,len(output),vect)]:
 			num += 1
+			bet = cPickle.load(open('/home/shruti/gsoc/caffehome/caffe/data/ilsvrc12/imagenet.bet.pickle'))
 			bet['infogain'] -= np.array(bet['preferences']) * 0.1
 			expected_infogain = np.dot(bet['probmat'], single_output[bet['idmapping']])
 			expected_infogain *= bet['infogain']
@@ -117,16 +118,22 @@ def googlenet(caffe_path, model_path, image_files):
 
 			if count_v >= 3:
 				bet_result = ' Vehicle\n'
+				final_label.append('Vehicle/Accident')
 			elif count_na >= 3:
-				bet_result = ' Nature\n'
+				bet_result = ' Natural\n'
+				final_label.append('Not')
 			elif count_w >= 3:
 				bet_result = ' Weapon\n'
+				final_label.append('Not')
 			elif count_c >= 3:
 				bet_result = ' Clothing\n'
+				final_label.append('Not')
 			elif count_p >= 3:
 				bet_result = ' Place/building\n'
+				final_label.append('Not')
 			else:
 				bet_result = ' Not\n'
+				final_label.append('Not')
 
 			print str(num) + bet_result
 			print str(label_list) + '\n'
@@ -134,3 +141,4 @@ def googlenet(caffe_path, model_path, image_files):
 	end = time.time()
 	print "Googlenet Time : %.3f \n"  %(end - start)
 
+	return final_label
