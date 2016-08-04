@@ -37,7 +37,7 @@ label_dict['vehicle'] = ['airliner', 'warplane', 'airship', 'space shuttle', 'fi
 		    'minibike', 'truck', 'van', 'passenger van', 'tracked vehicle', 'trailer', 'wagon', 'cart', 'conveyance', 'vehicle',
 		     'craft', 'aircraft', 'heavier-than-air craft', 'airplane', 'lighter-than-air craft', 'vessel', 'boat', 'motorboat',
 		      'sea boat', 'small boat', 'sailing vessel', 'sailboat', 'ship', 'cargo ship', 'passenger ship', 'warship', 
-		      'submersible', 'military vehicle', 'rocket', 'sled', 'litter', 'public transport', 'train', 'bus', 'trolleybus']
+		      'submersible', 'military vehicle', 'car mirror', 'rocket', 'sled', 'litter', 'public transport', 'train', 'bus', 'trolleybus']
 
 # Removed passenger train, bullet train, shopping cart, barrow, tricycle, unicycle, balloon, airfoil
 

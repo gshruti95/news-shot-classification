@@ -2,6 +2,7 @@ import os, sys
 import fnmatch
 import googlenet
 import fileops
+import cropframes
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 
 # main_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/train/'
@@ -37,6 +38,8 @@ def dataset(main_dir, caffe_path):
 				features_data += features
 
 				image_files = fileops.get_keyframeslist(main_dir + dir_name + '/')
+				image_files = cropframes.cropframes(main_dir + dir_name + '/', image_files)
+
 				print main_dir + dir_name + '/'
 				googlenet_labels = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
 				googlenet_data += googlenet_labels
@@ -104,9 +107,10 @@ def dataset(main_dir, caffe_path):
 		if labels[i] == 'Vehicle/Accident':
 			v += 1
 
-	t_names = ['class Clothing', 'class Natural', 'class Not', 'class Place/building', 'class Vehicle', 'class Weapon']
-	print len(labels), len(glabels)
-	print(classification_report(labels, glabels, target_names = t_names))
-	# print "Accuracy score: ", accuracy_score(labels, glabels)
 	print "crt_v:%d v:%d p_v:%d" %(crt_v,v,p_v)
+
+	# t_names = ['class Clothing', 'class Natural', 'class Not', 'class Place/building', 'class Vehicle', 'class Weapon']
+	# print len(labels), len(glabels)
+	# print(classification_report(labels, glabels, target_names = t_names))
+	# print "Accuracy score: ", accuracy_score(labels, glabels)
 	# return features, labels

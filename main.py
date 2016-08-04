@@ -7,11 +7,11 @@ import facedetect
 import placesCNN
 import googlenet
 import age_genderCNN
-import graphcluster, accuracy
+# import graphcluster, accuracy
 import dataset, classifier
 import pipeline
 import cPickle
-# import cropframes
+import cropframes
 
 def main():
 	root = '/home/shruti/gsoc/news-shot-classification/'
@@ -89,8 +89,8 @@ def main():
 	# print 'lalala'
 	# shotdetect.shotdetect(clip_dir, clip_name)
 
-	# image_files = fileops.get_keyframeslist(clip_dir)
-	# # image_files = cropframes.cropframes(clip_dir, image_files)
+	image_files = fileops.get_keyframeslist(clip_dir)
+	# image_files = cropframes.cropframes(clip_dir, image_files)
 
 	# studio_shots = graphcluster.get_graph_clusters(clip_dir, image_files)
 	# print studio_shots
@@ -122,7 +122,7 @@ def main():
 	# fileops.save_features(clip_dir + 'new_places_fc6', fc6)
 	# print "done fc6"
 
-	googlenet_dir = '/home/shruti/gsoc/news-shot-classification/clips/test/'
+	googlenet_dir = '/home/shruti/gsoc/news-shot-classification/clips/'
 	dataset.dataset(googlenet_dir, caffe_path)
 	# googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
 
