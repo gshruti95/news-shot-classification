@@ -215,10 +215,10 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 	# print "totaloutplen: " , len(output)
 	# print "orig per: ", total_crt_outp*100/float(len(output))
 
-	print "Accuracy score: ", accuracy_score(dvalidate[:,-1], output)
-	print "Recall score: ", recall_score(dvalidate[:,-1], output, pos_label = None)
-	print "F score: ", f1_score(dvalidate[:,-1], output, pos_label = None)
-	print "Precision score: ", precision_score(dvalidate[:,-1], output, pos_label = None)
+	# print "Accuracy score: ", accuracy_score(dvalidate[:,-1], output)
+	# print "Recall score: ", recall_score(dvalidate[:,-1], output, pos_label = None)
+	# print "F score: ", f1_score(dvalidate[:,-1], output, pos_label = None)
+	# print "Precision score: ", precision_score(dvalidate[:,-1], output, pos_label = None)
 
 	print "Predicted: " , p_s , p_r, p_h, p_g, p_w, p_sp, p_bg, p_c, p_prob, p_v, p_notv, p_cr, p_notcr, p_n	
 	print "Correct: " , crt_s, crt_r, crt_h, crt_g, crt_w, crt_sp, crt_bg, crt_c, crt_prob, crt_v, crt_notv, crt_cr, crt_notcr, crt_not
@@ -409,7 +409,7 @@ def manual(train_data, train_labels, test_data, test_labels):
 		# if df_test_labels[i][0] == output[i]:
 		# 	total_crt_outp = total_crt_outp + 1
 
-	print "Accuracy score: ", accuracy_score(test_labels, output)
+	# print "Accuracy score: ", accuracy_score(test_labels, output)
 	# print "Recall score: ", recall_score(test_labels, output)
 	# print "F score: ", f1_score(test_labels, output)
 	# print "Precision score: ", precision_score(test_labels, output)

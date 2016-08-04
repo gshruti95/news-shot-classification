@@ -7,7 +7,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 
 # main_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/train/'
 # main_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/test/'
-def dataset(main_dir, caffe_path):
+def dataset(main_dir):
 
 	dir_list = sorted(os.listdir(main_dir))
 
@@ -24,25 +24,25 @@ def dataset(main_dir, caffe_path):
 			# print main_dir + dir_name
 			# print main_dir + dir_name + '/' + dir_name + '_shot_type_testuser.txt'
 
-			if os.path.exists(main_dir + dir_name + '/' + dir_name + '_vehicle_navi.txt'):
+			if os.path.exists(main_dir + dir_name + '/' + dir_name + '_shot_type_testuser.txt'):
 
 				
-				with open(main_dir + dir_name + '/' + dir_name + '_vehicle_navi.txt') as labels_file:
+				with open(main_dir + dir_name + '/' + dir_name + '_shot_type_testuser.txt') as labels_file:
 					labels = labels_file.readlines()				
 				labels = [label.split('\t')[0] for label in labels]
 				label_data += labels
 
-				with open(main_dir + dir_name + '/' + 'new_places_fc7 .csv') as features_file:
+				with open(main_dir + dir_name + '/' + 'cropped_places_fc7 .csv') as features_file:
 					features = features_file.readlines()
 				features = [feature.split('\n')[0] for feature in features]
 				features_data += features
 
-				image_files = fileops.get_keyframeslist(main_dir + dir_name + '/')
-				image_files = cropframes.cropframes(main_dir + dir_name + '/', image_files)
+				# image_files = fileops.get_keyframeslist(main_dir + dir_name + '/')
+				# image_files = cropframes.cropframes(main_dir + dir_name + '/', image_files)
 
-				print main_dir + dir_name + '/'
-				googlenet_labels = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
-				googlenet_data += googlenet_labels
+				# print main_dir + dir_name + '/'
+				# googlenet_labels = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
+				# googlenet_data += googlenet_labels
 
 				# for file in os.listdir(main_dir + dir_name):
 					
@@ -85,32 +85,33 @@ def dataset(main_dir, caffe_path):
 	labels = []
 	features = []
 	glabels = []
-	for label, glabel in zip(label_data, googlenet_data):
+	for label, feature in zip(label_data, features_data):
 		# label = label.split('\t')[0]
-		if label not in ['Commercial','Problem/Unclassified']:
-			if label == 'Vehicle/Accident':#, 'Background_roll','Background roll']:
-				labels.append(label)
-			else:
-				labels.append('Not')
-			# features.append(feature)
-			glabels.append(glabel)	
+		if label not in ['Commercial']:#,'Problem/Unclassified']:
+			# if label == 'Vehicle/Accident':#, 'Background_roll','Background roll']:
+			labels.append(label)
+			# else:
+				# labels.append('Not')
+			features.append(feature)
+			# glabels.append(glabel)	
 
-	p_v = 0
-	v = 0
-	crt_v = 0
-	for i in range(len(labels)):
+	# p_v = 0
+	# v = 0
+	# crt_v = 0
+	# for i in range(len(labels)):
 
-		if glabels[i] == 'Vehicle/Accident':
-			p_v += 1
-			if labels[i] == 'Vehicle/Accident':
-				crt_v += 1
-		if labels[i] == 'Vehicle/Accident':
-			v += 1
+	# 	if glabels[i] == 'Vehicle/Accident':
+	# 		p_v += 1
+	# 		if labels[i] == 'Vehicle/Accident':
+	# 			crt_v += 1
+	# 	if labels[i] == 'Vehicle/Accident':
+	# 		v += 1
 
-	print "crt_v:%d v:%d p_v:%d" %(crt_v,v,p_v)
+	# print "crt_v:%d v:%d p_v:%d" %(crt_v,v,p_v)
 
 	# t_names = ['class Clothing', 'class Natural', 'class Not', 'class Place/building', 'class Vehicle', 'class Weapon']
 	# print len(labels), len(glabels)
 	# print(classification_report(labels, glabels, target_names = t_names))
 	# print "Accuracy score: ", accuracy_score(labels, glabels)
-	# return features, labels
+	
+	return features, labels

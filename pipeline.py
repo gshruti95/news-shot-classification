@@ -58,12 +58,12 @@ def pipeline(train_dir, test_dir):
 	not_count = 0
 
 	for label, feature in zip(train_labels, train_data):
-		if label != 'Background_roll':
+		if label != 'Studio':
 			label = 'Not'		
 		new_train_labels.append(label)
 
 	for label in test_labels:
-		if label != 'Background_roll':
+		if label != 'Studio':
 			not_count += 1
 			label = 'Not'
 		new_test_labels.append(label)
@@ -71,7 +71,7 @@ def pipeline(train_dir, test_dir):
 
 	##		
 	# print "Train test split..."
-	classifier.dataset_split(train_data, new_train_labels, test_data, new_test_labels)	
+	# classifier.dataset_split(train_data, new_train_labels, test_data, new_test_labels)	
 	print "Manual..."
 	classifier.manual(train_data, new_train_labels, test_data, new_test_labels)
 

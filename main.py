@@ -38,7 +38,6 @@ def main():
 	
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2014-01-21_1600_US_KCBS_The_Early_Show'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2014-01-21_2100_US_MSNBC_Martin_Bashir'
-	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2015-03-16_1700_US_KABC_The_View'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2015-03-16_2100_US_MSNBC_The_Ed_Show'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2015-03-25_1500_US_KCBS_This_Morning'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2015-06-14_1530_US_KCBS_Face_the_Nation'
@@ -46,10 +45,13 @@ def main():
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2015-07-10_1900_US_CNN_Newsroom'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-01-03_1600_US_FOX-News_MediaBuzz'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-02-05_0230_US_KABC_World_News_Tonight_With_David_Muir'
-	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-02-05_2300_US_MSNBC_MSNBC_Live'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-02-15_2300_US_FOX-News_Special_Report_with_Bret_Baier'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-02-15_2300_US_MSNBC_The_Place_for_Politics_2016'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-03-08_2000_US_KNBC_4_News_at_Noon'
+
+	# Not found
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2015-03-16_1700_US_KABC_The_View'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2016-02-05_2300_US_MSNBC_MSNBC_Live'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/2015-05-23_1230_US_KNBC_Today_Weekend'
 
 	## Small clips
@@ -57,7 +59,7 @@ def main():
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_148-628'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_1255-1735'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_1615-2095'
-	clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_1809-2289'
+	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_1809-2289'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_2840-3320'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_0-472'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_0-478'
@@ -74,7 +76,7 @@ def main():
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0100_US_KCBS_CBS_2_News_at_6_258-738'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0100_US_KCBS_CBS_2_News_at_6_1030-1510'
 	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-23_0030_US_KCBS_CBS_Evening_News_263-743'
-	# clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465'
+	clip_dir = '/home/shruti/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465'
 
 	if clip_dir[-1] is not '/':
 		clip_dir = clip_dir + '/'
@@ -89,7 +91,7 @@ def main():
 	# print 'lalala'
 	# shotdetect.shotdetect(clip_dir, clip_name)
 
-	image_files = fileops.get_keyframeslist(clip_dir)
+	# image_files = fileops.get_keyframeslist(clip_dir)
 	# image_files = cropframes.cropframes(clip_dir, image_files)
 
 	# studio_shots = graphcluster.get_graph_clusters(clip_dir, image_files)
@@ -115,15 +117,15 @@ def main():
 	# fileops.save_features(clip_dir + 'new_places_conv3', conv3)
 	# print "done conv3"
 
-	# fileops.save_features(clip_dir + 'new_places_fc8', fc8)
+	# fileops.save_features(clip_dir + 'cropped_places_fc8', fc8)
 	# print "Done fc8"
-	# fileops.save_features(clip_dir + 'new_places_fc7 ', fc7)
+	# fileops.save_features(clip_dir + 'cropped_places_fc7 ', fc7)
 	# print "done fc7"
-	# fileops.save_features(clip_dir + 'new_places_fc6', fc6)
+	# fileops.save_features(clip_dir + 'cropped_places_fc6', fc6)
 	# print "done fc6"
 
 	googlenet_dir = '/home/shruti/gsoc/news-shot-classification/clips/'
-	dataset.dataset(googlenet_dir, caffe_path)
+	# dataset.dataset(googlenet_dir, caffe_path)
 	# googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
 
 
@@ -147,7 +149,7 @@ def main():
 
 	train_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/train/'
 	test_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/test/'	
-	# pipeline.pipeline(train_dir, test_dir)
+	pipeline.pipeline(train_dir, test_dir)
 	
 	overall_end = time.time()	
 	print "Total time taken: %.2f" %(overall_end-overall_start)
