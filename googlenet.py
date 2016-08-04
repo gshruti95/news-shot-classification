@@ -20,8 +20,8 @@ label_dict = {}
 #         'tricycle', 'trike', 'velocipede', 'unicycle', 'monocycle', 'horse cart', 'horse-cart', 'car wheel', 'traffic light', 'traffic signal', 'stoplight',
 #          'trolleybus', 'trolley coach', 'trackless trolley', 'bullet train', 'bullet','amphibious vehicle']
 
-label_dict['natural'] = ['geological formation', 'natural depression', 'natural elevation', 'mountain', 
-		'ridge','reef','shore','spring','location','point','geographic point','natural object']
+label_dict['natural formation'] = ['geological formation', 'natural depression', 'natural elevation', 'mountain', 
+								'ridge','reef','shore','spring','location','point','geographic point','natural object']
 
 label_dict['vehicle'] = ['airliner', 'warplane', 'airship', 'space shuttle', 'fireboat', 
 		'gondola', 'speedboat', 'lifeboat', 'canoe', 'yawl', 'catamaran', 'trimaran', 'container ship',
@@ -31,7 +31,7 @@ label_dict['vehicle'] = ['airliner', 'warplane', 'airship', 'space shuttle', 'fi
 		  'beach wagon', 'cab', 'convertible', 'jeep', 'limousine', 'minivan', 'Model T', 'racer', 
 		  'sports car', 'go-kart', 'golfcart', 'moped', 'snowplow', 'fire engine', 'garbage truck', 'pickup', 
 		  'tow truck', 'trailer truck', 'moving van', 'police van', 'recreational vehicle', 'streetcar', 'snowmobile', 
-		  'tractor', 'mobile home', 'horse cart', 'jinrikisha', 'oxcart', 'plane', 'wing', 'airfoil', 
+		  'tractor', 'mobile home', 'horse cart', 'jinrikisha', 'oxcart', 'plane', 'wing', 
 		  'crane', 'car wheel', 'traffic light', 'school bus', 'container', 'wheeled vehicle', 'bicycle',
 		   'car', 'handcart', 'self-propelled vehicle', 'armored vehicle', 'locomotive', 'motor vehicle', 'car', 'motorcycle',
 		    'minibike', 'truck', 'van', 'passenger van', 'tracked vehicle', 'trailer', 'wagon', 'cart', 'conveyance', 'vehicle',
@@ -39,14 +39,17 @@ label_dict['vehicle'] = ['airliner', 'warplane', 'airship', 'space shuttle', 'fi
 		      'sea boat', 'small boat', 'sailing vessel', 'sailboat', 'ship', 'cargo ship', 'passenger ship', 'warship', 
 		      'submersible', 'military vehicle', 'rocket', 'sled', 'litter', 'public transport', 'train', 'bus', 'trolleybus']
 
-# Removed passenger train, bullet train, shopping cart, barrow, tricycle, unicycle
+# Removed passenger train, bullet train, shopping cart, barrow, tricycle, unicycle, balloon, airfoil
 
 label_dict['weapon'] = ['revolver','cannon','assault rifle','rifle','projectile','bulletproof vest','weapon','gun',
-			'firearm','autoloader','automatic firearm','automatic rifle','machine gun','pistol']
+						'firearm','autoloader','automatic firearm','automatic rifle','machine gun','pistol']
 
-label_dict['clothing'] = ['covering', 'sunglass', 'military uniform', 'uniform', 'vestment', 'abaya', 'robe', 'gown', 'outerwear', 'crash helmet', 'helmet', 'headdress', 'necktie', 'suit', 'Windsor tie', 'neckwear', 'necktie', 'bow tie', 'academic gown', 'clothing', 'attire', 'disguise', 'hairpiece', 'protective garment', 'accessory', 'belt', 'outerwear', 'gown', 'garment', 'vest', 'swimsuit', 'trouser', 'scarf', 'neckwear', 'necktie', 'skirt', 'overgarment', 'cloak', 'coat', 'raincoat', 'sweater', 'pullover', 'robe', 'shirt', 'undergarment', 'handwear', 'glove', 'headdress', 'helmet', 'cap', 'hat', 'footwear', 'hosiery', 'tights', 'stocking', 'uniform', 'nightwear', 'apparel', 'workwear', "woman's clothing", 'dress']
+label_dict['person(s)'] = ['covering', 'sunglass', 'lens', 'converging lens', 'military uniform', 'uniform', 'vestment', 'abaya', 'robe', 'gown', 'outerwear', 'crash helmet', 'helmet', 'headdress', 'necktie', 'suit', 'Windsor tie', 'neckwear', 'necktie', 'bow tie', 'academic gown', 'clothing', 'attire', 'disguise', 'hairpiece', 'protective garment', 'accessory', 'belt', 'outerwear', 'gown', 'garment', 'vest', 'swimsuit', 'trouser', 'scarf', 'neckwear', 'necktie', 'skirt', 'overgarment', 'cloak', 'coat', 'raincoat', 'sweater', 'pullover', 'robe', 'shirt', 'undergarment', 'handwear', 'glove', 'headdress', 'helmet', 'cap', 'hat', 'footwear', 'hosiery', 'tights', 'stocking', 'uniform', 'nightwear', 'apparel', 'workwear', "woman's clothing", 'dress']
 
-label_dict['place/buidling'] = ['structure', 'street sign', 'sign', 'arch', 'area', 'bridge', 'building', 'farm building', 'house', 'residence', 'religious residence', 'outbuilding', 'shed', 'place of worship', 'shrine', 'theater', 'building complex', 'factory', 'column', 'defensive structure', 'fortification', 'establishment', 'institution', 'penal institution', 'correctional institution', 'place of business', 'mercantile establishment', 'marketplace', 'shop', 'housing', 'dwelling', 'landing', 'memorial']
+label_dict['building/structure'] = ['structure', 'street sign', 'sign', 'arch', 'area', 'bridge', 'building', 'farm building', 'house', 'residence', 'religious residence', 'outbuilding', 'shed', 'place of worship', 'shrine', 'theater', 'building complex', 'factory', 'column', 'defensive structure', 'fortification', 'establishment', 'institution', 'penal institution', 'correctional institution', 'place of business', 'mercantile establishment', 'marketplace', 'shop', 'housing', 'dwelling', 'landing', 'memorial']
+
+label_dict['sports'] = ['person','contestant','player','athlete','racket', 'sports implement', 'ball', 'game equipment', 'sports equipment', 'equipment', 'football helmet', 'gymnastic apparatus','ping-pong ball','ballplayer','volleyball']
+
 
 def googlenet(caffe_path, model_path, image_files):
 
@@ -75,6 +78,7 @@ def googlenet(caffe_path, model_path, image_files):
 	batch_size = 10
 	num = 0
 	final_label = []
+	other_label = []
 
 	chunks_done = 0
 	for chunk in [image_files[x:x+batch_size] for x in xrange(0, len(image_files), batch_size)]:
@@ -102,40 +106,78 @@ def googlenet(caffe_path, model_path, image_files):
 			count_w = 0
 			count_c = 0
 			count_p = 0
+			count_sp = 0
+			fl_list = [0,0,0,0,0]
 			label_list = []
 			for v in infogain_sort[:5]:
 				label_list.append((bet['words'][v], '%.5f' % expected_infogain[v]))
-				if bet['words'][v] in label_dict['vehicle'] and expected_infogain[v] > .2:
-					count_v += 1
-				elif bet['words'][v] in label_dict['natural'] and expected_infogain[v] > .2:
-					count_na += 1
-				elif bet['words'][v] in label_dict['weapon'] and expected_infogain[v] > .2:
-					count_w += 1
-				elif bet['words'][v] in label_dict['clothing'] and expected_infogain[v] > .2:
-					count_c += 1
-				elif bet['words'][v] in label_dict['place/buidling'] and expected_infogain[v] > .2:
-					count_p += 1
+				if expected_infogain[v] > .2:
+					if bet['words'][v] in label_dict['vehicle']:
+						count_v += 1
+						if expected_infogain[v] > .6:
+							fl_list[0] = 1
+					elif bet['words'][v] in label_dict['natural formation']:
+						count_na += 1
+						if expected_infogain[v] > .6:
+							fl_list[1] = 1
+					elif bet['words'][v] in label_dict['weapon']:
+						count_w += 1
+						if expected_infogain[v] > .6:
+							fl_list[2] = 1
+					elif bet['words'][v] in label_dict['person(s)']:
+						count_c += 1
+						if expected_infogain[v] > .6:
+							fl_list[3] = 1
+					elif bet['words'][v] in label_dict['building/structure']:
+						count_p += 1
+						if expected_infogain[v] > .6:
+							fl_list[4] = 1
+					elif bet['words'][v] in label_dict['sports']:
+						count_sp += 1
+
 
 			if count_v >= 3:
 				bet_result = ' Vehicle\n'
 				final_label.append('Vehicle/Accident')
 			elif count_na >= 3:
-				bet_result = ' Natural\n'
-				final_label.append('Not')
+				bet_result = ' Natural formation\n'
+				final_label.append('Natural formation')
 			elif count_w >= 3:
 				bet_result = ' Weapon\n'
-				final_label.append('Not')
+				final_label.append('Weapon')
 			elif count_c >= 3:
-				bet_result = ' Clothing\n'
-				final_label.append('Not')
+				bet_result = ' Person(s)\n'
+				final_label.append('Person(s)')
 			elif count_p >= 3:
-				bet_result = ' Place/building\n'
-				final_label.append('Not')
+				bet_result = ' Building/structure\n'
+				final_label.append('Building/structure')
+			elif count_sp >= 3:
+				bet_result = ' Sports\n'
+				final_label.append('Sports')
 			else:
 				bet_result = ' Not\n'
 				final_label.append('Not')
 
-			print str(num) + bet_result
+			if fl_list[0] == 1:
+				other_label.append('Vehicle/Accident')
+				other_result = ', Vehicle'
+			elif fl_list[1] == 1:
+				other_label.append('Natural formation')
+				other_result = ', Natural formation'
+			elif fl_list[2] == 1:
+				other_label.append('Weapon')
+				other_result = ', Weapon'
+			elif fl_list[3] == 1:
+				other_label.append('Person(s)')
+				other_result = ', Person(s)'
+			elif fl_list[4] == 1:
+				other_label.append('Building/structure')
+				other_result = ', Building/structure'
+			else:
+				other_label.append('Not')
+				other_result = ''
+
+			print str(num) + bet_result + other_result
 			print str(label_list) + '\n'
 
 	end = time.time()

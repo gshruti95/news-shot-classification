@@ -2,7 +2,7 @@ import os, sys
 import fnmatch
 import googlenet
 import fileops
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 
 # main_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/train/'
 # main_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/test/'
@@ -92,9 +92,21 @@ def dataset(main_dir, caffe_path):
 			# features.append(feature)
 			glabels.append(glabel)	
 
+	p_v = 0
+	v = 0
+	crt_v = 0
+	for i in range(len(labels)):
+
+		if glabels[i] == 'Vehicle/Accident':
+			p_v += 1
+			if labels[i] == 'Vehicle/Accident':
+				crt_v += 1
+		if labels[i] == 'Vehicle/Accident':
+			v += 1
+
+	t_names = ['class Clothing', 'class Natural', 'class Not', 'class Place/building', 'class Vehicle', 'class Weapon']
 	print len(labels), len(glabels)
-	print "Accuracy score: ", accuracy_score(labels, glabels)
-
+	print(classification_report(labels, glabels, target_names = t_names))
+	# print "Accuracy score: ", accuracy_score(labels, glabels)
+	print "crt_v:%d v:%d p_v:%d" %(crt_v,v,p_v)
 	# return features, labels
-
-
