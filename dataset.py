@@ -5,9 +5,8 @@ import fileops
 import cropframes
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 
-# main_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/train/'
-# main_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/test/'
-def dataset(main_dir):
+
+def classifier_dataset(main_dir):
 
 	dir_list = sorted(os.listdir(main_dir))
 
@@ -36,6 +35,8 @@ def dataset(main_dir):
 					features = features_file.readlines()
 				features = [feature.split('\n')[0] for feature in features]
 				features_data += features
+
+
 
 				# image_files = fileops.get_keyframeslist(main_dir + dir_name + '/')
 				# image_files = cropframes.cropframes(main_dir + dir_name + '/', image_files)
@@ -86,7 +87,6 @@ def dataset(main_dir):
 	features = []
 	glabels = []
 	for label, feature in zip(label_data, features_data):
-		# label = label.split('\t')[0]
 		if label not in ['Commercial']:#,'Problem/Unclassified']:
 			# if label == 'Vehicle/Accident':#, 'Background_roll','Background roll']:
 			labels.append(label)

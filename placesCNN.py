@@ -71,36 +71,22 @@ def placesCNN(caffe_path, model_path, image_files):
 			# conv4 = np.vstack((conv4, net.blobs['conv4'].data[...].copy()))
 			# conv3 = np.vstack((conv3, net.blobs['conv3'].data[...].copy()))
 
-	# places_labels = model_path + 'IndoorOutdoor_places205.csv'
-	# labels = np.loadtxt(places_labels, str, delimiter='\t')
+	places_labels = model_path + 'IndoorOutdoor_places205.csv'
+	labels = np.loadtxt(places_labels, str, delimiter='\t')
 
-	# scene_attributeValues = np.loadtxt(model_path + 'attributeValues.csv', delimiter = ',')
-	# scene_attributeNames = np.loadtxt(model_path + 'attributeNames.csv', delimiter = '\n', dtype = str)
-	# attribute_responses = get_scene_attribute_responses(scene_attributeValues, fc7)
+	scene_attributeValues = np.loadtxt(model_path + 'attributeValues.csv', delimiter = ',')
+	scene_attributeNames = np.loadtxt(model_path + 'attributeNames.csv', delimiter = '\n', dtype = str)
+	attribute_responses = get_scene_attribute_responses(scene_attributeValues, fc7)
 
-	# final_label_list, scene_type_list, final_labelset, scene_attributes_list = get_labels(labels, scores, attribute_responses, scene_attributeNames)
-	# a = []
-	# b = []
-	# c = []
-	# for i in range(len(pool5)):
-	# 	for j in range(len(pool5[i])):
-	# 		for k in range(len(pool5[i][j])):
-	# 			new = pool5[i][j][k]
-	# 			print new
-	# 			c = np.concatenate(c,new)
-	# 			print c
-	# 		b = np.concatenate(b,c)
-	# 	a.append(b)
+	final_label_list, scene_type_list, final_labelset, scene_attributes_list = get_labels(labels, scores, attribute_responses, scene_attributeNames)
+	
+	for idx, item in enumerate(final_labelset):
+		print "%d %s %s\n" %(idx+1, item, scene_type_list[idx]) 
 
-	# a = np.asarray(a)
-	# pool5 = a
 	end = time.time()
 	print "Time : %.3f \n"  %(end - start)
-	# print fc7
-	# print type(pool5), type(pool5[0]), type(pool5[0][0]), type(pool5[0][0][0])
-	# print len(pool5), len(pool5[0]), len(pool5[0][0]), len(pool5[0][0][0])
-
-	return fc8, fc7, fc6#, final_label_list, scene_type_list, final_labelset, scene_attributes_list
+	
+	return fc8, fc7, fc6, scene_type_list, scene_attributes_list #, final_label_list, scene_type_list, final_labelset, scene_attributes_list
 
 
 def get_labels(labels, scores, attribute_responses, scene_attributeNames):

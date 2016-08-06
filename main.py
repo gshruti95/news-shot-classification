@@ -12,6 +12,7 @@ import dataset, classifier
 import pipeline
 import cPickle
 import cropframes
+# import shot_labels
 
 def main():
 	root = '/home/shruti/gsoc/news-shot-classification/'
@@ -86,12 +87,13 @@ def main():
 
 	output_filename = clip_dir.split('/')[-2]	
 	clip_name = fileops.get_video_filename(clip_dir)
-	# print 'done'
-	# keyframes.get_keyframes(clip_dir, clip_name, output_filename)
-	# print 'lalala'
-	# shotdetect.shotdetect(clip_dir, clip_name)
 
-	# image_files = fileops.get_keyframeslist(clip_dir)
+	timestamps = keyframes.keyframes(clip_dir, clip_name, output_filename)
+	shot_boundaries, extra_timestamps = shotdetect.shotdetect(clip_dir, clip_name)
+	py_images = fileops.get_pyframeslist(clip_dir, clip_name)
+	keyframes_list = fileops.get_keyframeslist(clip_dir)
+
+	image_files = fileops.rename_frames(timestamps, keyframes_list, extra_timestamps, py_images)
 	# image_files = cropframes.cropframes(clip_dir, image_files)
 
 	# studio_shots = graphcluster.get_graph_clusters(clip_dir, image_files)
@@ -101,21 +103,11 @@ def main():
 	
 	## Run a model and get labels for keyframe
  	
-	caffe_path = '/home/shruti/gsoc/caffehome/caffe/'
-	# [fc8, fc7, fc6] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files) 	
-	# [pool5, conv5, conv4, conv3,fc8, fc7, fc6, output_label_list, scene_type_list, label_list, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files)
+	# caffe_path = '/home/shruti/gsoc/caffehome/caffe/'
+	# [fc8, fc7, fc6, scene_type_list, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files) 	
 
 	# accuracy.get_accuracy(clip_dir + output_filename, '_scene', scene_type_list)
 	# fileops.save_placesCNN_labels(clip_dir + output_filename, clip_dir + 'placesCNN_labels', output_label_list, scene_type_list, label_list, scene_attributes_list)
-	
-	# fileops.save_features(clip_dir + 'new_places_pool5', pool5)
-	# print "Done pool5"
-	# fileops.save_features(clip_dir + 'new_places_conv5', conv5)
-	# print "done conv5"
-	# fileops.save_features(clip_dir + 'new_places_conv4', conv4)
-	# print "done conv4"
-	# fileops.save_features(clip_dir + 'new_places_conv3', conv3)
-	# print "done conv3"
 
 	# fileops.save_features(clip_dir + 'cropped_places_fc8', fc8)
 	# print "Done fc8"
@@ -124,33 +116,21 @@ def main():
 	# fileops.save_features(clip_dir + 'cropped_places_fc6', fc6)
 	# print "done fc6"
 
-	googlenet_dir = '/home/shruti/gsoc/news-shot-classification/clips/'
-	# dataset.dataset(googlenet_dir, caffe_path)
-	# googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
-
-
-	# bet = cPickle.load(open('/home/shruti/gsoc/caffehome/caffe/data/ilsvrc12/imagenet.bet.pickle'))	
-	# bet_words = ['\'' + word + '\'' + '\n' for word in bet['words']]
-	# with open('betlist.txt','w') as file:
-	# 	file.writelines(bet_words)
-
-	# new_labels = []
-	# with open('vehicle_dict.txt','r') as file:
-	# 	data = file.readlines()
-	# 	for label in data:
-	# 		label = label.split('\n')[0]
-	# 		label = label.strip("'")
-	# 		new_labels.append(label)
-	# print new_labels
-
-
+	# googlenet_dir = '/home/shruti/gsoc/news-shot-classification/clips/'
+	# dataset.dataset(googlenet_dir)
+	
+	# googlenet_label_list = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
 	# fileops.save_googlenet_labels(clip_dir + output_filename, clip_dir + 'googlenet_labels', label_list)
 	# fileops.write_separate_labels(clip_dir + output_filename)
-
+	
 	train_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/train/'
 	test_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/test/'	
-	pipeline.pipeline(train_dir, test_dir)
-	
+	# mysvm = pipeline.pipeline(train_dir, test_dir)
+	# classifier_label_list = classifier.predict(mysvm)
+
+
+	# shot_labels.frame_labels(clip_dir + output_filename, timestamps, image_files, shot_boundaries, classifier_label_list, googlenet_label_list, scene_type_list, scene_attributes_list)
+
 	overall_end = time.time()	
 	print "Total time taken: %.2f" %(overall_end-overall_start)
 

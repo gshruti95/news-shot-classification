@@ -77,7 +77,7 @@ def googlenet(caffe_path, model_path, image_files):
 	# Assign batchsize
 	batch_size = 10
 	num = 0
-	final_label = []
+	final_label_list = []
 	other_label = []
 
 	chunks_done = 0
@@ -138,25 +138,25 @@ def googlenet(caffe_path, model_path, image_files):
 
 			if count_v >= 3:
 				bet_result = ' Vehicle\n'
-				final_label.append('Vehicle/Accident')
+				final_label_list.append('Vehicle/Accident')
 			elif count_na >= 3:
 				bet_result = ' Natural formation\n'
-				final_label.append('Natural formation')
+				final_label_list.append('Natural formation')
 			elif count_w >= 3:
 				bet_result = ' Weapon\n'
-				final_label.append('Weapon')
+				final_label_list.append('Weapon')
 			elif count_c >= 3:
 				bet_result = ' Person(s)\n'
-				final_label.append('Person(s)')
+				final_label_list.append('Person(s)')
 			elif count_p >= 3:
 				bet_result = ' Building/structure\n'
-				final_label.append('Building/structure')
+				final_label_list.append('Building/structure')
 			elif count_sp >= 3:
 				bet_result = ' Sports\n'
-				final_label.append('Sports')
+				final_label_list.append('Sports')
 			else:
 				bet_result = ' Not\n'
-				final_label.append('Not')
+				final_label_list.append('Not')
 
 			if fl_list[0] == 1:
 				other_label.append('Vehicle/Accident')
@@ -183,4 +183,4 @@ def googlenet(caffe_path, model_path, image_files):
 	end = time.time()
 	print "Googlenet Time : %.3f \n"  %(end - start)
 
-	return final_label
+	return final_label_list

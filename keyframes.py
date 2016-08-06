@@ -2,7 +2,7 @@
 
 import os, sys, time
 
-def get_keyframes(clip_dir, clip_name, output_filename):
+def keyframes(clip_dir, clip_name, output_filename):
 
 	start = time.time()
 	print "Processing keyframes..."
@@ -13,22 +13,23 @@ def get_keyframes(clip_dir, clip_name, output_filename):
 		+ clip_dir + output_filename + ".vis")
 
 	with open(clip_dir + output_filename + ".vis",'r') as file:
-		new_lines = []
+		timestamps = []
 		data = file.readlines()
 		for line in data:
 			line = line.split('t:')[1]
 			line = line.split(' ')[0]
 			line = "%0.3f\n" % round(float(line),2)
-			new_lines.append(line)
+			timestamps.append(line)
 
 	with open(clip_dir + output_filename + ".vis",'w') as file:
-		file.writelines(new_lines)
+		file.writelines(timestamps)
 
-	with open(clip_dir + "faces.vis",'w') as file:
-		file.writelines(new_lines)	
+	# with open(clip_dir + "faces.vis",'w') as file:
+	# 	file.writelines(timestamps)	
 
 	end = time.time()
 	print "Keyframes extracted in %.2f!\n" %(end-start)
 
+	return timestamps
 
 	

@@ -73,8 +73,12 @@ def pipeline(train_dir, test_dir):
 	# print "Train test split..."
 	# classifier.dataset_split(train_data, new_train_labels, test_data, new_test_labels)	
 	print "Manual..."
-	classifier.manual(train_data, new_train_labels, test_data, new_test_labels)
+	mysvm, df_test_labels = classifier.manual(train_data, new_train_labels, test_data, new_test_labels)
 
+	return mysvm
+
+
+	
 	# correct = 0
 	# print "Total: " , s , r, h, g, w, sp , bg, c, prob
 	# correct += outp_len

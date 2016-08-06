@@ -2,6 +2,7 @@ import os,sys
 import numpy as np
 import csv
 
+
 def save_studio(filename, label_list):
 	with open(filename + ".vis",'r') as file:
 		new_lines = []
@@ -163,3 +164,19 @@ def get_keyframeslist(clip_dir):
 			keyframes_list.append(image)
 
 	return keyframes_list
+
+def get_pyframeslist(clip_dir, clip_name):
+
+	pyframes_list = []
+	source = sorted(os.listdir(clip_dir))
+	
+	for file in source:
+		if file.endswith(".jpg") and file.split('.')[0] == clip_name.split('.')[0]:
+			image = clip_dir + os.path.basename(file)
+			pyframes_list.append(image)
+
+	return pyframes_list
+
+def rename_frames(timestamps, keyframes, extra_timestamps, pyframes):
+
+	

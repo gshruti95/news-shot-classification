@@ -42,13 +42,18 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 	mysvm = svm.SVC(decision_function_shape = 'ovo', kernel = 'linear')
 
 	mysvm = mysvm.fit(dtrain[:,:-1], dtrain[:,-1])	
+
+	return mysvm, dvalidate
+
+
+def predict_split(mysvm, dvalidate):	
 	 
 	print 'Predicting...'
 
 	output = mysvm.predict(dvalidate[:,:-1]).astype(str)
 
-	end = time.time()
-	print "Time taken: %.2f" %(end-start) 
+	# end = time.time()
+	# print "Time taken: %.2f" %(end-start) 
 
 	crt_outp = 0
 	not_count = 0
@@ -101,7 +106,7 @@ def dataset_split(train_data, train_labels, test_data, test_labels):
 	crt_notv = 0
 	crt_cr = 0
 	crt_notcr = 0
-	print output
+	# print output
 	for i in range(len(output)):
 		# if output[i] != 'Not':
 		# 	crt_outp = crt_outp + 1
@@ -254,13 +259,29 @@ def manual(train_data, train_labels, test_data, test_labels):
 	mysvm = svm.SVC(decision_function_shape='ovo', kernel = 'linear')
 
 	mysvm = mysvm.fit(df_train_data, df_train_labels)	
-	 
+
+	return mysvm, df_test_labels
+
+def predict(mysvm):
+
+	start = time.time()
 	print 'Predicting...'
 
 	output = mysvm.predict(df_test_data).astype(str)
 
 	end = time.time()
 	print "Time taken: %.2f" %(end-start) 
+
+	return output
+
+def predict_manual(mysvm, df_test_labels):
+	 
+	print 'Predicting...'
+
+	output = mysvm.predict(df_test_data).astype(str)
+
+	# end = time.time()
+	# print "Time taken: %.2f" %(end-start) 
 
 	crt_outp = 0
 	not_count = 0
