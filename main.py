@@ -12,7 +12,7 @@ import dataset, classifier
 import pipeline
 import cPickle
 import cropframes
-# import shot_labels
+import format_output
 
 def main():
 	root = '/home/shruti/gsoc/news-shot-classification/'
@@ -88,48 +88,60 @@ def main():
 	output_filename = clip_dir.split('/')[-2]	
 	clip_name = fileops.get_video_filename(clip_dir)
 
-	timestamps = keyframes.keyframes(clip_dir, clip_name, output_filename)
-	shot_boundaries, extra_timestamps = shotdetect.shotdetect(clip_dir, clip_name)
-	py_images = fileops.get_pyframeslist(clip_dir, clip_name)
+	keyframe_times = keyframes.keyframes(clip_dir, clip_name, output_filename)
 	keyframes_list = fileops.get_keyframeslist(clip_dir)
-
-	image_files = fileops.rename_frames(timestamps, keyframes_list, extra_timestamps, py_images)
+	shot_boundaries, py_times = shotdetect.shotdetect(clip_dir, clip_name)
+	py_images = fileops.get_pyframeslist(clip_dir, clip_name)
+	
+	image_files, all_timestamps = fileops.rename_frames(keyframe_times, keyframes_list, py_times, py_images)
 	# image_files = cropframes.cropframes(clip_dir, image_files)
-
+	print "Done...\n"
+	#####################
 	# studio_shots = graphcluster.get_graph_clusters(clip_dir, image_files)
 	# print studio_shots
 	# print len(studio_shots)
 	# fileops.save_studio(clip_dir + output_filename, studio_shots)
-	
+	#####################
 	## Run a model and get labels for keyframe
  	
-	# caffe_path = '/home/shruti/gsoc/caffehome/caffe/'
-	# [fc8, fc7, fc6, scene_type_list, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files) 	
-
-	# accuracy.get_accuracy(clip_dir + output_filename, '_scene', scene_type_list)
-	# fileops.save_placesCNN_labels(clip_dir + output_filename, clip_dir + 'placesCNN_labels', output_label_list, scene_type_list, label_list, scene_attributes_list)
-
+	caffe_path = '/home/shruti/gsoc/caffehome/caffe/'
+	[fc8, fc7, fc6, scene_type_list, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files) 	
 	# fileops.save_features(clip_dir + 'cropped_places_fc8', fc8)
 	# print "Done fc8"
-	# fileops.save_features(clip_dir + 'cropped_places_fc7 ', fc7)
-	# print "done fc7"
+	fileops.save_features(clip_dir + 'cropped_places_fc7 ', fc7)
+	print "done fc7"
 	# fileops.save_features(clip_dir + 'cropped_places_fc6', fc6)
 	# print "done fc6"
 
+	###################
+	# accuracy.get_accuracy(clip_dir + output_filename, '_scene', scene_type_list)
+	# fileops.save_placesCNN_labels(clip_dir + output_filename, clip_dir + 'placesCNN_labels', output_label_list, scene_type_list, label_list, scene_attributes_list)
+
 	# googlenet_dir = '/home/shruti/gsoc/news-shot-classification/clips/'
 	# dataset.dataset(googlenet_dir)
-	
-	# googlenet_label_list = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
+	###################
+
+	googlenet_label_list = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
 	# fileops.save_googlenet_labels(clip_dir + output_filename, clip_dir + 'googlenet_labels', label_list)
 	# fileops.write_separate_labels(clip_dir + output_filename)
 	
 	train_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/train/'
-	test_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/test/'	
-	# mysvm = pipeline.pipeline(train_dir, test_dir)
-	# classifier_label_list = classifier.predict(mysvm)
+	# test_dir = '/home/shruti/gsoc/news-shot-classification/full-clips/test/'	
+	# mysvm = pipeline.pipeline(train_dir, clip_dir)
+	
+	# [train_data, train_labels] = dataset.trainset(train_dir)
+	# mysvm = classifier.classifier_train(train_data, train_labels)
+	# with open('newsperson_classifier.pkl', 'w') as pickle_file:
+	# 	cPickle.dump(mysvm, pickle_file)
+
+	with open('newsperson_classifier.pkl', 'r') as pickle_file:
+		mysvm = cPickle.load(pickle_file)
+
+	test_data = dataset.testset(clip_dir)
+	classifier_label_list = classifier.classifier_predict(mysvm, test_data)
 
 
-	# shot_labels.frame_labels(clip_dir + output_filename, timestamps, image_files, shot_boundaries, classifier_label_list, googlenet_label_list, scene_type_list, scene_attributes_list)
+	format_output.output_labels(clip_dir + output_filename, all_timestamps, image_files, shot_boundaries, classifier_label_list, googlenet_label_list, scene_type_list, scene_attributes_list)
 
 	overall_end = time.time()	
 	print "Total time taken: %.2f" %(overall_end-overall_start)

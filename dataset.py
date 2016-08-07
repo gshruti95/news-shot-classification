@@ -5,8 +5,38 @@ import fileops
 import cropframes
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 
+def testset(clip_dir):
 
-def classifier_dataset(main_dir):
+	test_features = []
+
+	with open(clip_dir + 'cropped_places_fc7 .csv') as features_file:
+		features = features_file.readlines()
+	features = [feature.split('\n')[0] for feature in features]
+	test_features += features
+
+	return test_features
+
+def ovo_trainset(train_labels):
+
+	for idx, label in enumerate(train_labels):
+		if label == 'Reporter':
+			label = 'Studio'
+			train_labels[idx] = label
+		elif label == 'Hybrid':
+			label = 'Studio'
+			train_labels[idx] = label
+
+	new_train_labels = []
+	for label in train_labels:
+		if label != 'Studio':
+			label = 'Not'
+		else:
+			label = 'Newsperson(s)'
+		new_train_labels.append(label)
+
+	return new_train_labels
+
+def trainset(main_dir):
 
 	dir_list = sorted(os.listdir(main_dir))
 
@@ -87,13 +117,18 @@ def classifier_dataset(main_dir):
 	features = []
 	glabels = []
 	for label, feature in zip(label_data, features_data):
-		if label not in ['Commercial']:#,'Problem/Unclassified']:
+		if label not in ['Commercial','Problem/Unclassified']:
 			# if label == 'Vehicle/Accident':#, 'Background_roll','Background roll']:
 			labels.append(label)
 			# else:
 				# labels.append('Not')
 			features.append(feature)
 			# glabels.append(glabel)	
+
+	new_train_labels = ovo_trainset(labels)
+
+	return features, new_train_labels
+
 
 	# p_v = 0
 	# v = 0
@@ -114,4 +149,3 @@ def classifier_dataset(main_dir):
 	# print(classification_report(labels, glabels, target_names = t_names))
 	# print "Accuracy score: ", accuracy_score(labels, glabels)
 	
-	return features, labels

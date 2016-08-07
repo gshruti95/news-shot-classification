@@ -7,6 +7,46 @@ from sklearn.preprocessing import normalize
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import time
 
+def classifier_train(train_data, train_labels):
+
+	start = time.time()
+
+	df_train_data = [data.split(',') for data in train_data]
+	df_train_data = pd.DataFrame(df_train_data)
+	df_train_data = df_train_data.astype(float)
+	df_train_data = df_train_data.values
+
+	df_train_labels = pd.DataFrame(train_labels)
+	df_train_labels = df_train_labels.values
+
+	print 'Training data'
+
+	mysvm = svm.SVC(decision_function_shape='ovo', kernel = 'linear')
+
+	mysvm = mysvm.fit(df_train_data, df_train_labels)
+
+	end = time.time()
+	print "Time taken to train: %.2f" %(end-start)	
+
+	return mysvm
+
+def classifier_predict(mysvm, test_data):
+
+	start = time.time()
+
+	df_test_data = [data.split(',') for data in test_data]
+	df_test_data = pd.DataFrame(df_test_data)
+	df_test_data = df_test_data.astype(float)
+	df_test_data = df_test_data.values
+	print 'Predicting...'
+
+	output = mysvm.predict(df_test_data).astype(str)
+
+	end = time.time()
+	print "Time taken to predict: %.2f" %(end-start) 
+
+	return output
+
 def dataset_split(train_data, train_labels, test_data, test_labels): 
 
 	start = time.time()
@@ -260,19 +300,8 @@ def manual(train_data, train_labels, test_data, test_labels):
 
 	mysvm = mysvm.fit(df_train_data, df_train_labels)	
 
-	return mysvm, df_test_labels
+	return mysvm, df_test_data
 
-def predict(mysvm):
-
-	start = time.time()
-	print 'Predicting...'
-
-	output = mysvm.predict(df_test_data).astype(str)
-
-	end = time.time()
-	print "Time taken: %.2f" %(end-start) 
-
-	return output
 
 def predict_manual(mysvm, df_test_labels):
 	 

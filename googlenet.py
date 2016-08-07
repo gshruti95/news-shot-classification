@@ -6,19 +6,6 @@ import re, time
 import cPickle
 
 label_dict = {}
-# vehicle_dict = ['airliner', 'warplane', 'military plane', 'airship', 'dirigible', 'space shuttle', 'fireboat', 'gondola', 
-# 'speedboat', 'lifeboat', 'canoe', 'container ship', 'containership', 'container vessel', 'liner', 'ocean liner', 'aircraft carrier', 'carrier', 'flattop',
-#   'attack aircraft carrier', 'submarine', 'pigboat', 'sub', 'U-boat', 'tank', 'army tank', 'armored combat vehicle', 'armoured combat vehicle', 
-#   'wreck', 'freight car', 'passenger car', 'coach', 'carriage', 'motor scooter', 'scooter', 'bicycle-built-for-two', 'tandem bicycle', 'tandem mountain bike', 
-#   'all-terrain bike', 'off-roader', 'electric locomotive', 'steam locomotive', 'ambulance', 'beach wagon', 'station wagon', 'wagon',
-#   'estate car', 'beach waggon', 'station waggon', 'waggon', 'cab', 'hack', 'taxi', 'taxicab', 'convertible', 'jeep', 'landrover', 'limousine', 'limo',
-#    'minivan', 'Model T', 'racer', 'race car', 'racing car', 'sports car', 'sport car', 'go-kart', 'golfcart', 'golf cart',
-#     'moped', 'snowplow', 'snowplough', 'fire engine', 'fire truck', 'garbage truck', 'dustcart', 'pickup', 'pickup truck',
-#      'tow truck', 'tow car', 'wrecker', 'trailer truck', 'tractor trailer', 'trucking rig', 'rig', 'articulated lorry', 'semi',
-#       'moving van', 'police van', 'police wagon', 'paddy wagon', 'patrol wagon', 'wagon', 'black Maria', 'recreational vehicle',
-#        'RV', 'R.V.', 'streetcar', 'tram', 'tramcar', 'trolley', 'trolley car', 'snowmobile', 'tractor', 'mobile home', 'manufactured home',
-#         'tricycle', 'trike', 'velocipede', 'unicycle', 'monocycle', 'horse cart', 'horse-cart', 'car wheel', 'traffic light', 'traffic signal', 'stoplight',
-#          'trolleybus', 'trolley coach', 'trackless trolley', 'bullet train', 'bullet','amphibious vehicle']
 
 label_dict['natural formation'] = ['geological formation', 'natural depression', 'natural elevation', 'mountain', 
 								'ridge','reef','shore','spring','location','point','geographic point','natural object']
@@ -155,8 +142,8 @@ def googlenet(caffe_path, model_path, image_files):
 				bet_result = ' Sports\n'
 				final_label_list.append('Sports')
 			else:
-				bet_result = ' Not\n'
-				final_label_list.append('Not')
+				bet_result = ' Unclassified\n'
+				final_label_list.append('Unclassified')
 
 			if fl_list[0] == 1:
 				other_label.append('Vehicle/Accident')
@@ -174,7 +161,7 @@ def googlenet(caffe_path, model_path, image_files):
 				other_label.append('Building/structure')
 				other_result = ', Building/structure'
 			else:
-				other_label.append('Not')
+				other_label.append('Unclassified')
 				other_result = ''
 
 			print str(num) + bet_result + other_result
