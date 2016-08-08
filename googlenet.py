@@ -94,7 +94,7 @@ def googlenet(caffe_path, model_path, image_files):
 			count_c = 0
 			count_p = 0
 			count_sp = 0
-			fl_list = [0,0,0,0,0]
+			fl_list = ['','','','','']
 			label_list = []
 			for v in infogain_sort[:5]:
 				label_list.append((bet['words'][v], '%.5f' % expected_infogain[v]))
@@ -102,70 +102,63 @@ def googlenet(caffe_path, model_path, image_files):
 					if bet['words'][v] in label_dict['vehicle']:
 						count_v += 1
 						if expected_infogain[v] > .6:
-							fl_list[0] = 1
+							fl_list[0] = 'Vehicle'
 					elif bet['words'][v] in label_dict['natural formation']:
 						count_na += 1
 						if expected_infogain[v] > .6:
-							fl_list[1] = 1
+							fl_list[1] = 'Natural formation'
 					elif bet['words'][v] in label_dict['weapon']:
 						count_w += 1
 						if expected_infogain[v] > .6:
-							fl_list[2] = 1
+							fl_list[2] = 'Weapon'
 					elif bet['words'][v] in label_dict['person(s)']:
 						count_c += 1
 						if expected_infogain[v] > .6:
-							fl_list[3] = 1
+							fl_list[3] = 'Person(s)'
 					elif bet['words'][v] in label_dict['building/structure']:
 						count_p += 1
 						if expected_infogain[v] > .6:
-							fl_list[4] = 1
+							fl_list[4] = 'Buidling/structure'
 					elif bet['words'][v] in label_dict['sports']:
 						count_sp += 1
 
 
 			if count_v >= 3:
-				bet_result = ' Vehicle\n'
-				final_label_list.append('Vehicle/Accident')
+				bet_result = 'Vehicle'
+				fl_list[0] = ''
 			elif count_na >= 3:
-				bet_result = ' Natural formation\n'
-				final_label_list.append('Natural formation')
+				bet_result = 'Natural formation'
+				fl_list[1] = ''
 			elif count_w >= 3:
-				bet_result = ' Weapon\n'
-				final_label_list.append('Weapon')
+				bet_result = 'Weapon'
+				fl_list[2] = ''
 			elif count_c >= 3:
-				bet_result = ' Person(s)\n'
-				final_label_list.append('Person(s)')
+				bet_result = 'Person(s)'
+				fl_list[3] = ''
 			elif count_p >= 3:
-				bet_result = ' Building/structure\n'
-				final_label_list.append('Building/structure')
+				bet_result = 'Building/structure'
+				fl_list[4] = ''
 			elif count_sp >= 3:
-				bet_result = ' Sports\n'
-				final_label_list.append('Sports')
+				bet_result = 'Sports'
 			else:
-				bet_result = ' Unclassified\n'
-				final_label_list.append('Unclassified')
+				bet_result = 'Unclassified'
 
-			if fl_list[0] == 1:
-				other_label.append('Vehicle/Accident')
-				other_result = ', Vehicle'
-			elif fl_list[1] == 1:
-				other_label.append('Natural formation')
-				other_result = ', Natural formation'
-			elif fl_list[2] == 1:
-				other_label.append('Weapon')
-				other_result = ', Weapon'
-			elif fl_list[3] == 1:
-				other_label.append('Person(s)')
-				other_result = ', Person(s)'
-			elif fl_list[4] == 1:
-				other_label.append('Building/structure')
-				other_result = ', Building/structure'
+			other_result = ''
+			for item in fl_list:
+				if item != '' and other_result == '':
+					other_result = ' ' + item
+				elif item != '' and other_result != '':
+					other_result += ', ' + item
+
+			if other_result != '':		
+				tmp = [bet_result, other_result]
+				result = ','.join(tmp)
 			else:
-				other_label.append('Unclassified')
-				other_result = ''
+				result = bet_result
 
-			print str(num) + bet_result + other_result
-			print str(label_list) + '\n'
+			final_label_list.append(result)
+
+			# print str(label_list) + '\n'
 
 	end = time.time()
 	print "Googlenet Time : %.3f \n"  %(end - start)

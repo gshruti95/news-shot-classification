@@ -54,23 +54,16 @@ def placesCNN(caffe_path, model_path, image_files):
 		if scores is None:
 			scores = {}
 			scores['prob'] = output['prob'].copy()
-			fc8 = net.blobs['fc8'].data[...].copy()
 			fc7 = net.blobs['fc7'].data[...].copy()
-			fc6 = net.blobs['fc6'].data[...].copy()
-			# pool5 = net.blobs['pool5'].data[...].copy()
-			# conv5 = net.blobs['conv5'].data[...].copy()			
-			# conv4 = net.blobs['conv4'].data[...].copy()
-			# conv3 = net.blobs['conv3'].data[...].copy()
+			# fc8 = net.blobs['fc8'].data[...].copy()
+			# fc6 = net.blobs['fc6'].data[...].copy()
+			
 		else:
 			scores['prob'] = np.vstack((scores['prob'],output['prob']))
-			fc8 = np.vstack((fc8, net.blobs['fc8'].data[...].copy()))
 			fc7 = np.vstack((fc7, net.blobs['fc7'].data[...].copy()))
-			fc6 = np.vstack((fc6, net.blobs['fc6'].data[...].copy()))
-			# pool5 = np.vstack((pool5, net.blobs['pool5'].data[...].copy()))
-			# conv5 = np.vstack((conv5, net.blobs['conv5'].data[...].copy()))
-			# conv4 = np.vstack((conv4, net.blobs['conv4'].data[...].copy()))
-			# conv3 = np.vstack((conv3, net.blobs['conv3'].data[...].copy()))
-
+			# fc8 = np.vstack((fc8, net.blobs['fc8'].data[...].copy()))
+			# fc6 = np.vstack((fc6, net.blobs['fc6'].data[...].copy()))
+			
 	places_labels = model_path + 'IndoorOutdoor_places205.csv'
 	labels = np.loadtxt(places_labels, str, delimiter='\t')
 
@@ -86,7 +79,7 @@ def placesCNN(caffe_path, model_path, image_files):
 	end = time.time()
 	print "Time : %.3f \n"  %(end - start)
 	
-	return fc8, fc7, fc6, scene_type_list, scene_attributes_list #, final_label_list, scene_type_list, final_labelset, scene_attributes_list
+	return fc7, scene_type_list, scene_attributes_list #, final_label_list, scene_type_list, final_labelset, scene_attributes_list
 
 
 def get_labels(labels, scores, attribute_responses, scene_attributeNames):

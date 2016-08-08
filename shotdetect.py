@@ -29,7 +29,7 @@ def my_detect_scenes_file(path, scene_list, detector_list, stats_writer = None,
 
     # Attempt to open the passed input (video) file.
     cap.open(path)
-    # file_name = os.path.split(path)[1] #ABHINAV: CHANGE THIS TO THE PATH WHERE YOU WANT THE IMAGES TO GO
+    # file_name = os.path.split(path)[1]
     file_name = path
     if not cap.isOpened():
         if not quiet_mode:
@@ -80,7 +80,7 @@ def my_detect_scenes_file(path, scene_list, detector_list, stats_writer = None,
     return (video_fps, frames_read)
 
 
-def shotdetect(clip_dir, clip_name):
+def shotdetect(clip_dir, clip_path):
 
 	start = time.time()
 	#clip_name = '/home/gsoc/news-shot-classification/clips/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465/2016-05-22_2300_US_KABC_Eyewitness_News_4PM_0-465.mp4'  # Path to video file.
@@ -92,7 +92,7 @@ def shotdetect(clip_dir, clip_name):
 	detector_list = [scenedetect.detectors.ContentDetector(threshold = 20)]
 
 	video_fps, frames_read = my_detect_scenes_file(
-	    clip_dir + clip_name, scene_list, detector_list, save_images = True)
+	    clip_path, scene_list, detector_list, save_images = True)
 
 	# scene_list now contains the frame numbers of scene boundaries.
 	# print scene_list

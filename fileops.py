@@ -2,22 +2,6 @@ import os,sys
 import numpy as np
 import csv, re
 
-def get_video_filename(clip_dir):
-
-	source = os.listdir(clip_dir)
-	mp4_flag = 0
-
-	for file in source:
-		if file.endswith(".mp4"):
-			if mp4_flag == 0:
-				clip_name = os.path.basename(file)
-				mp4_flag = 1
-			else:
-				print "Multiple mp4 files! Quitting..."
-				exit(0)
-
-	return clip_name
-
 
 def get_keyframeslist(clip_dir):
 
@@ -50,9 +34,9 @@ def get_pyframeslist(clip_dir, clip_name):
 
 	return pyframes_list
 
-def rename_frames(timestamps, keyframes, extra_timestamps, pyframes):
+def rename_frames(clip_dir, timestamps, keyframes, extra_timestamps, pyframes):
 
-	clip_dir = keyframes[0].rsplit('/',1)[0] + '/'
+	# clip_dir = keyframes[0].rsplit('/',1)[0] + '/'
 
 	for timestamp, keyframe in zip(timestamps, keyframes):
 		timestamp = "{0:.3f}".format(float(timestamp))
@@ -85,6 +69,21 @@ def rename_frames(timestamps, keyframes, extra_timestamps, pyframes):
 def save_features(filename, features):
 	np.savetxt(filename + '.csv', features, fmt = '%.6f', delimiter=',')
 
+# def get_video_filename(clip_dir):
+
+# 	source = os.listdir(clip_dir)
+# 	mp4_flag = 0
+
+# 	for file in source:
+# 		if file.endswith(".mp4"):
+# 			if mp4_flag == 0:
+# 				clip_name = os.path.basename(file)
+# 				mp4_flag = 1
+# 			else:
+# 				print "Multiple mp4 files! Quitting..."
+# 				exit(0)
+
+# 	return clip_name
 
 # def save_studio(filename, label_list):
 # 	with open(filename + ".vis",'r') as file:
