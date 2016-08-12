@@ -17,7 +17,7 @@ def main():
 
 	## Test classifier accuracy
 	if sys.argv[1] == 'testmode':
-
+		
 		test_dir = './full-clips/test/'	
 		train_dir = './full-clips/train/'
 		annotation_file = '_shot_type_testuser.txt'
@@ -67,6 +67,7 @@ def main():
 		print "Video preprocessing done...\n"
 		
 		## Run a model and get labels for keyframe
+	 	
 		[fc7, scene_type_list, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files)
 		fileops.save_features(clip_dir + features_file, fc7)
 		print "Extracted fc7 features...\n"
