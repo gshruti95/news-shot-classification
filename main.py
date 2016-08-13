@@ -13,11 +13,11 @@ def main():
 
 	caffe_path = './mycaffe/'
 	fpickle = './ovr_classifier.pkl'
-	features_file = 'cropped_places_fc7 .csv'		
+	features_file = 'cropped_places_fc7'		
 
 	## Test classifier accuracy
 	if sys.argv[1] == 'testmode':
-		
+
 		test_dir = './full-clips/test/'	
 		train_dir = './full-clips/train/'
 		annotation_file = '_shot_type_testuser.txt'

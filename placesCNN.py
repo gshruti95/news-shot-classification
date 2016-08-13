@@ -73,13 +73,13 @@ def placesCNN(caffe_path, model_path, image_files):
 
 	final_label_list, scene_type_list, final_labelset, scene_attributes_list = get_labels(labels, scores, attribute_responses, scene_attributeNames)
 	
-	for idx, item in enumerate(final_labelset):
-		print "%d %s %s\n" %(idx+1, item, scene_type_list[idx]) 
+	# for idx, item in enumerate(final_labelset):
+	# 	print "%d %s %s\n" %(idx+1, item, scene_type_list[idx]) 
 
 	end = time.time()
 	print "Time : %.3f \n"  %(end - start)
 	
-	return fc7, scene_type_list, scene_attributes_list #, final_label_list, scene_type_list, final_labelset, scene_attributes_list
+	return fc7, scene_type_list, scene_attributes_list
 
 
 def get_labels(labels, scores, attribute_responses, scene_attributeNames):
