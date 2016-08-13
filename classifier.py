@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import csv as csv
 from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.cross_validation import train_test_split
-from sklearn.preprocessing import normalize
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import time
 
@@ -21,16 +21,17 @@ def classifier_train(train_data, train_labels):
 
 	print 'Training data'
 
-	mysvm = svm.SVC(decision_function_shape='ovr', kernel = 'linear')
-
-	mysvm = mysvm.fit(df_train_data, df_train_labels)
+	# myclassifier = svm.SVC(decision_function_shape='ovr', kernel = 'linear')
+	# myclassifier = RandomForestClassifier(n_estimators=100)
+	myclassifier = ExtraTreesClassifier(n_estimators=100)
+	myclassifier = myclassifier.fit(df_train_data, df_train_labels)
 
 	end = time.time()
 	print "Time taken to train: %.2f" %(end-start)	
 
-	return mysvm
+	return myclassifier
 
-def classifier_predict(mysvm, test_data):
+def classifier_predict(myclassifier, test_data):
 
 	start = time.time()
 
@@ -40,7 +41,7 @@ def classifier_predict(mysvm, test_data):
 	df_test_data = df_test_data.values
 	print 'Predicting...'
 
-	output = mysvm.predict(df_test_data).astype(str)
+	output = myclassifier.predict(df_test_data).astype(str)
 
 	end = time.time()
 	print "Time taken to predict: %.2f" %(end-start) 

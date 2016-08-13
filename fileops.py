@@ -67,7 +67,7 @@ def rename_frames(clip_dir, timestamps, keyframes, extra_timestamps, pyframes):
 	return image_files, new_times
 
 def save_features(filename, features):
-	np.savetxt(filename + '.csv', features, fmt = '%.6f', delimiter=',')
+	np.savetxt(filename, features, fmt = '%.6f', delimiter=',')
 
 def get_video_filename(clip_dir):
 

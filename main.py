@@ -13,7 +13,7 @@ def main():
 
 	caffe_path = './mycaffe/'
 	fpickle = './ovr_classifier.pkl'
-	features_file = 'cropped_places_fc7'		
+	features_file = 'cropped_places_fc7 .csv'		
 
 	## Test classifier accuracy
 	if sys.argv[1] == 'testmode':
@@ -22,18 +22,20 @@ def main():
 		train_dir = './full-clips/train/'
 		annotation_file = '_shot_type_testuser.txt'
 		class_type = 'newsperson'
+		
+		# fpickle = './et100_classifier.pkl'
 		# [train_data, train_labels] = dataset.trainset(train_dir, annotation_file, features_file)
 		# # train_labels = dataset.ovo_trainset(train_labels, class_type)
-		# mysvm = classifier.classifier_train(train_data, train_labels)
+		# myclassifier = classifier.classifier_train(train_data, train_labels)
 		# with open(fpickle, 'w') as pickle_file:
-		# 	cPickle.dump(mysvm, pickle_file)
+		# 	cPickle.dump(myclassifier, pickle_file)
 
 		with open(fpickle, 'r') as pickle_file:
-			mysvm = cPickle.load(pickle_file)
+			myclassifier = cPickle.load(pickle_file)
 		[test_data, test_labels] = dataset.trainset(test_dir, annotation_file, features_file)
-		new_test_labels = dataset.ovo_trainset(test_labels, class_type)
-		# new_test_labels = test_labels
-		output = classifier.predict_testmode(mysvm, test_data, new_test_labels, test_labels)
+		# new_test_labels = dataset.ovo_trainset(test_labels, class_type)
+		new_test_labels = test_labels
+		output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
 		
 		# for predicted, actual in zip(output, test_labels):
 		# 	print predicted, actual
@@ -76,9 +78,9 @@ def main():
 		print "Retrieved imagenet labels...\n"
 
 		with open(fpickle, 'r') as pickle_file:
-			mysvm = cPickle.load(pickle_file)
+			myclassifier = cPickle.load(pickle_file)
 		test_data = dataset.testset(clip_dir, features_file)
-		classifier_label_list = classifier.classifier_predict(mysvm, test_data)
+		classifier_label_list = classifier.classifier_predict(myclassifier, test_data)
 		print "Classified frames...\n"
 
 		format_output.output_labels(rel_clip_path + output_filename, all_timestamps, image_files, shot_boundaries, classifier_label_list, googlenet_label_list, scene_type_list, scene_attributes_list)
