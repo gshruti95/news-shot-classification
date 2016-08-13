@@ -67,8 +67,15 @@ def main():
 		shot_boundaries, py_times = shotdetect.shotdetect(clip_dir, new_clip_path)
 		py_images = fileops.get_pyframeslist(clip_dir, clip_name)
 		
-		image_files, all_timestamps = fileops.rename_frames(clip_dir, keyframe_times, keyframes_list, py_times, py_images)
-		image_files = cropframes.cropframes(clip_dir, image_files)
+		orig_images, all_timestamps = fileops.rename_frames(clip_dir, keyframe_times, keyframes_list, py_times, py_images)
+		if features_file == 'cropped_places_fc7 .csv':
+			image_files = cropframes.cropframes(clip_dir, orig_images)
+			for image in orig_images:
+				os.remove(image)
+		else:
+			image_files = orig_images
+
+		os.remove(clip_dir + clip_name)
 		print "Video preprocessing done...\n"
 		
 		## Run a model and get labels for keyframe
@@ -76,14 +83,16 @@ def main():
 		fileops.save_features(clip_dir + features_file, fc7)
 		print "Extracted fc7 features...\n"
 
-		[googlenet_cat, googlenet_labels] = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
-		print "Retrieved imagenet labels...\n"
-
 		with open(fpickle, 'r') as pickle_file:
 			myclassifier = cPickle.load(pickle_file)
 		test_data = dataset.testset(clip_dir, features_file)
 		classifier_label_list = classifier.classifier_predict(myclassifier, test_data)
 		print "Classified frames...\n"
+		
+		os.remove(clip_dir + features_file)
+
+		[googlenet_cat, googlenet_labels] = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
+		print "Retrieved imagenet labels...\n"
 
 		format_output.output_labels(rel_clip_path + output_filename, all_timestamps, image_files, shot_boundaries, classifier_label_list, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list)
 		

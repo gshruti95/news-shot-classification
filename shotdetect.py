@@ -111,9 +111,9 @@ def shotdetect(clip_dir, clip_path):
 	# 	for item in scene_list_tc:
 	# 		print >> file, item
 
-	with open(clip_dir + 'scene_list_sec.txt','w') as file:
-		for item in scene_list_sec:
-			print >> file, "{0:.3f}".format(float(item))
+	# with open(clip_dir + 'scene_list_sec.txt','w') as file:
+	# 	for item in scene_list_sec:
+	# 		print >> file, "{0:.3f}".format(float(item))
 
 	end = time.time()
 
