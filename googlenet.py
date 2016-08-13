@@ -96,7 +96,7 @@ def googlenet(caffe_path, model_path, image_files):
 		vect = 1000
 		for single_output in [output[k:k+vect] for k in xrange(0,len(output),vect)]:
 			num += 1
-			bet = cPickle.load(open('/home/shruti/gsoc/caffehome/caffe/data/ilsvrc12/imagenet.bet.pickle'))
+			bet = cPickle.load(open('./mycaffe/models/bvlc_googlenet/imagenet.bet.pickle'))
 			bet['infogain'] -= np.array(bet['preferences']) * 0.1
 			expected_infogain = np.dot(bet['probmat'], single_output[bet['idmapping']])
 			expected_infogain *= bet['infogain']
