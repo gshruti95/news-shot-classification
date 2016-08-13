@@ -79,12 +79,14 @@ def googlenet(caffe_path, model_path, image_files):
             image_dims=(256, 256), raw_scale=255,
             mean=mu, channel_swap=(2, 1, 0))
 
+	
+	num = 0
+	googlenet_category = []
+	other_label = []
+	googlenet_labels = []
+
 	# Assign batchsize
 	batch_size = 10
-	num = 0
-	final_label_list = []
-	other_label = []
-
 	chunks_done = 0
 	for chunk in [image_files[x:x+batch_size] for x in xrange(0, len(image_files), batch_size)]:
 		print "Processing %.2f%% done ..." %((batch_size*chunks_done*100)/float(len(image_files)))
@@ -115,8 +117,9 @@ def googlenet(caffe_path, model_path, image_files):
 			fl_list = ['','','','','']
 			label_list = []
 			for v in infogain_sort[:5]:
-				label_list.append((bet['words'][v], '%.5f' % expected_infogain[v]))
+				# label_list.append((bet['words'][v], '%.5f' % expected_infogain[v]))
 				if expected_infogain[v] > .2:
+					label_list.append((bet['words'][v], float('%.2f' %expected_infogain[v])))
 					if bet['words'][v] in label_dict['vehicle']:
 						count_v += 1
 						if expected_infogain[v] > .6:
@@ -140,6 +143,8 @@ def googlenet(caffe_path, model_path, image_files):
 					elif bet['words'][v] in label_dict['sports']:
 						count_sp += 1
 
+			label_list = ", ".join(map(str, label_list))
+			googlenet_labels.append(label_list)
 
 			if count_v >= 3:
 				bet_result = 'Vehicle'
@@ -174,11 +179,11 @@ def googlenet(caffe_path, model_path, image_files):
 			else:
 				result = bet_result
 
-			final_label_list.append(result)
+			googlenet_category.append(result)
 
 			# print str(label_list) + '\n'
 
 	end = time.time()
 	print "Googlenet Time : %.3f \n"  %(end - start)
 
-	return final_label_list
+	return googlenet_category, googlenet_labels

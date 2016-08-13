@@ -71,20 +71,20 @@ def placesCNN(caffe_path, model_path, image_files):
 	scene_attributeNames = np.loadtxt(model_path + 'attributeNames.csv', delimiter = '\n', dtype = str)
 	attribute_responses = get_scene_attribute_responses(scene_attributeValues, fc7)
 
-	final_label_list, scene_type_list, final_labelset, scene_attributes_list = get_labels(labels, scores, attribute_responses, scene_attributeNames)
+	scene_type_list, places_labels, scene_attributes_list = get_labels(labels, scores, attribute_responses, scene_attributeNames)
 	
-	# for idx, item in enumerate(final_labelset):
+	# for idx, item in enumerate(places_labels):
 	# 	print "%d %s %s\n" %(idx+1, item, scene_type_list[idx]) 
 
 	end = time.time()
 	print "Time : %.3f \n"  %(end - start)
 	
-	return fc7, scene_type_list, scene_attributes_list
+	return fc7, scene_type_list, places_labels, scene_attributes_list
 
 
 def get_labels(labels, scores, attribute_responses, scene_attributeNames):
 	
-	final_labelset = []
+	places_labels = []
 	final_label_list = []
 	scene_type_list = []
 	scene_attributes_list = []
@@ -96,74 +96,66 @@ def get_labels(labels, scores, attribute_responses, scene_attributeNames):
 		toplabels_idx = output_prob.argsort()[::-1][:5]  # reverse sort and take five largest items
 
 		maxprob_label = labels[output_prob.argmax()]
-		maxprob_label = re.findall(r"[\w]+",maxprob_label)
+		maxprob_label = re.findall(r"[\w]+", maxprob_label)
 
 		if output_prob[toplabels_idx[0]] > .1 :			 # threshold for bad labels
 			
 			for top5_idx in toplabels_idx:
-				#if output_prob[top5_idx] > .08:
-					#count = count + 1
 				if labels[top5_idx][-1] == '1':
 					vote = vote + 1
 
 			if vote > 2:
-				scene_type = 'indoor'
+				scene_type = 'Indoor'
 			else:
-				scene_type = 'outdoor'
+				scene_type = 'Outdoor'
 
-			# scene_type_no = maxprob_label[-1]
-			# if scene_type_no == '1':
-			# 	scene_type = 'indoor'
-			# 	print 'scene type:', scene_type
+			# if output_prob[toplabels_idx[0]] > .2 :
+			# 	final_label = maxprob_label[1]
+			# 	#print 'scores label:' , final_label
 			# else:
-			# 	scene_type = 'outdoor'
-			# 	print 'scene type:', scene_type_no
+			# 	final_label = "Unknown"
 
-			if output_prob[toplabels_idx[0]] > .2 :
-				final_label = maxprob_label[1]
-				#print 'scores label:' , final_label
-			else:
-				final_label = "Unknown"
-				#print 'scores label: Unknown'
 		else:
-			final_label = "Unknown"
-			scene_type = 'unknown'
+			scene_type = 'Unknown'
+			# final_label = "Unknown"
 			#print "Did not return reasonably accurate label!"
 
-		final_label_list.append(final_label)
-		scene_type_list.append(scene_type)	
-
+		# final_label_list.append(final_label)
+		
 		label_set = []
 		prob_set = []	
-
 		no_label_flag = 0 
 
+		label_list = []
 		for label_prob, label_idx in zip(output_prob[toplabels_idx],toplabels_idx):
 			if label_prob > .2 :
-				label_set.append(re.findall(r"[\w]+",labels[label_idx])[1])
-				prob_set.append(label_prob)
-				no_label_flag = 1
+				label_list.append((re.findall(r"[\w]+",labels[label_idx])[1], float('%.2f' %label_prob)))
+			# 	label_set.append(re.findall(r"[\w]+",labels[label_idx])[1])
+			# 	prob_set.append(label_prob)
+			# 	no_label_flag = 1
+			# label_list = zip(label_set,prob_set)
+		# if no_label_flag == 0:
+		# 	label_set.append('None')
+		# 	prob_set.append(0.000)
+		# 	label_list = zip(label_set,prob_set)
 
-			label_list = zip(label_set,prob_set)
-		
-		if no_label_flag == 0:
-			 label_set.append('None')
-			 prob_set.append(0.000)
-			 label_list = zip(label_set,prob_set)
 				
 		#print "probabilities and labels: %.3f %s" %(label_prob, re.findall(r"[\w]+",labels[label_idx])[1])
 			
-		label_list = "; ".join( "%s, %s" %tup for tup in label_list )
-		final_labelset.append(label_list)
+		# label_list = "; ".join( "%s, %s" %tup for tup in label_list )
+		label_list = ', '.join(map(str, label_list))
+		places_labels.append(label_list)
+
+		scene_type_list.append(scene_type)	
 
 		## Scene attributes
 		attribute_response = attribute_responses[idx]
 		attribute_index = attribute_response.argsort()[::-1][:5]
 		scene_attributes = scene_attributeNames[attribute_index]
-		scene_attributes = ",".join(scene_attributes)
+		scene_attributes = ", ".join(scene_attributes)
 		scene_attributes_list.append(scene_attributes)
 
-	return final_label_list, scene_type_list, final_labelset, scene_attributes_list
+	return scene_type_list, places_labels, scene_attributes_list
 
 def get_scene_attribute_responses(scene_attributeValues, fc7):
 	'''Returs the scene attributes for the fc7 features'''

@@ -30,7 +30,7 @@ def shot_labels(camtype, imagenet, scene):
 
 	return cam_label, imagenet_label, scene_label
 
-def output_labels(filename, timestamps, image_files, shot_boundaries, classifier_label_list, googlenet_label_list, scene_type_list, scene_attributes_list):
+def output_labels(filename, timestamps, image_files, shot_boundaries, classifier_label_list, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list):
 	
 	with open(filename + '.vis', 'w+'): pass
 
@@ -46,18 +46,21 @@ def output_labels(filename, timestamps, image_files, shot_boundaries, classifier
 
 		frame_labels = []
 		while timestamps[count] <= boundary and count+1 <= len(timestamps):
-			line = str(timestamps[count]) + '| ' + classifier_label_list[count] + '| ' + googlenet_label_list[count] + '| ' + scene_type_list[count] + '| ' + scene_attributes_list[count] + '\n'
-			frame_labels.append(line)
+			camtype_line = str(timestamps[count]) + '| ' + str(timestamps[count]) + '| SHOT_CLASS | ' + classifier_label_list[count] + '\n'
+			obj_line = str(timestamps[count]) + '| ' + str(timestamps[count]) + '| OBJ_CLASS | ' + googlenet_cat[count] + '| ' + googlenet_labels[count] + '\n'
+			scene_line = str(timestamps[count]) + '| ' + str(timestamps[count]) + '| SCENE_LOCATION | ' + scene_type_list[count] + '| ' + places_labels[count] + '\n'
+			attr_line = str(timestamps[count]) + '| ' + str(timestamps[count]) + '| SCENE_ATTRIBUTES | ' + scene_attributes_list[count] + '\n'
+			frame_labels.append(camtype_line + obj_line + scene_line + attr_line)
 			camtype.append(classifier_label_list[count])
-			imagenet.append(googlenet_label_list[count])
+			imagenet.append(googlenet_cat[count])
 			scene.append(scene_type_list[count])
 			count += 1
 
-		print "Boundary: ", idx, len(camtype), len(imagenet), len(scene)
-		[cam, gnet, scenetype] = shot_labels(camtype, imagenet, scene)
-		print idx, cam, gnet, scenetype
+		# print "Boundary: ", idx, len(camtype), len(imagenet), len(scene)
+		# print idx, cam, obj_type, scenetype
 
-		boundary_label = "SHOT_BOUNDARY" + '| ' + str(current_shot_timestamp) + '| ' + cam + '| ' + gnet + '| ' + scenetype + '\n'
+		[shot_type, obj_type, scenetype] = shot_labels(camtype, imagenet, scene)
+		boundary_label = str(current_shot_timestamp) + '| ' + str(boundary) + '| SHOT_DETECTED >> | Shot_class= '  + shot_type + '| Obj_class= ' + obj_type + '| Scene_type= ' + scenetype + '\n'
 		
 		with open(filename + '.vis', 'aw') as file:
 			file.write(boundary_label)

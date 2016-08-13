@@ -2,7 +2,7 @@ import os, sys, time, shutil
 os.environ["GLOG_minloglevel"] = "2"
 import fileops, cropframes
 import keyframes, shotdetect
-import placesCNN, googlenet
+import placesCNN, googlenet, vgg_face
 import dataset, classifier, cPickle
 import format_output
 # import graphcluster, accuracy
@@ -18,11 +18,14 @@ def main():
 	## Test classifier accuracy
 	if sys.argv[1] == 'testmode':
 
+		fc7 = vgg_face.vgg_face(caffe_path, caffe_path + 'models/vgg_face_caffe/', caffe_path + 'models/vgg_face_caffe/ak.png')
+		fileops.save_features(caffe_path + 'models/vgg_face_caffe/fc7.csv', fc7)
+
 		test_dir = './full-clips/test/'	
 		train_dir = './full-clips/train/'
 		annotation_file = '_shot_type_testuser.txt'
 		class_type = 'newsperson'
-		
+
 		# fpickle = './et100_classifier.pkl'
 		# [train_data, train_labels] = dataset.trainset(train_dir, annotation_file, features_file)
 		# # train_labels = dataset.ovo_trainset(train_labels, class_type)
@@ -30,16 +33,16 @@ def main():
 		# with open(fpickle, 'w') as pickle_file:
 		# 	cPickle.dump(myclassifier, pickle_file)
 
-		with open(fpickle, 'r') as pickle_file:
-			myclassifier = cPickle.load(pickle_file)
-		[test_data, test_labels] = dataset.trainset(test_dir, annotation_file, features_file)
-		# new_test_labels = dataset.ovo_trainset(test_labels, class_type)
-		new_test_labels = test_labels
-		output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
+		# with open(fpickle, 'r') as pickle_file:
+		# 	myclassifier = cPickle.load(pickle_file)
+		# [test_data, test_labels] = dataset.trainset(test_dir, annotation_file, features_file)
+		# # new_test_labels = dataset.ovo_trainset(test_labels, class_type)
+		# new_test_labels = test_labels
+		# output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
 		
 		# for predicted, actual in zip(output, test_labels):
 		# 	print predicted, actual
-		print "Classified frames...\n"
+		# print "Classified frames...\n"
 
 		
 	else:
@@ -69,12 +72,11 @@ def main():
 		print "Video preprocessing done...\n"
 		
 		## Run a model and get labels for keyframe
-	 	
-		[fc7, scene_type_list, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files)
+		[fc7, scene_type_list, places_labels, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files)
 		fileops.save_features(clip_dir + features_file, fc7)
 		print "Extracted fc7 features...\n"
 
-		googlenet_label_list = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
+		[googlenet_cat, googlenet_labels] = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
 		print "Retrieved imagenet labels...\n"
 
 		with open(fpickle, 'r') as pickle_file:
@@ -83,7 +85,7 @@ def main():
 		classifier_label_list = classifier.classifier_predict(myclassifier, test_data)
 		print "Classified frames...\n"
 
-		format_output.output_labels(rel_clip_path + output_filename, all_timestamps, image_files, shot_boundaries, classifier_label_list, googlenet_label_list, scene_type_list, scene_attributes_list)
+		format_output.output_labels(rel_clip_path + output_filename, all_timestamps, image_files, shot_boundaries, classifier_label_list, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list)
 		
 		shutil.rmtree(clip_dir)
 
