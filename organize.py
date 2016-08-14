@@ -30,7 +30,7 @@ def main():
 
 	elif sys.argv[1] == 'commercials':
 
-		labels_f = sys.arv[2]						## ../trainset/keyframes/label.txt
+		labels_f = sys.argv[2]						## ../trainset/keyframes/label.txt
 		keyframes_f = sys.argv[3]
 
 
@@ -43,21 +43,21 @@ def main():
 
 		with open(labels_f, 'r') as lf:
 			label_data = lf.readlines()
-		label_data = [label.split('\n') for label in label_data]
+		label_data = [label.split('\n')[0] for label in label_data]
 		with open(keyframes_f, 'r') as kf:
 			keyframes = kf.readlines()
-		keyframes_path = [frames_path + keyframe.split('\n') for keyframe in keyframes]
+		keyframes_path = [frames_path + keyframe.split('\n')[0] for keyframe in keyframes]
 
+		newlines = []
 		for idx, label in enumerate(label_data):
 			if label not in ['Commercial','Problem/Unclassified']:
-				newlabels.append(label + '\n')
-				newframes.append(keyframes[idx])
+				# newlabels.append(label + '\n')
+				# newframes.append(keyframes[idx])
+				newlines.append(keyframes[idx] + ' ' + label + '\n')
 				shutil.copy(keyframes_path[idx], temp)
 
 		with open(temp + 'train.txt', 'w') as file:
-			file.writelines(newframes + ' ' + newlabels)
-
-
+			file.writelines(newlines)
 
 
 	else:
