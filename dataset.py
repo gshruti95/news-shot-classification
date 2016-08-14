@@ -70,13 +70,13 @@ def trainset(main_dir, annotations_file, fc7_file):
 	sp = 0
 	c = 0
 	p = 0
-	for label, keyframe in zip(label_data, all_keyframes):
+	for idx, label in enumerate(label_data):
 		if label not in ['Commercial','Problem/Unclassified']:
 			if label == 'Reporter' or label == 'Hybrid' or label == 'Studio':
 				label = 'Newsperson(s)'
 				news += 1
 			elif label == 'Background_roll':
-				bg_frames.append(keyframe)
+				bg_frames.append(all_keyframes[idx])
 				bg += 1
 			elif label == 'Graphic':
 				g += 1
@@ -85,7 +85,7 @@ def trainset(main_dir, annotations_file, fc7_file):
 			elif label == 'Sports':
 				sp += 1
 			labels.append(label)
-			# features.append(feature)
+			features.append(features_data[idx])
 		else:
 			if label == 'Commercial':
 				c += 1
@@ -95,4 +95,4 @@ def trainset(main_dir, annotations_file, fc7_file):
 	print len(labels)
 	print news, bg, g, w, sp, c, p
 
-	return labels, bg_frames, ann_files
+	return features, labels, bg_frames, ann_files

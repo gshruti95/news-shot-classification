@@ -28,20 +28,25 @@ def main():
 		class_type = 'newsperson'
 		# classifier.classifier_dump(fpickle, train_dir, annotation_file, features_file)
 
+
 		# with open(fpickle, 'r') as pickle_file:
 		# 	myclassifier = cPickle.load(pickle_file)
 		# [test_data, test_labels] = dataset.trainset(test_dir, annotation_file, features_file)
 		# # new_test_labels = dataset.ovo_trainset(test_labels, class_type)
 		# new_test_labels = test_labels
 		# output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
-		
-		# for predicted, actual in zip(output, test_labels):
-		# 	print predicted, actual
+
 		# print "Classified frames...\n"
 
-		[train_labels, bg_frames, ann_files] = dataset.trainset(train_dir, annotation_file, features_file)
+		[train_data, train_labels, bg_frames, ann_files] = dataset.trainset(train_dir, annotation_file, features_file)
 		print bg_frames
 		print ann_files
+
+		# with open(fpickle, 'r') as pickle_file:
+		# 	myclassifier = cPickle.load(pickle_file)
+		# test_data = dataset.testset(clip_dir, features_file)
+		# classifier_label_list = classifier.classifier_predict(myclassifier, test_data)
+		# print "Classified frames...\n"
 
 		broll_dir = './broll/'
 		if not os.path.exists(broll_dir):
@@ -50,16 +55,18 @@ def main():
 		cur_dir = 'nothing'
 		ann_dir = ann_files[0].split('/')[-2]
 		count = 0
-		for image in bg_frames:
+		for idx, image in enumerate(bg_frames):
 			image_dir = image.split('/')[-2]
 			if image_dir != cur_dir:
 				cur_dir = image_dir
 				if not os.path.exists(broll_dir + cur_dir + '/'):
 					os.makedirs(broll_dir + cur_dir + '/')
 					print 'Made ' + broll_dir + cur_dir + '/'
-				else:
-					print '????'
+					with open(broll_dir + cur_dir + '/' + 'cropped_places_fc7 .csv', 'w') as feat_file: pass
+
 			shutil.copy(image, broll_dir + cur_dir + '/')
+			with open(broll_dir + cur_dir + '/' + 'cropped_places_fc7 .csv', 'aw') as feat_file:
+				feat_file.write(train_data[idx]+'\n')
 
 			if ann_dir == cur_dir and count < len(ann_files):
 				ann_dir = ann_files[count].split('/')[-2]
