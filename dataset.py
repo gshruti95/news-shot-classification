@@ -64,11 +64,20 @@ def trainset(main_dir, annotations_file, fc7_file):
 	sp = 0
 	c = 0
 	p = 0
+	r = 0
+	h = 0
+	s = 0
 	for idx, label in enumerate(label_data):
 		if label not in ['Commercial','Problem/Unclassified']:
-			if label == 'Reporter' or label == 'Hybrid' or label == 'Studio':
+			if label == 'Reporter':
 				label = 'Newsperson(s)'
-				news += 1
+				r += 1
+			if label == 'Hybrid':
+				label = 'Newsperson(s)'
+				h += 1
+			if label == 'Studio':
+				label = 'Newsperson(s)'
+				s += 1
 			elif label == 'Background_roll' or label == 'Talking_head' or label == 'Talking_head/Hybrid':	
 				label = 'Background_roll'
 				bg += 1
@@ -88,6 +97,6 @@ def trainset(main_dir, annotations_file, fc7_file):
 				p += 1
 
 	print len(labels)
-	print news, bg, g, w, sp, c, p
+	print news, s, r, h, bg, g, w, sp, c, p
 
 	return features, labels

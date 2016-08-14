@@ -18,46 +18,24 @@ def main():
 	## Test classifier accuracy
 	if sys.argv[1] == 'testmode':
 
-		fpickle = './test_newg_ovr_classifier.pkl'
+		fpickle = './new_ovr_classifier.pkl'
+		class_type = 'newsperson'
+
 		test_dir = './full-clips/test/'	
 		train_dir = './full-clips/train/'
 		annotation_file = '_new_shot_type_testuser.txt'
-		class_type = 'newsperson'
-		classifier.classifier_dump(fpickle, train_dir, annotation_file, features_file)
-
-		with open(fpickle, 'r') as pickle_file:
-			myclassifier = cPickle.load(pickle_file)
-		[test_data, test_labels] = dataset.trainset(test_dir, annotation_file, features_file)
-		# new_test_labels = dataset.ovo_trainset(test_labels, class_type)
-		new_test_labels = test_labels
-		output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
-
-		print "Classified frames...\n"
-
-		# clip_dir = sys.argv[2]
-		# broll_dir = './broll/'
-		# new_dir = broll_dir + clip_dir + '/'
-		# old_dir = train_dir + clip_dir + '/'
-
-		# with open(old_dir + clip_dir + annotation_file, 'r') as forig:
-		# 	labels = forig.readlines()
-		# keyframes = [label.split('\t')[1] for label in labels]
-		# labels = [label.split('\t')[0] for label in labels]
-
-		# with open(new_dir + clip_dir + '_broll_testuser.txt', 'r') as fnew:
-		# 	newlabels = fnew.readlines()
-		# newkeyframes = [newlabel.split('\t')[1] for newlabel in newlabels]
-		# newlabels = [newlabel.split('\t')[0] for newlabel in newlabels]
-
-		# for newlabel, newkeyframe in zip(newlabels, newkeyframes):
-		# 	if newkeyframe in keyframes:
-		# 		idx = keyframes.index(newkeyframe)
-		# 		labels[idx] = newlabel
-
-		# lines = [label + '\t' + keyframe for label, keyframe in zip(labels, keyframes)]
 		
-		# with open(old_dir + clip_dir + '_new_shot_type_testuser.txt', 'w') as final:
-		# 	final.writelines(lines)
+		# classifier.classifier_dump(fpickle, train_dir, annotation_file, features_file)
+		# with open(fpickle, 'r') as pickle_file:
+		# 	myclassifier = cPickle.load(pickle_file)
+		# [test_data, test_labels] = dataset.trainset(test_dir, annotation_file, features_file)
+		# # new_test_labels = dataset.ovo_trainset(test_labels, class_type)
+		# new_test_labels = test_labels
+		# output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
+		# print "Classified frames...\n"
+
+
+
 
 	else:
 
@@ -77,13 +55,13 @@ def main():
 		new_clip_path = clip_dir + clip_name					## ../../dir/video/video.mp4
 
 		keyframe_times = keyframes.keyframes(clip_dir, new_clip_path)
-		keyframes_list = fileops.get_keyframeslist(clip_dir)
+		keyframes_list = fileops.get_keyframeslist(clip_dir, new_clip_path)
 		shot_boundaries, py_times = shotdetect.shotdetect(clip_dir, new_clip_path)
 		py_images = fileops.get_pyframeslist(clip_dir, clip_name)
 		
 		orig_images, all_timestamps = fileops.rename_frames(clip_dir, keyframe_times, keyframes_list, py_times, py_images)
 		if features_file == 'cropped_places_fc7 .csv':
-			image_files = cropframes.cropframes(clip_dir, orig_images)
+			image_files = cropframes.cropframes(clip_dir, orig_images, new_clip_path)
 			for image in orig_images:
 				os.remove(image)
 		else:
