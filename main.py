@@ -21,13 +21,12 @@ def main():
 		# fc7 = vgg_face.vgg_face(caffe_path, caffe_path + 'models/vgg_face_caffe/', caffe_path + 'models/vgg_face_caffe/ak.png')
 		# fileops.save_features(caffe_path + 'models/vgg_face_caffe/fc7.csv', fc7)
 
-		# fpickle = './et100_classifier.pkl'
+		fpickle = './et100_classifier.pkl'
 		test_dir = './full-clips/test/'	
 		train_dir = './full-clips/train/'
-		annotation_file = '_shot_type_testuser.txt'
+		annotation_file = '_new_shot_type_testuser.txt'
 		class_type = 'newsperson'
 		# classifier.classifier_dump(fpickle, train_dir, annotation_file, features_file)
-
 
 		# with open(fpickle, 'r') as pickle_file:
 		# 	myclassifier = cPickle.load(pickle_file)
@@ -37,48 +36,32 @@ def main():
 		# output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
 
 		# print "Classified frames...\n"
-		# clip_dir = './full-clips/train/2014-01-21_1600_US_KCBS_The_Early_Show/'
-		# with open(fpickle, 'r') as pickle_file:
-		# 	myclassifier = cPickle.load(pickle_file)
-		# test_data = dataset.testset(clip_dir, features_file)
-		# classifier_label_list = classifier.classifier_predict(myclassifier, test_data)
 
-		# for idx, item in enumerate(classifier_label_list):
-		# 	print idx+1, item
-		# print "Classified frames...\n"
-
-
-		[train_data, train_labels, bg_frames, ann_files] = dataset.trainset(train_dir, annotation_file, features_file)
-		print bg_frames
-		print ann_files
-
+		clip_dir = sys.argv[2]
 		broll_dir = './broll/'
-		if not os.path.exists(broll_dir):
-			os.makedirs(broll_dir)
+		new_dir = broll_dir + clip_dir + '/'
+		old_dir = train_dir + clip_dir + '/'
 
-		cur_dir = 'nothing'
-		ann_dir = ann_files[0].split('/')[-2]
-		count = 0
-		for idx, image in enumerate(bg_frames):
-			image_dir = image.split('/')[-2]
-			if image_dir != cur_dir:
-				cur_dir = image_dir
-				if not os.path.exists(broll_dir + cur_dir + '/'):
-					os.makedirs(broll_dir + cur_dir + '/')
-					print 'Made ' + broll_dir + cur_dir + '/'
-					with open(broll_dir + cur_dir + '/' + 'cropped_places_fc7 .csv', 'w') as feat_file: pass
+		with open(old_dir + clip_dir + annotation_file, 'r') as forig:
+			labels = forig.readlines()
+		keyframes = [label.split('\t')[1] for label in labels]
+		labels = [label.split('\t')[0] for label in labels]
 
-			shutil.copy(image, broll_dir + cur_dir + '/')
-			with open(broll_dir + cur_dir + '/' + 'cropped_places_fc7 .csv', 'aw') as feat_file:
-				feat_file.write(train_data[idx]+'\n')
+		with open(new_dir + clip_dir + '_broll_testuser.txt', 'r') as fnew:
+			newlabels = fnew.readlines()
+		newkeyframes = [newlabel.split('\t')[1] for newlabel in newlabels]
+		newlabels = [newlabel.split('\t')[0] for newlabel in newlabels]
 
-			if ann_dir == cur_dir and count < len(ann_files):
-				ann_dir = ann_files[count].split('/')[-2]
-				file = ann_files[count]
-				shutil.copy(file, broll_dir + cur_dir + '/')
-				count += 1
-				
+		for newlabel, newkeyframe in zip(newlabels, newkeyframes):
+			if newkeyframe in keyframes:
+				idx = keyframes.index(newkeyframe)
+				labels[idx] = newlabel
+
+		lines = [label + '\t' + keyframe for label, keyframe in zip(labels, keyframes)]
 		
+		with open(old_dir + clip_dir + '_new_shot_type_testuser.txt', 'w') as final:
+			final.writelines(lines)
+
 	else:
 
 		clip_path = sys.argv[1] 								## ../../dir/video.mp4

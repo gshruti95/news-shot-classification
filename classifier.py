@@ -29,9 +29,9 @@ def classifier_train(train_data, train_labels):
 
 	print 'Training data'
 
-	# myclassifier = svm.SVC(decision_function_shape='ovr', kernel = 'linear')
+	myclassifier = svm.SVC(decision_function_shape='ovr', kernel = 'linear')
 	# myclassifier = RandomForestClassifier(n_estimators=100)
-	myclassifier = ExtraTreesClassifier(n_estimators=100)
+	# myclassifier = ExtraTreesClassifier(n_estimators=100)
 	myclassifier = myclassifier.fit(df_train_data, df_train_labels)
 
 	end = time.time()
