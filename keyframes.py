@@ -13,9 +13,9 @@ def keyframes(clip_dir, clip_path):
 	os.system("ffmpeg -i " + clip_path \
 		+ " -vf \"select='eq(pict_type,PICT_TYPE_I)'\" -keyint_min 1 -g 5 -q:v 5 -vsync 2 -f image2 " \
 		+ clip_dir + clip_name + "_keyframe%04d.jpg -loglevel debug 2>&1 | grep \"pict_type:I\" > " \
-		+ clip_dir + clip_name + "_keyframes.vis")
+		+ clip_dir + clip_name + "_keyframes.times")
 
-	with open(clip_dir + clip_name + "_keyframes.vis",'r') as file:
+	with open(clip_dir + clip_name + "_keyframes.times",'r') as file:
 		timestamps = []
 		stamps = []
 		data = file.readlines()
@@ -26,7 +26,7 @@ def keyframes(clip_dir, clip_path):
 			timestamps.append(float(line))
 			stamps.append(line)
 
-	with open(clip_dir + clip_name + "_keyframes.vis",'w') as file:
+	with open(clip_dir + clip_name + "_keyframes.times",'w') as file:
 		file.writelines("\n".join(stamps))
 
 	

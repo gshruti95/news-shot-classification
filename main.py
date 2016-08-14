@@ -35,8 +35,6 @@ def main():
 		# print "Classified frames...\n"
 
 
-
-
 	else:
 
 		clip_path = sys.argv[1] 								## ../../dir/video.mp4
