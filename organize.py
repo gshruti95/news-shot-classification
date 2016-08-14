@@ -73,14 +73,13 @@ def main():
 					newlines_w.append(keyframes[idx])
 				elif label == 'Sports':
 					newlines_sp.append(keyframes[idx])
-
-		# temp + keyframes[idx] + ' ' + label + '\n'
-		total = len(label_data)
+		
 		tr_np = 2*len(newlines_np)/3
 		tr_bg = 2*len(newlines_bg)/3
 		tr_g = len(newlines_g) - 100
 		tr_w = len(newlines_w) - 20
 		tr_sp = len(newlines_sp) - 15
+		total = len(newlines_np) + len(newlines_np) + len(newlines_g) + len(newlines_w) + len(newlines_sp)
 		
 		np = 0
 		bg = 0
@@ -136,6 +135,9 @@ def main():
 				shutil.copy(frames_path + newlines_sp[sp], test_dir)
 				sp += 1
 
+		print "Train test lengths ", len(train), len(test)
+		print "Total ", total
+		
 		with open(temp + 'train.txt', 'w') as file:
 			file.writelines(train)
 		with open(test_dir + 'test.txt', 'w') as file:
