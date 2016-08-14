@@ -28,9 +28,9 @@ def main():
 		with open('./labels_list.txt', 'w') as file:
 			file.writelines(label_data)			
 
-	elif sys.argv[1] == 'commercials':				## py org.py commercials ~/trainset/keyframes/labels_list.txt ~/trainset/keyframes/keyframes_list.txt
+	elif sys.argv[1] == 'commercials':				## py org.py commercials ~/trainset/keyframes/labels_list.txt ~/trainset/keyframes/s_keyframes_list.txt
 
-		labels_f = sys.argv[2]						## ../trainset/keyframes/label.txt
+		labels_f = sys.argv[2]						## ../trainset/s_keyframes/label.txt
 		keyframes_f = sys.argv[3]
 
 
@@ -71,7 +71,7 @@ def main():
 					newlines_g.append(keyframes[idx])						
 				elif label == 'Weather':					
 					newlines_w.append(keyframes[idx])
-				elif label == 'Sports'
+				elif label == 'Sports':
 					newlines_sp.append(keyframes[idx])
 
 		# temp + keyframes[idx] + ' ' + label + '\n'
