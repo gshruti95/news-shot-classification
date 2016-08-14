@@ -79,7 +79,7 @@ def main():
 		tr_g = len(newlines_g) - 100
 		tr_w = len(newlines_w) - 20
 		tr_sp = len(newlines_sp) - 15
-		total = len(newlines_np) + len(newlines_np) + len(newlines_g) + len(newlines_w) + len(newlines_sp)
+		total = len(newlines_np) + len(newlines_bg) + len(newlines_g) + len(newlines_w) + len(newlines_sp)
 		
 		np = 0
 		bg = 0
@@ -89,7 +89,7 @@ def main():
 
 		train = []
 		test = []
-		for i in range(max(tr_np, tr_bg, tr_g, tr_w, tr_sp)):
+		for i in range(max(len(newlines_np), len(newlines_bg))):
 			if np < tr_np:
 				train.append(temp + newlines_np[np] + ' ' + '0\n')
 				shutil.copy(frames_path + newlines_np[np], temp)
@@ -137,7 +137,7 @@ def main():
 
 		print "Train test lengths ", len(train), len(test)
 		print "Total ", total
-		
+
 		with open(temp + 'train.txt', 'w') as file:
 			file.writelines(train)
 		with open(test_dir + 'test.txt', 'w') as file:
