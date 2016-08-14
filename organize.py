@@ -35,9 +35,9 @@ def main():
 
 
 		label_dir = labels_f.rsplit('/',1)[0] + '/'
-		trainset_dir = label_dir.rsplit('/',1)[0] + '/'
+		trainset_dir = label_dir.rsplit('/',2)[0] + '/'
 		frames_path = label_dir + 'cropped/'
-		temp = trainset_dir + 'keyframes/'
+		temp = trainset_dir + 'final_keyframes/'
 		if not os.path.exists(temp):
 			os.makedirs(temp) 
 
