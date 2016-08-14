@@ -46,7 +46,8 @@ def main():
 		label_data = [label.split('\n')[0] for label in label_data]
 		with open(keyframes_f, 'r') as kf:
 			keyframes = kf.readlines()
-		keyframes_path = [frames_path + keyframe.split('\n')[0] for keyframe in keyframes]
+			keyframes = [keyframe.split('\n')[0] for keyframe in keyframes]
+		keyframes_path = [frames_path + keyframe for keyframe in keyframes]
 
 		newlines = []
 		for idx, label in enumerate(label_data):
@@ -55,7 +56,7 @@ def main():
 					label = 'Newsperson(s)'
 				elif label == 'Background_roll' or label == 'Talking_head' or label == 'Talking_head/Hybrid':	
 					label = 'Background_roll'
-				newlines.append(keyframes[idx] + ' ' + label + '\n')
+				newlines.append(temp + keyframes[idx] + ' ' + label + '\n')
 				shutil.copy(keyframes_path[idx], temp)
 
 		with open(temp + 'train.txt', 'w') as file:
