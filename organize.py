@@ -37,7 +37,7 @@ def main():
 		label_dir = labels_f.rsplit('/',1)[0] + '/'
 		trainset_dir = label_dir.rsplit('/',1)[0] + '/'
 		frames_path = label_dir + 'cropped/'
-		temp = trainset_dir
+		temp = trainset_dir + 'keyframes/'
 		if not os.path.exists(temp):
 			os.makedirs(temp) 
 
@@ -51,8 +51,10 @@ def main():
 		newlines = []
 		for idx, label in enumerate(label_data):
 			if label not in ['Commercial','Problem/Unclassified']:
-				# newlabels.append(label + '\n')
-				# newframes.append(keyframes[idx])
+				if label == 'Reporter' or label == 'Hybrid' or label == 'Studio':		
+					label = 'Newsperson(s)'
+				elif label == 'Background_roll' or label == 'Talking_head' or label == 'Talking_head/Hybrid':	
+					label = 'Background_roll'
 				newlines.append(keyframes[idx] + ' ' + label + '\n')
 				shutil.copy(keyframes_path[idx], temp)
 
