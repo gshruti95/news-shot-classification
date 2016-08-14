@@ -18,20 +18,15 @@ def main():
 	## Test classifier accuracy
 	if sys.argv[1] == 'testmode':
 
-		fc7 = vgg_face.vgg_face(caffe_path, caffe_path + 'models/vgg_face_caffe/', caffe_path + 'models/vgg_face_caffe/ak.png')
-		fileops.save_features(caffe_path + 'models/vgg_face_caffe/fc7.csv', fc7)
+		# fc7 = vgg_face.vgg_face(caffe_path, caffe_path + 'models/vgg_face_caffe/', caffe_path + 'models/vgg_face_caffe/ak.png')
+		# fileops.save_features(caffe_path + 'models/vgg_face_caffe/fc7.csv', fc7)
 
+		# fpickle = './et100_classifier.pkl'
 		test_dir = './full-clips/test/'	
 		train_dir = './full-clips/train/'
 		annotation_file = '_shot_type_testuser.txt'
 		class_type = 'newsperson'
-
-		# fpickle = './et100_classifier.pkl'
-		# [train_data, train_labels] = dataset.trainset(train_dir, annotation_file, features_file)
-		# # train_labels = dataset.ovo_trainset(train_labels, class_type)
-		# myclassifier = classifier.classifier_train(train_data, train_labels)
-		# with open(fpickle, 'w') as pickle_file:
-		# 	cPickle.dump(myclassifier, pickle_file)
+		# classifier.classifier_dump(fpickle, train_dir, annotation_file, features_file)
 
 		# with open(fpickle, 'r') as pickle_file:
 		# 	myclassifier = cPickle.load(pickle_file)
@@ -44,6 +39,34 @@ def main():
 		# 	print predicted, actual
 		# print "Classified frames...\n"
 
+		[train_labels, bg_frames, ann_files] = dataset.trainset(train_dir, annotation_file, features_file)
+		print bg_frames
+		print ann_files
+
+		broll_dir = './broll/'
+		if not os.path.exists(broll_dir):
+			os.makedirs(broll_dir)
+
+		cur_dir = 'nothing'
+		ann_dir = ann_files[0].split('/')[-2]
+		count = 0
+		for image in bg_frames:
+			image_dir = image.split('/')[-2]
+			if image_dir != cur_dir:
+				cur_dir = image_dir
+				if not os.path.exists(broll_dir + cur_dir + '/'):
+					os.makedirs(broll_dir + cur_dir + '/')
+					print 'Made ' + broll_dir + cur_dir + '/'
+				else:
+					print '????'
+			shutil.copy(image, broll_dir + cur_dir + '/')
+
+			if ann_dir == cur_dir and count < len(ann_files):
+				ann_dir = ann_files[count].split('/')[-2]
+				file = ann_files[count]
+				shutil.copy(file, broll_dir + cur_dir + '/')
+				count += 1
+				
 		
 	else:
 
@@ -60,7 +83,7 @@ def main():
 			shutil.rmtree(clip_dir)
 			os.makedirs(clip_dir)
 		shutil.copy(clip_path, clip_dir)
-		new_clip_path = clip_dir + clip_name
+		new_clip_path = clip_dir + clip_name					## ../../dir/video/video.mp4
 
 		keyframe_times = keyframes.keyframes(clip_dir, new_clip_path)
 		keyframes_list = fileops.get_keyframeslist(clip_dir)
@@ -88,7 +111,7 @@ def main():
 		test_data = dataset.testset(clip_dir, features_file)
 		classifier_label_list = classifier.classifier_predict(myclassifier, test_data)
 		print "Classified frames...\n"
-		
+
 		os.remove(clip_dir + features_file)
 
 		[googlenet_cat, googlenet_labels] = googlenet.googlenet(caffe_path, caffe_path + 'models/bvlc_googlenet/', image_files)
