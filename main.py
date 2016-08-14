@@ -37,16 +37,20 @@ def main():
 		# output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
 
 		# print "Classified frames...\n"
-
-		[train_data, train_labels, bg_frames, ann_files] = dataset.trainset(train_dir, annotation_file, features_file)
-		print bg_frames
-		print ann_files
-
+		# clip_dir = './full-clips/train/2014-01-21_1600_US_KCBS_The_Early_Show/'
 		# with open(fpickle, 'r') as pickle_file:
 		# 	myclassifier = cPickle.load(pickle_file)
 		# test_data = dataset.testset(clip_dir, features_file)
 		# classifier_label_list = classifier.classifier_predict(myclassifier, test_data)
+
+		# for idx, item in enumerate(classifier_label_list):
+		# 	print idx+1, item
 		# print "Classified frames...\n"
+
+
+		[train_data, train_labels, bg_frames, ann_files] = dataset.trainset(train_dir, annotation_file, features_file)
+		print bg_frames
+		print ann_files
 
 		broll_dir = './broll/'
 		if not os.path.exists(broll_dir):

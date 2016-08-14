@@ -77,6 +77,7 @@ def trainset(main_dir, annotations_file, fc7_file):
 				news += 1
 			elif label == 'Background_roll':
 				bg_frames.append(all_keyframes[idx])
+				features.append(features_data[idx])
 				bg += 1
 			elif label == 'Graphic':
 				g += 1
@@ -85,7 +86,7 @@ def trainset(main_dir, annotations_file, fc7_file):
 			elif label == 'Sports':
 				sp += 1
 			labels.append(label)
-			features.append(features_data[idx])
+			
 		else:
 			if label == 'Commercial':
 				c += 1
