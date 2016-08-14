@@ -32,14 +32,13 @@ def ovo_trainset(train_labels, class_type):
 
 	return new_train_labels
 
+
 def trainset(main_dir, annotations_file, fc7_file):
 
 	dir_list = sorted(os.listdir(main_dir))
 
 	features_data = []
 	label_data = []
-	ann_files = []
-	all_keyframes = []
 
 	for dir_name in dir_list:
 		if os.path.isdir(main_dir + dir_name):
@@ -47,10 +46,6 @@ def trainset(main_dir, annotations_file, fc7_file):
 
 				with open(main_dir + dir_name + '/' + dir_name + annotations_file) as labels_file:
 					labels = labels_file.readlines()
-				ann_files.append(main_dir + dir_name + '/' + dir_name + annotations_file)
-				keyframes = [label.split('\t')[1] for label in labels]
-				keyframes = [main_dir + keyframe.split('\n')[0] for keyframe in keyframes]
-				all_keyframes += keyframes
 				labels = [label.split('\t')[0] for label in labels]
 				label_data += labels
 
@@ -62,7 +57,6 @@ def trainset(main_dir, annotations_file, fc7_file):
 	## To exclude Commercial class etc.
 	labels = []
 	features = []
-	bg_frames = []
 	news = 0
 	bg = 0
 	g = 0
@@ -75,9 +69,8 @@ def trainset(main_dir, annotations_file, fc7_file):
 			if label == 'Reporter' or label == 'Hybrid' or label == 'Studio':
 				label = 'Newsperson(s)'
 				news += 1
-			elif label == 'Background_roll':
-				bg_frames.append(all_keyframes[idx])
-				features.append(features_data[idx])
+			elif label == 'Background_roll' or label == 'Talking_head' or label == 'Talking_head/Hybrid':	
+				label = 'Background_roll'
 				bg += 1
 			elif label == 'Graphic':
 				g += 1
@@ -86,6 +79,7 @@ def trainset(main_dir, annotations_file, fc7_file):
 			elif label == 'Sports':
 				sp += 1
 			labels.append(label)
+			features.append(features_data[idx])
 			
 		else:
 			if label == 'Commercial':
@@ -96,4 +90,4 @@ def trainset(main_dir, annotations_file, fc7_file):
 	print len(labels)
 	print news, bg, g, w, sp, c, p
 
-	return features, labels, bg_frames, ann_files
+	return features, labels

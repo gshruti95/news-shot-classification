@@ -6,12 +6,13 @@ from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.cross_validation import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 import time
+import dataset, cPickle
 
 def classifier_dump(fpickle, train_dir, annotation_file, features_file):
 
 	[train_data, train_labels] = dataset.trainset(train_dir, annotation_file, features_file)
 	# train_labels = dataset.ovo_trainset(train_labels, class_type)
-	myclassifier = classifier.classifier_train(train_data, train_labels)
+	myclassifier = classifier_train(train_data, train_labels)
 	with open(fpickle, 'w') as pickle_file:
 		cPickle.dump(myclassifier, pickle_file)
 

@@ -2,7 +2,7 @@ import os, sys, time, shutil
 os.environ["GLOG_minloglevel"] = "2"
 import fileops, cropframes
 import keyframes, shotdetect
-import placesCNN, googlenet, vgg_face
+import placesCNN, googlenet
 import dataset, classifier, cPickle
 import format_output
 # import graphcluster, accuracy
@@ -18,49 +18,46 @@ def main():
 	## Test classifier accuracy
 	if sys.argv[1] == 'testmode':
 
-		# fc7 = vgg_face.vgg_face(caffe_path, caffe_path + 'models/vgg_face_caffe/', caffe_path + 'models/vgg_face_caffe/ak.png')
-		# fileops.save_features(caffe_path + 'models/vgg_face_caffe/fc7.csv', fc7)
-
-		fpickle = './et100_classifier.pkl'
+		fpickle = './test_newg_ovr_classifier.pkl'
 		test_dir = './full-clips/test/'	
 		train_dir = './full-clips/train/'
 		annotation_file = '_new_shot_type_testuser.txt'
 		class_type = 'newsperson'
-		# classifier.classifier_dump(fpickle, train_dir, annotation_file, features_file)
+		classifier.classifier_dump(fpickle, train_dir, annotation_file, features_file)
 
-		# with open(fpickle, 'r') as pickle_file:
-		# 	myclassifier = cPickle.load(pickle_file)
-		# [test_data, test_labels] = dataset.trainset(test_dir, annotation_file, features_file)
-		# # new_test_labels = dataset.ovo_trainset(test_labels, class_type)
-		# new_test_labels = test_labels
-		# output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
+		with open(fpickle, 'r') as pickle_file:
+			myclassifier = cPickle.load(pickle_file)
+		[test_data, test_labels] = dataset.trainset(test_dir, annotation_file, features_file)
+		# new_test_labels = dataset.ovo_trainset(test_labels, class_type)
+		new_test_labels = test_labels
+		output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
 
-		# print "Classified frames...\n"
+		print "Classified frames...\n"
 
-		clip_dir = sys.argv[2]
-		broll_dir = './broll/'
-		new_dir = broll_dir + clip_dir + '/'
-		old_dir = train_dir + clip_dir + '/'
+		# clip_dir = sys.argv[2]
+		# broll_dir = './broll/'
+		# new_dir = broll_dir + clip_dir + '/'
+		# old_dir = train_dir + clip_dir + '/'
 
-		with open(old_dir + clip_dir + annotation_file, 'r') as forig:
-			labels = forig.readlines()
-		keyframes = [label.split('\t')[1] for label in labels]
-		labels = [label.split('\t')[0] for label in labels]
+		# with open(old_dir + clip_dir + annotation_file, 'r') as forig:
+		# 	labels = forig.readlines()
+		# keyframes = [label.split('\t')[1] for label in labels]
+		# labels = [label.split('\t')[0] for label in labels]
 
-		with open(new_dir + clip_dir + '_broll_testuser.txt', 'r') as fnew:
-			newlabels = fnew.readlines()
-		newkeyframes = [newlabel.split('\t')[1] for newlabel in newlabels]
-		newlabels = [newlabel.split('\t')[0] for newlabel in newlabels]
+		# with open(new_dir + clip_dir + '_broll_testuser.txt', 'r') as fnew:
+		# 	newlabels = fnew.readlines()
+		# newkeyframes = [newlabel.split('\t')[1] for newlabel in newlabels]
+		# newlabels = [newlabel.split('\t')[0] for newlabel in newlabels]
 
-		for newlabel, newkeyframe in zip(newlabels, newkeyframes):
-			if newkeyframe in keyframes:
-				idx = keyframes.index(newkeyframe)
-				labels[idx] = newlabel
+		# for newlabel, newkeyframe in zip(newlabels, newkeyframes):
+		# 	if newkeyframe in keyframes:
+		# 		idx = keyframes.index(newkeyframe)
+		# 		labels[idx] = newlabel
 
-		lines = [label + '\t' + keyframe for label, keyframe in zip(labels, keyframes)]
+		# lines = [label + '\t' + keyframe for label, keyframe in zip(labels, keyframes)]
 		
-		with open(old_dir + clip_dir + '_new_shot_type_testuser.txt', 'w') as final:
-			final.writelines(lines)
+		# with open(old_dir + clip_dir + '_new_shot_type_testuser.txt', 'w') as final:
+		# 	final.writelines(lines)
 
 	else:
 
