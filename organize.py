@@ -69,7 +69,7 @@ def main():
 			if label not in ['Commercial','Problem/Unclassified']:
 				if label == 'Reporter':
 					newlines_r.append(keyframes[idx])
-				elif label == 'Hybrid' or 'Talking_head/Hybrid':
+				elif label == 'Hybrid' or label == 'Talking_head/Hybrid':
 					newlines_h.append(keyframes[idx])
 				elif label == 'Studio':		
 					# label = 'Newsperson(s)'
@@ -188,7 +188,7 @@ def main():
 				train.append(temp + newlines_th[th] + ' ' + '7\n')
 				shutil.copy(frames_path + newlines_th[th], temp)
 				th += 1
-			elif tr_th <= h < len(newlines_th):
+			elif tr_th <= th < len(newlines_th):
 				test.append(test_dir + newlines_th[th] + ' ' + '7\n')
 				shutil.copy(frames_path + newlines_th[th], test_dir)
 				th += 1
