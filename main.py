@@ -5,7 +5,7 @@ import keyframes, shotdetect
 import placesCNN, googlenet
 import dataset, classifier, cPickle
 import format_output
-# import graphcluster, accuracy
+import finetune
 
 
 def main():
@@ -31,9 +31,24 @@ def main():
 		# [test_data, test_labels] = dataset.trainset(test_dir, annotation_file, features_file)
 		# # new_test_labels = dataset.ovo_trainset(test_labels, class_type)
 		# new_test_labels = test_labels
-		# output = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
+		# output_labels = classifier.predict_testmode(myclassifier, test_data, new_test_labels, test_labels)
 		# print "Classified frames...\n"
 
+		clip_dir = sys.argv[2]
+		clip_name = fileops.get_video_filename(clip_dir)
+		clip = clip_name.split('.')[0]
+		clip_path = clip_dir + clip_name 
+
+		keyframe_times = keyframes.keyframes(clip_dir, clip_path)
+		keyframes_list = fileops.get_keyframeslist(clip_dir, clip_path)
+		image_files = cropframes.cropframes(clip_dir, keyframes_list, clip_path)
+
+		finetune_path = caffe_path + 'models/finetune/ref_caffenet/' 
+		[output, labels_set] = finetune.mynet(caffe_path, finetune_path, image_files)
+		with open(clip_dir + clip + '_new_shot_type_testuser.txt', 'r') as file:
+			orig_labels = file.readlines()
+		orig_labels = [label.split('\t')[0] for label in orig_labels]
+		finetune.performance(orig_labels, output, labels_set)
 
 	else:
 
@@ -57,13 +72,13 @@ def main():
 		shot_boundaries, py_times = shotdetect.shotdetect(clip_dir, new_clip_path)
 		py_images = fileops.get_pyframeslist(clip_dir, clip_name)
 		
-		orig_images, all_timestamps = fileops.rename_frames(clip_dir, keyframe_times, keyframes_list, py_times, py_images)
+		all_images, all_timestamps = fileops.rename_frames(clip_dir, keyframe_times, keyframes_list, py_times, py_images)
 		if features_file == 'cropped_places_fc7 .csv':
-			image_files = cropframes.cropframes(clip_dir, orig_images, new_clip_path)
-			for image in orig_images:
+			image_files = cropframes.cropframes(clip_dir, all_images, new_clip_path)
+			for image in all_images:
 				os.remove(image)
 		else:
-			image_files = orig_images
+			image_files = all_images
 
 		os.remove(clip_dir + clip_name)
 		print "Video preprocessing done...\n"

@@ -73,9 +73,6 @@ def placesCNN(caffe_path, model_path, image_files):
 
 	scene_type_list, places_labels, scene_attributes_list = get_labels(labels, scores, attribute_responses, scene_attributeNames)
 	
-	# for idx, item in enumerate(places_labels):
-	# 	print "%d %s %s\n" %(idx+1, item, scene_type_list[idx]) 
-
 	end = time.time()
 	print "Time : %.3f \n"  %(end - start)
 	
@@ -92,7 +89,6 @@ def get_labels(labels, scores, attribute_responses, scene_attributeNames):
 	for idx, output_prob in enumerate(scores['prob']):
 
 		vote = 0
-		#count = 0
 		toplabels_idx = output_prob.argsort()[::-1][:5]  # reverse sort and take five largest items
 
 		maxprob_label = labels[output_prob.argmax()]
@@ -109,40 +105,15 @@ def get_labels(labels, scores, attribute_responses, scene_attributeNames):
 			else:
 				scene_type = 'Outdoor'
 
-			# if output_prob[toplabels_idx[0]] > .2 :
-			# 	final_label = maxprob_label[1]
-			# 	#print 'scores label:' , final_label
-			# else:
-			# 	final_label = "Unknown"
-
 		else:
 			scene_type = 'Unknown'
-			# final_label = "Unknown"
 			#print "Did not return reasonably accurate label!"
 
-		# final_label_list.append(final_label)
-		
-		label_set = []
-		prob_set = []	
-		no_label_flag = 0 
-
 		label_list = []
-		for label_prob, label_idx in zip(output_prob[toplabels_idx],toplabels_idx):
+		for label_prob, label_idx in zip(output_prob[toplabels_idx], toplabels_idx):
 			if label_prob > .2 :
-				label_list.append((re.findall(r"[\w]+",labels[label_idx])[1], float('%.2f' %label_prob)))
-			# 	label_set.append(re.findall(r"[\w]+",labels[label_idx])[1])
-			# 	prob_set.append(label_prob)
-			# 	no_label_flag = 1
-			# label_list = zip(label_set,prob_set)
-		# if no_label_flag == 0:
-		# 	label_set.append('None')
-		# 	prob_set.append(0.000)
-		# 	label_list = zip(label_set,prob_set)
+				label_list.append((re.findall(r"[\w]+", labels[label_idx])[1], float('%.2f' %label_prob)))			
 
-				
-		#print "probabilities and labels: %.3f %s" %(label_prob, re.findall(r"[\w]+",labels[label_idx])[1])
-			
-		# label_list = "; ".join( "%s, %s" %tup for tup in label_list )
 		label_list = ', '.join(map(str, label_list))
 		places_labels.append(label_list)
 
