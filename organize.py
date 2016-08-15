@@ -37,8 +37,8 @@ def main():
 		label_dir = labels_f.rsplit('/',1)[0] + '/'
 		trainset_dir = label_dir.rsplit('/',2)[0] + '/'
 		frames_path = label_dir + 'cropped/'
-		temp = trainset_dir + 'train_keyframes/'
-		test_dir = trainset_dir + 'test_keyframes/'
+		temp = trainset_dir + '3class_train_keyframes/'
+		test_dir = trainset_dir + '3class_test_keyframes/'
 
 		if not os.path.exists(temp):
 			os.makedirs(temp)
@@ -76,10 +76,10 @@ def main():
 		
 		tr_np = 2*len(newlines_np)/3
 		tr_bg = 2*len(newlines_bg)/3
-		tr_g = len(newlines_g) - 100
+		tr_g = len(newlines_g) - 150
 		tr_w = len(newlines_w) - 20
 		tr_sp = len(newlines_sp) - 15
-		total = len(newlines_np) + len(newlines_bg) + len(newlines_g) + len(newlines_w) + len(newlines_sp)
+		total = len(newlines_np) + len(newlines_bg) + len(newlines_g) #+ len(newlines_w) + len(newlines_sp)
 		
 		np = 0
 		bg = 0
@@ -117,23 +117,23 @@ def main():
 				shutil.copy(frames_path + newlines_g[g], test_dir)
 				g += 1
 
-			if w < tr_w:
-				train.append(temp + newlines_w[w] + ' ' + '3\n')
-				shutil.copy(frames_path + newlines_w[w], temp)
-				w += 1
-			elif tr_w <= w < len(newlines_w):
-				test.append(test_dir + newlines_w[w] + ' ' + '3\n')
-				shutil.copy(frames_path + newlines_w[w], test_dir)
-				w += 1
+			# if w < tr_w:
+			# 	train.append(temp + newlines_w[w] + ' ' + '3\n')
+			# 	shutil.copy(frames_path + newlines_w[w], temp)
+			# 	w += 1
+			# elif tr_w <= w < len(newlines_w):
+			# 	test.append(test_dir + newlines_w[w] + ' ' + '3\n')
+			# 	shutil.copy(frames_path + newlines_w[w], test_dir)
+			# 	w += 1
 
-			if sp < tr_sp:
-				train.append(temp + newlines_sp[sp] + ' ' + '4\n')
-				shutil.copy(frames_path + newlines_sp[sp], temp)
-				sp += 1
-			elif tr_sp <= sp < len(newlines_sp):
-				test.append(test_dir + newlines_sp[sp] + ' ' + '4\n')
-				shutil.copy(frames_path + newlines_sp[sp], test_dir)
-				sp += 1
+			# if sp < tr_sp:
+			# 	train.append(temp + newlines_sp[sp] + ' ' + '4\n')
+			# 	shutil.copy(frames_path + newlines_sp[sp], temp)
+			# 	sp += 1
+			# elif tr_sp <= sp < len(newlines_sp):
+			# 	test.append(test_dir + newlines_sp[sp] + ' ' + '4\n')
+			# 	shutil.copy(frames_path + newlines_sp[sp], test_dir)
+			# 	sp += 1
 
 		print "Train test lengths ", len(train), len(test)
 		print "Total ", total
