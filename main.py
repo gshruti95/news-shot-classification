@@ -1,4 +1,4 @@
-import os, sys, time, shutil
+import os, sys, time, shutil, errno
 os.environ["GLOG_minloglevel"] = "2"
 import fileops, cropframes
 import keyframes, shotdetect
@@ -54,36 +54,54 @@ def main():
 
 	else:
 
-		clip_path = sys.argv[1] 								## ../../dir/video.mp4
-		rel_clip_path = clip_path.rsplit('/',1)[0] + '/'		## ../../dir/
-		clip_name = clip_path.rsplit('/',1)[1]					## video.mp4
-		clip = clip_name.rsplit('.',1)[0]						## video
+		clip_path = sys.argv[1]
+		print "Clip path ", clip_path								## ../../dir/video.mp4
+		rel_clip_path = clip_path.rsplit('/',1)[0] + '/'
+		print "rel_clip_path ", rel_clip_path		## ../../dir/
+		clip_name = clip_path.rsplit('/',1)[1]	
+		print "clip_name ", clip_name				## video.mp4
+		clip = clip_name.rsplit('.',1)[0]
+		print "clip ", clip						## video
 		output_filename = clip 									## video
-		clip_dir = rel_clip_path + clip + '/'					## ../../dir/video/
+		clip_dir = rel_clip_path + clip + '/'
+		print "clip_dir ", clip_dir					## ../../dir/video/
 
+		# try:
+  #   		os.mkdir(clip_dir)
+		# except OSError as exc:
+  #   		if exc.errno != errno.EEXIST:
+  #       		raise exc
+  #   		pass
 		if not os.path.exists(clip_dir):
+			print "making dir"
 			os.makedirs(clip_dir)
 		else:
+			print "deleting"
 			shutil.rmtree(clip_dir)
 			time.sleep(10)
+			print "making again"
 			os.makedirs(clip_dir)
 		time.sleep(1)
+		print "copy video"
 		shutil.copy(clip_path, clip_dir)
-		new_clip_path = clip_dir + clip_name					## ../../dir/video/video.mp4
+		new_clip_path = clip_dir + clip_name
+		print new_clip_path					## ../../dir/video/video.mp4
 
 		keyframe_times = keyframes.keyframes(clip_dir, new_clip_path)
 		keyframes_list = fileops.get_keyframeslist(clip_dir, new_clip_path)
-		shot_boundaries, py_times = shotdetect.shotdetect(clip_dir, new_clip_path)
+		[shot_boundaries, py_times] = shotdetect.shotdetect(clip_dir, new_clip_path)
 		py_images = fileops.get_pyframeslist(clip_dir, clip_name)
 		
-		all_images, all_timestamps = fileops.rename_frames(clip_dir, keyframe_times, keyframes_list, py_times, py_images)
+		[all_images, all_timestamps] = fileops.rename_frames(clip_dir, keyframe_times, keyframes_list, py_times, py_images)
 		if features_file == 'cropped_places_fc7 .csv':
 			image_files = cropframes.cropframes(clip_dir, all_images, new_clip_path)
+			print "removing extra images"
 			for image in all_images:
 				os.remove(image)
 		else:
 			image_files = all_images
 
+		print "Removing clip copy"
 		os.remove(clip_dir + clip_name)
 		print "Video preprocessing done...\n"
 		

@@ -91,8 +91,7 @@ def shotdetect(clip_dir, clip_path):
 	# Usually use one detector, but multiple can be used.
 	detector_list = [scenedetect.detectors.ContentDetector(threshold = 20)]
 
-	video_fps, frames_read = my_detect_scenes_file(
-	    clip_path, scene_list, detector_list, save_images = True)
+	video_fps, frames_read = my_detect_scenes_file(clip_path, scene_list, detector_list, save_images = True)
 
 	# scene_list now contains the frame numbers of scene boundaries.
 	# print scene_list
