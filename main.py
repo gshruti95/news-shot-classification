@@ -13,18 +13,18 @@ def main():
 
 	caffe_path = './mycaffe/'
 	fpickle = './ovr_classifier.pkl'
-	features_file = 'cropped_places_fc7 .csv'		
+	features_file = 'cropped_places_fc7 .csv'	
+	finetune_path = caffe_path + 'models/finetune/ref_caffenet/' 
+	
 
 	## Test classifier accuracy
 	if sys.argv[1] == 'testmode':
 
 		fpickle = './new_ovr_classifier.pkl'
 		class_type = 'newsperson'
-
 		test_dir = './full-clips/test/'	
 		train_dir = './full-clips/train/'
-		annotation_file = '_new_shot_type_testuser.txt'
-		
+		annotation_file = '_new_shot_type_testuser.txt'	
 		# classifier.classifier_dump(fpickle, train_dir, annotation_file, features_file)
 		# with open(fpickle, 'r') as pickle_file:
 		# 	myclassifier = cPickle.load(pickle_file)
@@ -38,17 +38,19 @@ def main():
 		clip_name = fileops.get_video_filename(clip_dir)
 		clip = clip_name.split('.')[0]
 		clip_path = clip_dir + clip_name 
-
 		keyframe_times = keyframes.keyframes(clip_dir, clip_path)
 		keyframes_list = fileops.get_keyframeslist(clip_dir, clip_path)
 		image_files = cropframes.cropframes(clip_dir, keyframes_list, clip_path)
 
-		finetune_path = caffe_path + 'models/finetune/ref_caffenet/' 
-		[output, labels_set] = finetune.mynet(caffe_path, finetune_path, image_files)
-		with open(clip_dir + clip + '_new_shot_type_testuser.txt', 'r') as file:
-			orig_labels = file.readlines()
-		orig_labels = [label.split('\t')[0] for label in orig_labels]
-		finetune.performance(orig_labels, output, labels_set)
+		[fc7, scene_type_list, places_labels, scene_attributes_list] = placesCNN.placesCNN(caffe_path, caffe_path + 'models/placesCNN/', image_files)
+		fileops.save_features(clip_dir + features_file, fc7)
+		print "Extracted fc7 features...\n"
+
+		# [output, labels_set] = finetune.mynet(caffe_path, finetune_path, image_files)
+		# with open(clip_dir + clip + annotation_file, 'r') as file:
+		# 	orig_labels = file.readlines()
+		# orig_labels = [label.split('\t')[0] for label in orig_labels]
+		# finetune.performance(orig_labels, output, labels_set, image_files)
 
 	else:
 
@@ -63,7 +65,9 @@ def main():
 			os.makedirs(clip_dir)
 		else:
 			shutil.rmtree(clip_dir)
+			time.sleep(10)
 			os.makedirs(clip_dir)
+		time.sleep(1)
 		shutil.copy(clip_path, clip_dir)
 		new_clip_path = clip_dir + clip_name					## ../../dir/video/video.mp4
 
@@ -102,6 +106,7 @@ def main():
 		format_output.output_labels(rel_clip_path + output_filename, all_timestamps, image_files, shot_boundaries, classifier_label_list, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list)
 		
 		shutil.rmtree(clip_dir)
+		time.sleep(10)
 
 	overall_end = time.time()	
 	print "Total time taken: %.2f" %(overall_end-overall_start)
