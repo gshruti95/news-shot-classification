@@ -1,6 +1,6 @@
 import os, sys, time, shutil
 import fileops, cropframes
-import keyframes
+import all_frames
 
 
 def main():
@@ -28,7 +28,7 @@ def main():
 		with open('./labels_list.txt', 'w') as file:
 			file.writelines(label_data)			
 
-	elif sys.argv[1] == 'commercials':				## py org.py commercials /home/sxg755/trainset/keyframes/labels_list.txt ~/trainset/keyframes/sorted_keyframes_list.txt
+	elif sys.argv[1] == 'commercials':				## py org.py commercials /home/sxg755/trainset/all_frames/labels_list.txt ~/trainset/all_frames/sorted_keyframes_list.txt
 
 		labels_f = sys.argv[2]						## ../trainset/s_keyframes/label.txt
 		keyframes_f = sys.argv[3]
@@ -49,9 +49,9 @@ def main():
 			label_data = lf.readlines()
 		label_data = [label.split('\n')[0] for label in label_data]
 		with open(keyframes_f, 'r') as kf:
-			keyframes = kf.readlines()
-			keyframes = [keyframe.split('\n')[0] for keyframe in keyframes]
-		keyframes_path = [frames_path + keyframe for keyframe in keyframes]
+			all_frames = kf.readlines()
+			all_frames = [keyframe.split('\n')[0] for keyframe in all_frames]
+		keyframes_path = [frames_path + keyframe for keyframe in all_frames]
 
 		newlines_np = []
 
@@ -68,23 +68,23 @@ def main():
 		for idx, label in enumerate(label_data):
 			if label not in ['Commercial','Problem/Unclassified']:
 				if label == 'Reporter':
-					newlines_r.append(keyframes[idx])
+					newlines_r.append(all_frames[idx])
 				elif label == 'Hybrid' or label == 'Talking_head/Hybrid':
-					newlines_h.append(keyframes[idx])
+					newlines_h.append(all_frames[idx])
 				elif label == 'Studio':		
 					# label = 'Newsperson(s)'
-					newlines_s.append(keyframes[idx])
+					newlines_s.append(all_frames[idx])
 				elif label == 'Background_roll':	
 					# label = 'Background_roll'
-					newlines_bg.append(keyframes[idx])
+					newlines_bg.append(all_frames[idx])
 				elif label == 'Talking_head':
-					newlines_th.append(keyframes[idx])
+					newlines_th.append(all_frames[idx])
 				elif label == 'Graphic':
-					newlines_g.append(keyframes[idx])						
+					newlines_g.append(all_frames[idx])						
 				elif label == 'Weather':					
-					newlines_w.append(keyframes[idx])
+					newlines_w.append(all_frames[idx])
 				elif label == 'Sports':
-					newlines_sp.append(keyframes[idx])
+					newlines_sp.append(all_frames[idx])
 		
 		tr_np = 2*len(newlines_np)/3
 		tr_bg = 2*len(newlines_bg)/3
@@ -111,87 +111,87 @@ def main():
 
 		train = []
 		test = []
-		for i in range(total):
-			# if np < tr_np:
-			# 	train.append(temp + newlines_np[np] + ' ' + '0\n')
-			# 	shutil.copy(frames_path + newlines_np[np], temp)
-			# 	np += 1
-			# elif tr_np <= np < len(newlines_np):
-			# 	test.append(test_dir + newlines_np[np] + ' ' + '0\n')
-			# 	shutil.copy(frames_path + newlines_np[np], test_dir)
-			# 	np += 1
+		# for i in range(total):
+		# 	# if np < tr_np:
+		# 	# 	train.append(temp + newlines_np[np] + ' ' + '0\n')
+		# 	# 	shutil.copy(frames_path + newlines_np[np], temp)
+		# 	# 	np += 1
+		# 	# elif tr_np <= np < len(newlines_np):
+		# 	# 	test.append(test_dir + newlines_np[np] + ' ' + '0\n')
+		# 	# 	shutil.copy(frames_path + newlines_np[np], test_dir)
+		# 	# 	np += 1
 
-			if bg < tr_bg:
-				train.append(temp + newlines_bg[bg] + ' ' + '0\n')
-				shutil.copy(frames_path + newlines_bg[bg], temp)
-				bg += 1
-			elif tr_bg <= bg < len(newlines_bg):
-				test.append(test_dir + newlines_bg[bg] + ' ' + '0\n')
-				shutil.copy(frames_path + newlines_bg[bg], test_dir)
-				bg += 1	
+		# 	if bg < tr_bg:
+		# 		train.append(temp + newlines_bg[bg] + ' ' + '0\n')
+		# 		shutil.copy(frames_path + newlines_bg[bg], temp)
+		# 		bg += 1
+		# 	elif tr_bg <= bg < len(newlines_bg):
+		# 		test.append(test_dir + newlines_bg[bg] + ' ' + '0\n')
+		# 		shutil.copy(frames_path + newlines_bg[bg], test_dir)
+		# 		bg += 1	
 
-			if g < tr_g:
-				train.append(temp + newlines_g[g] + ' ' + '1\n')
-				shutil.copy(frames_path + newlines_g[g], temp)
-				g += 1
-			elif tr_g <= g < len(newlines_g):
-				test.append(test_dir + newlines_g[g] + ' ' + '1\n')
-				shutil.copy(frames_path + newlines_g[g], test_dir)
-				g += 1
+		# 	if g < tr_g:
+		# 		train.append(temp + newlines_g[g] + ' ' + '1\n')
+		# 		shutil.copy(frames_path + newlines_g[g], temp)
+		# 		g += 1
+		# 	elif tr_g <= g < len(newlines_g):
+		# 		test.append(test_dir + newlines_g[g] + ' ' + '1\n')
+		# 		shutil.copy(frames_path + newlines_g[g], test_dir)
+		# 		g += 1
 
-			if w < tr_w:
-				train.append(temp + newlines_w[w] + ' ' + '2\n')
-				shutil.copy(frames_path + newlines_w[w], temp)
-				w += 1
-			elif tr_w <= w < len(newlines_w):
-				test.append(test_dir + newlines_w[w] + ' ' + '2\n')
-				shutil.copy(frames_path + newlines_w[w], test_dir)
-				w += 1
+		# 	if w < tr_w:
+		# 		train.append(temp + newlines_w[w] + ' ' + '2\n')
+		# 		shutil.copy(frames_path + newlines_w[w], temp)
+		# 		w += 1
+		# 	elif tr_w <= w < len(newlines_w):
+		# 		test.append(test_dir + newlines_w[w] + ' ' + '2\n')
+		# 		shutil.copy(frames_path + newlines_w[w], test_dir)
+		# 		w += 1
 
-			if sp < tr_sp:
-				train.append(temp + newlines_sp[sp] + ' ' + '3\n')
-				shutil.copy(frames_path + newlines_sp[sp], temp)
-				sp += 1
-			elif tr_sp <= sp < len(newlines_sp):
-				test.append(test_dir + newlines_sp[sp] + ' ' + '3\n')
-				shutil.copy(frames_path + newlines_sp[sp], test_dir)
-				sp += 1
+		# 	if sp < tr_sp:
+		# 		train.append(temp + newlines_sp[sp] + ' ' + '3\n')
+		# 		shutil.copy(frames_path + newlines_sp[sp], temp)
+		# 		sp += 1
+		# 	elif tr_sp <= sp < len(newlines_sp):
+		# 		test.append(test_dir + newlines_sp[sp] + ' ' + '3\n')
+		# 		shutil.copy(frames_path + newlines_sp[sp], test_dir)
+		# 		sp += 1
 
-			if s < tr_s:
-				train.append(temp + newlines_s[s] + ' ' + '4\n')
-				shutil.copy(frames_path + newlines_s[s], temp)
-				s += 1
-			elif tr_s <= s < len(newlines_s):
-				test.append(test_dir + newlines_s[s] + ' ' + '4\n')
-				shutil.copy(frames_path + newlines_s[s], test_dir)
-				s += 1
+		# 	if s < tr_s:
+		# 		train.append(temp + newlines_s[s] + ' ' + '4\n')
+		# 		shutil.copy(frames_path + newlines_s[s], temp)
+		# 		s += 1
+		# 	elif tr_s <= s < len(newlines_s):
+		# 		test.append(test_dir + newlines_s[s] + ' ' + '4\n')
+		# 		shutil.copy(frames_path + newlines_s[s], test_dir)
+		# 		s += 1
 
-			if r < tr_r:
-				train.append(temp + newlines_r[r] + ' ' + '5\n')
-				shutil.copy(frames_path + newlines_r[r], temp)
-				r += 1
-			elif tr_r <= r < len(newlines_r):
-				test.append(test_dir + newlines_r[r] + ' ' + '5\n')
-				shutil.copy(frames_path + newlines_r[r], test_dir)
-				r += 1
+		# 	if r < tr_r:
+		# 		train.append(temp + newlines_r[r] + ' ' + '5\n')
+		# 		shutil.copy(frames_path + newlines_r[r], temp)
+		# 		r += 1
+		# 	elif tr_r <= r < len(newlines_r):
+		# 		test.append(test_dir + newlines_r[r] + ' ' + '5\n')
+		# 		shutil.copy(frames_path + newlines_r[r], test_dir)
+		# 		r += 1
 
-			if h < tr_h:
-				train.append(temp + newlines_h[h] + ' ' + '6\n')
-				shutil.copy(frames_path + newlines_h[h], temp)
-				h += 1
-			elif tr_h <= h < len(newlines_h):
-				test.append(test_dir + newlines_h[h] + ' ' + '6\n')
-				shutil.copy(frames_path + newlines_h[h], test_dir)
-				h += 1
+		# 	if h < tr_h:
+		# 		train.append(temp + newlines_h[h] + ' ' + '6\n')
+		# 		shutil.copy(frames_path + newlines_h[h], temp)
+		# 		h += 1
+		# 	elif tr_h <= h < len(newlines_h):
+		# 		test.append(test_dir + newlines_h[h] + ' ' + '6\n')
+		# 		shutil.copy(frames_path + newlines_h[h], test_dir)
+		# 		h += 1
 
-			if th < tr_th:
-				train.append(temp + newlines_th[th] + ' ' + '7\n')
-				shutil.copy(frames_path + newlines_th[th], temp)
-				th += 1
-			elif tr_th <= th < len(newlines_th):
-				test.append(test_dir + newlines_th[th] + ' ' + '7\n')
-				shutil.copy(frames_path + newlines_th[th], test_dir)
-				th += 1
+		# 	if th < tr_th:
+		# 		train.append(temp + newlines_th[th] + ' ' + '7\n')
+		# 		shutil.copy(frames_path + newlines_th[th], temp)
+		# 		th += 1
+		# 	elif tr_th <= th < len(newlines_th):
+		# 		test.append(test_dir + newlines_th[th] + ' ' + '7\n')
+		# 		shutil.copy(frames_path + newlines_th[th], test_dir)
+		# 		th += 1
 
 
 		print "Train test lengths ", len(train), len(test)
@@ -213,7 +213,7 @@ def main():
 		output_filename = clip 									## video
 		clip_dir = rel_clip_path								## ../../dir/
 
-		temp = clip_dir + 'keyframes/'							## ../../dir/keyframes/
+		temp = clip_dir + 'all_frames/'							## ../../dir/all_frames/
 		if not os.path.exists(temp):
 			os.makedirs(temp)
 
