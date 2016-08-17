@@ -7,7 +7,7 @@ def main():
 
 	if sys.argv[1] == 'labels':
 
-		main_dir = './full-clips/train/'
+		main_dir = './full-clips/test/'
 		annotations_file = '_new_shot_type_testuser.txt'
 
 		dir_list = sorted(os.listdir(main_dir))
@@ -28,29 +28,37 @@ def main():
 		with open('./labels_list.txt', 'w') as file:
 			file.writelines(label_data)			
 
-	elif sys.argv[1] == 'commercials':				## py org.py commercials /home/sxg755/trainset/all_frames/labels_list.txt ~/trainset/all_frames/sorted_keyframes_list.txt
+	elif sys.argv[1] == 'commercials':				## py org.py commercials /home/sxg755/dataset/train/all_frames/labels_list.txt ~/dataset/train/all_frames/sorted_keyframes_list.txt
+													## ~/dataset/train/8class_train_keyframes/
 
 		labels_f = sys.argv[2]						## ../trainset/s_keyframes/label.txt
 		keyframes_f = sys.argv[3]
+		main_dir = sys.argv[4]						## ~/dataset/train/8class_train_keyframes/
 
 
+		# train_label_dir = '/home/sxg755/dataset/train/all_frames/labels_list.txt'
+		# test_label_dir = '/home/sxg755/dataset/test/all_frames/labels_list.txt'
+		# train_frames = '/home/sxg755/dataset/train/all_frames/cropped/'
+		# test_frames = '/home/sxg755/dataset/test/all_frames/cropped/'
+
+		# train_dir = '/home/sxg755/dataset/train/'
+		# test_dir = '/home/sxg755/dataset/test/'
+		
 		label_dir = labels_f.rsplit('/',1)[0] + '/'
-		trainset_dir = label_dir.rsplit('/',2)[0] + '/'
 		frames_path = label_dir + 'cropped/'
-		temp = trainset_dir + '8class_train_keyframes/'
-		test_dir = trainset_dir + '8class_test_keyframes/'
+		trainset_dir = label_dir.rsplit('/',2)[0] + '/'
+		# train_dir = trainset_dir + '8class_train_keyframes/'
+		# test_dir = trainset_dir + '8class_test_keyframes/'
 
-		if not os.path.exists(temp):
-			os.makedirs(temp)
-		if not os.path.exists(test_dir):
-			os.makedirs(test_dir) 
-
+		if not os.path.exists(main_dir):
+			os.makedirs(main_dir)
+		
 		with open(labels_f, 'r') as lf:
 			label_data = lf.readlines()
 		label_data = [label.split('\n')[0] for label in label_data]
 		with open(keyframes_f, 'r') as kf:
 			all_frames = kf.readlines()
-			all_frames = [keyframe.split('\n')[0] for keyframe in all_frames]
+		all_frames = [keyframe.split('\n')[0] for keyframe in all_frames]
 		keyframes_path = [frames_path + keyframe for keyframe in all_frames]
 
 		newlines_np = []
@@ -59,58 +67,85 @@ def main():
 		newlines_g = []
 		newlines_w = []
 		newlines_sp = []
-
 		newlines_r = []
 		newlines_s = []
 		newlines_h = []
 		newlines_th = []
 
+		final_list = []
 		for idx, label in enumerate(label_data):
-			if label not in ['Commercial','Problem/Unclassified']:
-				if label == 'Reporter':
-					newlines_r.append(all_frames[idx])
-				elif label == 'Hybrid' or label == 'Talking_head/Hybrid':
-					newlines_h.append(all_frames[idx])
+			if label not in ['Commercial','Problem/Unclassified', 'Black']:
+				
+				if label == 'Background_roll':	
+					# label = 'Background_roll'
+					# newlines_bg.append(all_frames[idx])
+					final_list.append(main_dir + all_frames[idx] + ' 0\n')
+				
+				elif label == 'Graphic':
+					# newlines_g.append(all_frames[idx])
+					final_list.append(main_dir + all_frames[idx] + ' 1\n')					
+				
+				elif label == 'Weather' or label == 'Weather/Graphic' or label == 'Weather/Person':
+					label = 'Weather'				
+					# newlines_w.append(all_frames[idx])
+					final_list.append(main_dir + all_frames[idx] + ' 2\n')
+				
+				elif label == 'Sports':
+					# newlines_sp.append(all_frames[idx])
+					final_list.append(main_dir + all_frames[idx] + ' 3\n')
+				
 				elif label == 'Studio':		
 					# label = 'Newsperson(s)'
-					newlines_s.append(all_frames[idx])
-				elif label == 'Background_roll':	
-					# label = 'Background_roll'
-					newlines_bg.append(all_frames[idx])
+					# newlines_s.append(all_frames[idx])
+					final_list.append(main_dir + all_frames[idx] + ' 4\n')
+				
+				elif label == 'Reporter':
+					final_list.append(main_dir + all_frames[idx] + ' 5\n')
+					# newlines_r.append(all_frames[idx])
+				
+				elif label == 'Hybrid' or label == 'Talking_head/Hybrid':
+					label = 'Hybrid'
+					# newlines_h.append(all_frames[idx])
+					final_list.append(main_dir + all_frames[idx] + ' 6\n')
+				
 				elif label == 'Talking_head':
-					newlines_th.append(all_frames[idx])
-				elif label == 'Graphic':
-					newlines_g.append(all_frames[idx])						
-				elif label == 'Weather':					
-					newlines_w.append(all_frames[idx])
-				elif label == 'Sports':
-					newlines_sp.append(all_frames[idx])
-		
-		tr_np = 2*len(newlines_np)/3
-		tr_bg = 2*len(newlines_bg)/3
-		tr_g = 2*len(newlines_g)/3
-		tr_w = 2*len(newlines_w)/3
-		tr_sp = 2*len(newlines_sp)/3
-		tr_s = 2*len(newlines_s)/3
-		tr_r = 2*len(newlines_r)/3
-		tr_h = 2*len(newlines_h)/3
-		tr_th = 2*len(newlines_th)/3
-		total = len(newlines_bg) + len(newlines_g) + len(newlines_w) + len(newlines_sp) \
-				+ len(newlines_s) + len(newlines_th) + len(newlines_h) + len(newlines_r)
-		
-		np = 0
-		
-		bg = 0
-		g = 0
-		w = 0
-		sp = 0
-		s = 0
-		r = 0
-		h = 0
-		th = 0
+					# newlines_th.append(all_frames[idx])
+					final_list.append(main_dir + all_frames[idx] + ' 7\n')
 
-		train = []
-		test = []
+				shutil.copy(frames_path + all_frames[idx], main_dir)
+
+		with open(main_dir + 'data.txt', 'w') as file:
+			file.writelines(final_list)
+
+
+		print len(final_list)
+		# total = len(newlines_bg) + len(newlines_g) + len(newlines_w) + len(newlines_sp) \
+		# 		+ len(newlines_s) + len(newlines_th) + len(newlines_h) + len(newlines_r)
+
+
+		# tr_np = 2*len(newlines_np)/3
+		# tr_bg = 2*len(newlines_bg)/3
+		# tr_g = 2*len(newlines_g)/3
+		# tr_w = 2*len(newlines_w)/3
+		# tr_sp = 2*len(newlines_sp)/3
+		# tr_s = 2*len(newlines_s)/3
+		# tr_r = 2*len(newlines_r)/3
+		# tr_h = 2*len(newlines_h)/3
+		# tr_th = 2*len(newlines_th)/3
+		
+		# np = 0
+		
+		# bg = 0
+		# g = 0
+		# w = 0
+		# sp = 0
+		# s = 0
+		# r = 0
+		# h = 0
+		# th = 0
+
+		# train = []
+		# test = []
 		# for i in range(total):
 		# 	# if np < tr_np:
 		# 	# 	train.append(temp + newlines_np[np] + ' ' + '0\n')
@@ -194,13 +229,13 @@ def main():
 		# 		th += 1
 
 
-		print "Train test lengths ", len(train), len(test)
-		print "Total ", total
+		# print "Train test lengths ", len(train), len(test)
+		# print "Total ", total
 
-		with open(temp + 'train.txt', 'w') as file:
-			file.writelines(train)
-		with open(test_dir + 'test.txt', 'w') as file:
-			file.writelines(test)
+		# with open(temp + 'train.txt', 'w') as file:
+		# 	file.writelines(train)
+		# with open(test_dir + 'test.txt', 'w') as file:
+		# 	file.writelines(test)
 
 
 
