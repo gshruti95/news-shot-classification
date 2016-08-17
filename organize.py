@@ -61,9 +61,9 @@ def main():
 
 		final_list = []
 		for idx, label in enumerate(label_data):
-			if label not in ['Commercial','Problem/Unclassified', 'Black']:
+			if label not in ['Commercial','Problem/Unclassified', 'Black', 'Sports']:
 				
-				if label == 'Background_roll':	
+				if label == 'Background_roll' or label == 'Background roll':	
 					# label = 'Background_roll'
 					final_list.append(main_dir + all_frames[idx] + ' 0\n')
 				
@@ -72,21 +72,21 @@ def main():
 				
 				elif label == 'Weather' or label == 'Weather/Graphic' or label == 'Weather/Person':
 					label = 'Weather'				
-					final_list.append(main_dir + all_frames[idx] + ' 2\n')
+					final_list.append(main_dir + all_frames[idx] + ' 1\n')
 				
-				elif label == 'Sports':
-					final_list.append(main_dir + all_frames[idx] + ' 3\n')
+				# elif label == 'Sports':
+				# 	final_list.append(main_dir + all_frames[idx] + ' 3\n')
 				
 				elif label == 'Studio':		
 					# label = 'Newsperson(s)'
-					final_list.append(main_dir + all_frames[idx] + ' 4\n')
+					final_list.append(main_dir + all_frames[idx] + ' 2\n')
 				
 				elif label == 'Reporter':
-					final_list.append(main_dir + all_frames[idx] + ' 4\n')
+					final_list.append(main_dir + all_frames[idx] + ' 2\n')
 				
 				elif label == 'Hybrid' or label == 'Talking_head/Hybrid':
 					label = 'Hybrid'
-					final_list.append(main_dir + all_frames[idx] + ' 4\n')
+					final_list.append(main_dir + all_frames[idx] + ' 2\n')
 				
 				elif label == 'Talking_head':
 					final_list.append(main_dir + all_frames[idx] + ' 0\n')
