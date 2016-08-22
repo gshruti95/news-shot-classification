@@ -2,22 +2,17 @@ import os,sys
 import numpy as np
 import csv, re
 
-
 def get_keyframeslist(clip_dir, clip_path):
 
-	print "Getting keyframes list"
 	clip = clip_path.split('/')[-1]
-	print "clip ", clip
 	clip_name = clip.split('.')[0]
-	print "clip_name ", clip_name
-
+	
 	keyframes_list = []
 	source = sorted(os.listdir(clip_dir))
 
 	for file in source:
 		if file.endswith(".jpg") and file.startswith(clip_name + '_keyframe'):
 			image = clip_dir + os.path.basename(file)
-			print "Keyframe ", image
 			keyframes_list.append(image)
 
 	return keyframes_list
@@ -35,7 +30,6 @@ def get_pyframeslist(clip_dir, clip_name):
 	for file in source:
 		if file.endswith("IN.jpg") or file.endswith('OUT.jpg'):
 			image = clip_dir + os.path.basename(file)
-			print "pyscene ", image
 			pyframes_list.append(image)
 
 	pyframes_list.sort(key = natural_sorting)		
@@ -44,16 +38,12 @@ def get_pyframeslist(clip_dir, clip_name):
 
 def rename_frames(clip_dir, timestamps, keyframes, extra_timestamps, pyframes):
 
-	print "Renaming keyframes"
 	for timestamp, keyframe in zip(timestamps, keyframes):
 		timestamp = "{0:.3f}".format(float(timestamp))
-		print keyframe, clip_dir + timestamp + '.jpg'
 		os.rename(keyframe, clip_dir + timestamp + '.jpg')
 
-	print "Renaming pyscene"
 	for extra_timestamp, pyframe in zip(extra_timestamps, pyframes):
 		extra_timestamp = "{0:.3f}".format(float(extra_timestamp))
-		print pyframe, clip_dir + extra_timestamp + '.jpg'
 		os.rename(pyframe, clip_dir + extra_timestamp + '.jpg')
 
 	image_files = []
@@ -69,11 +59,9 @@ def rename_frames(clip_dir, timestamps, keyframes, extra_timestamps, pyframes):
 			fname = fname.rsplit('.',1)[0]
 			fname = float(fname)
 			new_times.append(fname)
-			print image, fname
-
+			
 	new_times.sort()
 	image_files.sort(key = natural_sorting)
-
 
 	return image_files, new_times
 
@@ -95,3 +83,13 @@ def get_video_filename(clip_dir):
 				exit(0)
 
 	return clip_name
+
+def get_cropped(clip_dir):
+
+	source = sorted(os.listdir(clip_dir))
+	images = []
+	for file in source:
+		if file.endswith('.jpg'):
+			images.append(clip_dir + file)
+
+	return images

@@ -1,25 +1,25 @@
-import os, sys
+import os, sys, re, time
 import numpy as np
 import matplotlib.pyplot as plt
 import caffe
-import re, time
+import path_params
 
-def placesCNN(caffe_path, model_path, image_files):
+def placesCNN(pycaffe_path, model_path, image_files):
 
 	start = time.time()
 
-	sys.path.insert(0, caffe_path + 'python')
+	sys.path.insert(0, pycaffe_path)
 
-	plt.rcParams['figure.figsize'] = (10, 10)        # large images
-	plt.rcParams['image.interpolation'] = 'nearest'  # don't interpolate: show square pixels
+	plt.rcParams['figure.figsize'] = (10, 10)
+	plt.rcParams['image.interpolation'] = 'nearest'
 	plt.rcParams['image.cmap'] = 'gray'
 
 	caffe.set_mode_cpu()
 
-	model_prototxt = model_path + 'places205CNN_deploy_upgraded.prototxt'
-	model_trained = model_path + 'places205CNN_iter_300000_upgraded.caffemodel'
+	model_prototxt = path_params.placesCNN_prototxt
+	model_trained = path_params.placesCNN_caffemodel
 
-	mean_path = model_path + 'places205CNN_mean.npy'
+	mean_path = path_params.placesCNN_mean
 	mu = np.load(mean_path).mean(1).mean(1)
 
 	net = caffe.Net(model_prototxt,     # defines the structure of the model
@@ -29,7 +29,7 @@ def placesCNN(caffe_path, model_path, image_files):
 	transformer = caffe.io.Transformer({'data': net.blobs['data'].data.shape})
 	transformer.set_transpose('data', (2,0,1))  # move image channels to outermost dimension
 	transformer.set_mean('data', mu)            # subtract the dataset-mean value in each channel
-	transformer.set_raw_scale('data', 255)      # rescale from [0, 1] to [0, 255]
+	transformer.set_raw_scale('data', 255)
 	transformer.set_channel_swap('data', (2,1,0))
 	
 	# Assign batchsize
@@ -64,11 +64,11 @@ def placesCNN(caffe_path, model_path, image_files):
 			# fc8 = np.vstack((fc8, net.blobs['fc8'].data[...].copy()))
 			# fc6 = np.vstack((fc6, net.blobs['fc6'].data[...].copy()))
 			
-	places_labels = model_path + 'IndoorOutdoor_places205.csv'
+	places_labels = path_params.places_labels
 	labels = np.loadtxt(places_labels, str, delimiter='\t')
 
-	scene_attributeValues = np.loadtxt(model_path + 'attributeValues.csv', delimiter = ',')
-	scene_attributeNames = np.loadtxt(model_path + 'attributeNames.csv', delimiter = '\n', dtype = str)
+	scene_attributeValues = np.loadtxt(path_params.scene_values, delimiter = ',')
+	scene_attributeNames = np.loadtxt(path_params.scene_names, delimiter = '\n', dtype = str)
 	attribute_responses = get_scene_attribute_responses(scene_attributeValues, fc7)
 
 	scene_type_list, places_labels, scene_attributes_list = get_labels(labels, scores, attribute_responses, scene_attributeNames)
@@ -78,7 +78,6 @@ def placesCNN(caffe_path, model_path, image_files):
 	
 	return fc7, scene_type_list, places_labels, scene_attributes_list
 
-
 def get_labels(labels, scores, attribute_responses, scene_attributeNames):
 	
 	places_labels = []
@@ -87,27 +86,19 @@ def get_labels(labels, scores, attribute_responses, scene_attributeNames):
 	scene_attributes_list = []
 
 	for idx, output_prob in enumerate(scores['prob']):
-
 		vote = 0
 		toplabels_idx = output_prob.argsort()[::-1][:5]  # reverse sort and take five largest items
-
-		maxprob_label = labels[output_prob.argmax()]
-		maxprob_label = re.findall(r"[\w]+", maxprob_label)
-
-		if output_prob[toplabels_idx[0]] > .1 :			 # threshold for bad labels
-			
+	
+		if output_prob[toplabels_idx[0]] > .1 :			 # threshold for bad labels	
 			for top5_idx in toplabels_idx:
 				if labels[top5_idx][-1] == '1':
 					vote = vote + 1
-
 			if vote > 2:
 				scene_type = 'Indoor'
 			else:
 				scene_type = 'Outdoor'
-
 		else:
-			scene_type = 'Unknown'
-			#print "Did not return reasonably accurate label!"
+			scene_type = 'None'
 
 		label_list = []
 		for label_prob, label_idx in zip(output_prob[toplabels_idx], toplabels_idx):
@@ -116,7 +107,6 @@ def get_labels(labels, scores, attribute_responses, scene_attributeNames):
 
 		label_list = ', '.join(map(str, label_list))
 		places_labels.append(label_list)
-
 		scene_type_list.append(scene_type)	
 
 		## Scene attributes
@@ -129,7 +119,7 @@ def get_labels(labels, scores, attribute_responses, scene_attributeNames):
 	return scene_type_list, places_labels, scene_attributes_list
 
 def get_scene_attribute_responses(scene_attributeValues, fc7):
-	'''Returs the scene attributes for the fc7 features'''
+	# Returs the scene attributes for the fc7 features
 	scene_attributeValues = np.transpose(scene_attributeValues)
 	attribute_responses = np.dot(fc7, scene_attributeValues)
 

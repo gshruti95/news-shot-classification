@@ -1,25 +1,26 @@
-import os, sys
+import os, sys, re, time
 import numpy as np
 import matplotlib.pyplot as plt
 import caffe
-import re, time
+import path_params
 
-def mynet(caffe_path, model_path, image_files):
+def mynet(pycaffe_path, model_path, image_files):
 
 	start = time.time()
 
-	sys.path.insert(0, caffe_path + 'python')
+	sys.path.insert(0, pycaffe_path)
 
-	plt.rcParams['figure.figsize'] = (10, 10)        # large images
-	plt.rcParams['image.interpolation'] = 'nearest'  # don't interpolate: show square pixels
+	plt.rcParams['figure.figsize'] = (10, 10)
+	plt.rcParams['image.interpolation'] = 'nearest'
 	plt.rcParams['image.cmap'] = 'gray'
 
 	caffe.set_mode_cpu()
 
-	model_prototxt = model_path + 'deploy_3class.prototxt'
-	model_trained = model_path + '3class_finetune_caffenet_iter_100000.caffemodel'
+	my_labels = path_params.finetune_labels
+	model_prototxt = path_params.finetune_prototxt
+	model_trained = path_params.finetune_caffemodel
 
-	mean_path = model_path + 'imagenet_mean.npy'
+	mean_path = path_params.finetune_mean
 	mu = np.load(mean_path).mean(1).mean(1)
 
 	net = caffe.Net(model_prototxt,     # defines the structure of the model
@@ -39,7 +40,6 @@ def mynet(caffe_path, model_path, image_files):
 	net.blobs['data'].reshape(batch_size, data_blob_shape[1], data_blob_shape[2], data_blob_shape[3])
 
 	scores = None
-
 	chunks_done = 0
 	for chunk in [image_files[x:x+batch_size] for x in xrange(0, len(image_files), batch_size)]:
 		print "Processing %.2f%% done ..." %((batch_size*chunks_done*100)/float(len(image_files)))
@@ -57,9 +57,7 @@ def mynet(caffe_path, model_path, image_files):
 		else:
 			scores['prob'] = np.vstack((scores['prob'],output['prob']))
 
-	my_labels = model_path + '3class.csv'
 	labels = np.loadtxt(my_labels, str, delimiter='\t')
-
 	[output_labels, labels_set] = get_labels(labels, scores)
 	
 	end = time.time()
@@ -73,135 +71,20 @@ def get_labels(labels, scores):
 	labels_set = []
 	for idx, output_prob in enumerate(scores['prob']):
 
-		toplabels_idx = output_prob.argsort()[::-1][:5]
+		toplabels_idx = output_prob.argsort()[::-1][:3]
 
 		if output_prob[toplabels_idx[0]] > .2:
 			maxprob_label = labels[output_prob.argmax()][1]
 		else:
 			maxprob_label = 'Problem/Unclassified'
-
 		final_labels.append(maxprob_label)
 
 		label_list = []
 		for label_prob, label_idx in zip(output_prob[toplabels_idx], toplabels_idx):
-			if label_prob > .2 :
-				label_list.append((labels[label_idx][1], float('%.2f' %label_prob)))
-		
-		label_list = ', '.join(map(str, label_list))		
+			if label_prob > .2:
+				label_list.append((labels[label_idx][1], float('%.3f' %label_prob)))
+		label_list = ', '.join(map(str, label_list))	
 		labels_set.append(label_list)
 
 	return final_labels, labels_set
-
-
-def performance(orig_labels, output, labels_set):
-
-	labels = []
-	output_labels = []
-	for label, output_label in zip(orig_labels, output):
-		if label not in ['Commercial', 'Problem/Unclassified']:
-			if label == 'Studio' or label == 'Reporter' or label == 'Hybrid':
-				label = 'Newsperson(s)'
-			elif label == 'Background_roll' or label == 'Talking_head' or label == 'Talking_head/Hybrid':
-				label = 'Background_roll'
-			labels.append(label)
-			output_labels.append(output_label)
-
-	p_np = 0
-	p_s = 0
-	p_r = 0
-	p_h = 0
-	p_bg = 0
-	p_sp = 0
-	p_w = 0
-	p_g = 0
-	p_prob = 0
-	p_c = 0
-
-	np = 0
-	s = 0
-	r = 0
-	h = 0
-	bg = 0
-	sp = 0
-	w = 0
-	g = 0
-	prob = 0
-	c = 0
-
-	crt_np = 0
-	crt_s = 0
-	crt_r = 0
-	crt_h = 0
-	crt_bg = 0
-	crt_sp = 0
-	crt_w = 0
-	crt_g = 0
-	crt_prob = 0
-	crt_c = 0
-	
-	for i in range(len(output_labels)):
-		
-		print 'Max label: %s label: %s' %(output_labels[i], labels[i])
-		print 'Result: ', labels_set[i]
-		if output_labels[i] == 'Studio' and labels[i] not in ['Weather', 'Sports']:
-			p_s += 1
-			if labels[i] == output_labels[i]:
-				crt_s += 1
-		elif output_labels[i] == 'Reporter' and labels[i] not in ['Weather', 'Sports']:
-			p_r += 1
-			if labels[i] == output_labels[i]:
-				crt_r += 1
-		elif output_labels[i] == 'Hybrid' and labels[i] not in ['Weather', 'Sports']:
-			p_h += 1
-			if labels[i] == output_labels[i]:
-				crt_h += 1
-		elif output_labels[i] == 'Newsperson(s)' and labels[i] not in ['Weather', 'Sports']:
-			p_np += 1
-			if labels[i] == output_labels[i]:
-				crt_np += 1
-		elif output_labels[i] == 'Graphic' and labels[i] not in ['Weather', 'Sports']:
-			p_g += 1 
-			if labels[i] == output_labels[i]:
-				crt_g += 1
-		elif output_labels[i] == 'Weather' and labels[i] not in ['Weather', 'Sports']:
-			p_w += 1
-			if labels[i] == output_labels[i]:
-				crt_w += 1
-		elif output_labels[i] == "Sports" and labels[i] not in ['Weather', 'Sports']:
-			p_sp += 1
-			if labels[i] == output_labels[i]:
-				crt_sp += 1
-		elif (output_labels[i] == "Background_roll" or output_labels[i] == "Background roll") and labels[i] not in ['Weather', 'Sports']:
-			p_bg += 1
-			if labels[i] == output_labels[i]:
-				crt_bg += 1
-		elif output_labels[i] == 'Problem/Unclassified':
-			p_prob += 1
-			if labels[i] == output_labels[i]:
-				crt_prob += 1
-
-		if labels[i] == 'Studio':
-			s += 1
-		elif labels[i] == 'Reporter':
-			r += 1
-		elif labels[i] == 'Hybrid':
-			h += 1
-		elif labels[i] == 'Newsperson(s)':
-			np += 1
-		elif labels[i] == 'Graphic':
-			g += 1	
-		elif labels[i] == 'Weather':
-			w += 1
-		elif labels[i] == 'Sports':
-			sp += 1
-		elif labels[i] == 'Background_roll' or labels[i] == 'Background roll':
-			bg += 1
-		elif labels[i] == 'Commercial':
-			c += 1
-		elif labels[i] == 'Problem/Unclassified':
-			prob += 1
-
-	print "Predicted: NP: %d, G %d, W: %d, SP: %d, BG: %d" %(p_np, p_g, p_w, p_sp, p_bg)
-	print "Correct: NP: %d, G: %d, W: %d, SP: %d, BG: %d"  %(crt_np, crt_g, crt_w, crt_sp, crt_bg)
-	print "Total: NP: %d, G: %d, W: %d, SP: %d, BG: %d" %(np, g, w, sp, bg)
 

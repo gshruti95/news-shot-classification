@@ -1,14 +1,8 @@
-import os, sys
-import fnmatch
-import googlenet
-import fileops
-import cropframes
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+import os
 
 def testset(clip_dir, fc7_file):
 
 	test_features = []
-
 	with open(clip_dir + fc7_file) as features_file:
 		features = features_file.readlines()
 	features = [feature.split('\n')[0] for feature in features]
@@ -19,19 +13,15 @@ def testset(clip_dir, fc7_file):
 def ovo_trainset(train_labels, class_type):
 	
 	new_train_labels = []
-	if class_type == 'newsperson':
+	if class_type == 'np':
 		for label in train_labels:
-			if label != 'Newsperson(s)':
-				label = 'Not'
-			new_train_labels.append(label)
-	elif class_type == 'broll':
-		for label in train_labels:
-			if label != 'Background_roll':
+			if label == 'Studio' or label == 'Reporter' or label == 'Hybrid' or label == 'Newsperson(s)':
+				label = 'Newsperson(s)'
+			else:
 				label = 'Not'
 			new_train_labels.append(label)		
 
 	return new_train_labels
-
 
 def trainset(main_dir, annotations_file, fc7_file):
 
@@ -39,6 +29,8 @@ def trainset(main_dir, annotations_file, fc7_file):
 
 	features_data = []
 	label_data = []
+	ann_files = []
+	all_keyframes = []
 
 	for dir_name in dir_list:
 		if os.path.isdir(main_dir + dir_name):
@@ -55,48 +47,25 @@ def trainset(main_dir, annotations_file, fc7_file):
 				features_data += features
 
 	## To exclude Commercial class etc.
+	counter = dict.fromkeys(['bg', 'sp', 'w', 's', 'r', 'h', 'g'], 0)
 	labels = []
 	features = []
-	news = 0
-	bg = 0
-	g = 0
-	w = 0
-	sp = 0
-	c = 0
-	p = 0
-	r = 0
-	h = 0
-	s = 0
+	
 	for idx, label in enumerate(label_data):
 		if label not in ['Commercial','Problem/Unclassified']:
 			if label == 'Reporter':
 				label = 'Newsperson(s)'
-				r += 1
-			if label == 'Hybrid':
+			elif label == 'Hybrid':
 				label = 'Newsperson(s)'
-				h += 1
-			if label == 'Studio':
+			elif label == 'Studio':
 				label = 'Newsperson(s)'
-				s += 1
 			elif label == 'Background_roll' or label == 'Talking_head' or label == 'Talking_head/Hybrid':	
 				label = 'Background_roll'
-				bg += 1
 			elif label == 'Graphic':
-				g += 1
-			elif label == 'Weather':
-				w += 1
-			elif label == 'Sports':
-				sp += 1
+				label = 'Graphic'
+			elif label == 'Weather' or label == 'Weather/Graphic' or label == 'Weather/Person':
+				label = 'Weather'
 			labels.append(label)
 			features.append(features_data[idx])
-			
-		else:
-			if label == 'Commercial':
-				c += 1
-			elif label == 'Problem/Unclassified':
-				p += 1
-
-	print len(labels)
-	print news, s, r, h, bg, g, w, sp, c, p
-
+	
 	return features, labels
