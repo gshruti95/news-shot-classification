@@ -2,11 +2,11 @@
 Author: Shruti Gullapuram (gshruti95)
 
 ## Installation
-Clone the repository, while ensuring that all dependencies are correctly installed
+Clone the repository, while ensuring that all dependencies are correctly installed.
 
 ## Usage
-Run `python main.py <path-to-videofilen>`
-The path to the video file is either absolute or relative with respect to the main.py file.
+Run `python main.py <path-to-videofilen>`	
+The path to the video file is either absolute or relative with respect to the `main.py` file.
 
 ## Output
 The output is stored as a file named `<videofilename>.vis` in the same directory as the video.  
@@ -30,8 +30,8 @@ https://www.dropbox.com/sh/hv811iqnupcusp8/AAA-nn4mYD2LIP2-deK1VUSWa?dl=0
 The paths to all external files required by the code can be modified in `path_params.py` according to the user’s convenience.
 
 ## Google Summer of Code
-This is the project repository for a Google Summer of Code project for Red Hen Lab.  
-The project link is https://summerofcode.withgoogle.com/projects/#6049536703201280
+This is the project repository for a Google Summer of Code 2016 project for Red Hen Lab.  
+The project link is https://summerofcode.withgoogle.com/projects/#6049536703201280	 
 The final work product submission is at https://shrutigullapuram.wordpress.com/2016/08/22/gsoc-work-product-submission/
 
 ## Citations/Licenses
