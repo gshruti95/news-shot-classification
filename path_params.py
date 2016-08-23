@@ -1,3 +1,6 @@
+## Paths to all required external files 
+
+# Path to installed caffe directory
 caffe_path = './mycaffe/'
 pycaffe_path = caffe_path + 'python'
 

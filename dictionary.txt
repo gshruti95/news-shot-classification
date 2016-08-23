@@ -21,4 +21,4 @@
 'building/structure': ['structure', 'arch', 'area', 'bridge', 'building', 
 									'farm building', 'house', 'residence', 'religious residence', 'outbuilding', 'shed', 'place of worship', 'shrine', 'theater', 'building complex', 'factory', 'column', 'defensive structure', 'fortification', 'establishment', 'institution', 'penal institution', 'correctional institution', 'place of business', 'shop','mercantile establishment', 'marketplace', 'housing', 'dwelling', 'landing', 'memorial'],
 'sports': ['person','contestant','player','athlete','racket', 'sports implement', 'ballplayer',
-						'game equipment', 'sports equipment', 'football helmet', 'gymnastic apparatus','volleyball']}
+						'game equipment', 'sports equipment', 'football helmet', 'gymnastic apparatus','volleyball', 'soccer ball', 'rugby ball']}

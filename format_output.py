@@ -59,10 +59,10 @@ def output_labels(filename, name, timestamps, image_files, shot_boundaries, clas
 		frame_labels = []
 		while timestamps[count] <= boundary and count+1 <= len(timestamps):
 
-			finetune_line = date + time + '{0:.3f}'.format(timestamps[count]) + '| ' + date + time + '{0:.3f}'.format(timestamps[count]) + '| FINETUNED_SHOT_CLASS | ' + finetune_output[count] + '| ' + finetune_labels[count] + '\n'			
+			finetune_line = date + time + '{0:.3f}'.format(timestamps[count]) + '| ' + date + time + '{0:.3f}'.format(timestamps[count]) + '| FINETUNED_SHOT_CLASS | ' + finetune_output[count] + ' | ' + finetune_labels[count] + '\n'			
 			svm_line = date + time + '{0:.3f}'.format(timestamps[count]) + '| ' + date + time + '{0:.3f}'.format(timestamps[count]) + '| SVM_SHOT_CLASS | ' + classifier_label_list[count] + '\n'
-			obj_line = date + time + '{0:.3f}'.format(timestamps[count]) + '| ' + date + time + '{0:.3f}'.format(timestamps[count]) + '| OBJ_CLASS | ' + googlenet_cat[count] + '| ' + googlenet_labels[count] + '\n'
-			scene_line = date + time + '{0:.3f}'.format(timestamps[count]) + '| ' + date + time + '{0:.3f}'.format(timestamps[count]) + '| SCENE_LOCATION | ' + scene_type_list[count] + '| ' + places_labels[count] + '\n'
+			obj_line = date + time + '{0:.3f}'.format(timestamps[count]) + '| ' + date + time + '{0:.3f}'.format(timestamps[count]) + '| OBJ_CLASS | ' + googlenet_cat[count] + ' | ' + googlenet_labels[count] + '\n'
+			scene_line = date + time + '{0:.3f}'.format(timestamps[count]) + '| ' + date + time + '{0:.3f}'.format(timestamps[count]) + '| SCENE_LOCATION | ' + scene_type_list[count] + ' | ' + places_labels[count] + '\n'
 			attr_line = date + time + '{0:.3f}'.format(timestamps[count]) + '| ' + date + time + '{0:.3f}'.format(timestamps[count]) + '| SCENE_ATTRIBUTES | ' + scene_attributes_list[count] + '\n'
 			frame_labels.append(finetune_line + svm_line + obj_line + scene_line + attr_line)
 			finetune_class.append(finetune_output[count])
@@ -72,7 +72,7 @@ def output_labels(filename, name, timestamps, image_files, shot_boundaries, clas
 			count += 1
 
 		[ft_shot_type, svm_shot_type, obj_type, scenetype] = shot_labels(finetune_class, svm_class, imagenet, scene)
-		boundary_label = date + time + '{0:.3f}'.format(current_shot_timestamp) + '| ' + date + time + '{0:.3f}'.format(boundary) + '| SHOT_DETECTED >> | Finetuned_Shot_Class= ' + ft_shot_type + '| SVM_Shot_Class= '  + svm_shot_type + '| Obj_Class= ' + obj_type + '| Scene_Type= ' + scenetype + '\n'
+		boundary_label = date + time + '{0:.3f}'.format(current_shot_timestamp) + '| ' + date + time + '{0:.3f}'.format(boundary) + '| SHOT_DETECTED >> | Finetuned_Shot_Class= ' + ft_shot_type + ' | SVM_Shot_Class= '  + svm_shot_type + ' | Obj_Class= ' + obj_type + ' | Scene_Type= ' + scenetype + '\n'
 		
 		with open(filename + '.vis', 'aw') as file:
 			file.write(boundary_label)
