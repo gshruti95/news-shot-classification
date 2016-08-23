@@ -26,7 +26,7 @@ The output is stored as a file named `<videofilename>.vis` in the same directory
 
 ### Required External Files and Models
 All the required external files and classifier models can be found here:
-https://www.dropbox.com/sh/hv811iqnupcusp8/AAA-nn4mYD2LIP2-deK1VUSWa?dl=0
+https://www.dropbox.com/sh/hv811iqnupcusp8/AAA-nn4mYD2LIP2-deK1VUSWa?dl=0	
 The paths to all external files required by the code can be modified in `path_params.py` according to the user’s convenience.
 
 ## Google Summer of Code
