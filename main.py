@@ -44,8 +44,8 @@ def main():
 	[all_images, all_timestamps] = fileops.rename_frames(clip_dir, keyframe_times, keyframes_list, py_times, py_images)
 	if features_file == 'cropped_places_fc7.csv':
 		image_files = cropframes.cropframes(clip_dir, all_images, new_clip_path)
-		for image in all_images:
-			os.remove(image)
+		# for image in all_images:
+		# 	os.remove(image)
 	else:
 		image_files = all_images
 	os.remove(clip_dir + clip_name)
@@ -70,7 +70,7 @@ def main():
 	print "Retrieved imagenet labels...\n"
 
 	format_output.output_labels(rel_clip_path + output_filename, output_filename, all_timestamps, image_files, shot_boundaries, classifier_label_list, finetune_output, finetune_labels, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list)
-	shutil.rmtree(clip_dir)
+	# shutil.rmtfree(clip_dir)
 	print "Processing complete!\n"
 
 	overall_end = time.time()	
