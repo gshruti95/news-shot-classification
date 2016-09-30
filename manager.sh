@@ -1,37 +1,66 @@
 #!/bin/bash
 
 SSH_LOC=turnerstudents@cartago
+LOGS_DIR=/home/sxg755/logs
 VIDEO_SRC=/tv
 VIDEO_DST=/home/sxg755/videos
-LOGS_DIR=/home/sxg755/logs
 
-YEAR=2016
-MONTH=08
-DAY=03
+case "$1" in
+	-d) 		#./manager.sh -d YYYY/MM/DD
 
-SRC_DAY_LIST=$(ssh $SSH_LOC "ls -1 $VIDEO_SRC/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY/*.mp4")
+	DATE="$2"
+	IFS='/' read -a datearray <<< "$DATE"
 
-#if [ ! -d "$LOGS_DIR/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY" ]; then
-#	mkdir -p $LOGS_DIR/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY
-#fi
+	YEAR="${datearray[0]}"
+	MONTH="${datearray[1]}"
+	DAY="${datearray[2]}"
 
-echo "Processing $(echo "$SRC_DAY_LIST" | wc -l) files for $YEAR-$MONTH-$DAY"
+	SRC_DAY_LIST=$(ssh $SSH_LOC "ls -1 $VIDEO_SRC/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY/*.mp4")
 
-VIDEO_DST=$VIDEO_DST/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY
+	#if [ ! -d "$LOGS_DIR/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY" ]; then
+	#	mkdir -p $LOGS_DIR/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY
+	#fi
 
-if [ -d "$VIDEO_DST" ]; then
-	rm -rf $VIDEO_DST
-fi
-mkdir -p $VIDEO_DST
+	echo "Processing $(echo "$SRC_DAY_LIST" | wc -l) files for $YEAR-$MONTH-$DAY"
 
-for f in $SRC_DAY_LIST;do 
-	FILENAME=$(basename $f)
-	scp $SSH_LOC:$f $VIDEO_DST
-	sbatch process_video.slurm $VIDEO_DST/$(basename $f)
-done
+	VIDEO_DST=$VIDEO_DST/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY
 
-# Tracking the jobs
+	if [ -d "$VIDEO_DST" ]; then
+		rm -rf $VIDEO_DST
+	fi
+	mkdir -p $VIDEO_DST
 
-# Handling the failed jobs
+	for f in $SRC_DAY_LIST;do 
+		FILENAME=$(basename $f)
+		scp $SSH_LOC:$f $VIDEO_DST
+		sbatch process_video.slurm $VIDEO_DST/$(basename $f)
+	done
+	;;
 
+	-l) 		# ./manager.sh -l files.txt
+				# files.txt contains YYYY-MM-DD_HOUR_NETWORKNAME.mp4 (only basenames of files)
+	
+	VIDEO_DST=$VIDEO_DST/"processed_list"
 
+	if ! [ -d "$VIDEO_DST" ]; then
+		mkdir -p $VIDEO_DST
+	fi
+
+	while read -r VIDEONAME || [[ -n "$VIDEONAME" ]]; do
+    IFS='_' read -a videodate <<< "$VIDEONAME"
+    IFS='-' read -a datearray <<< "${videodate[0]}"
+
+    YEAR="${datearray[0]}"
+	MONTH="${datearray[1]}"
+	DAY="${datearray[2]}"
+	
+	echo "Processing $VIDEONAME"
+
+	scp $SSH_LOC:$VIDEO_SRC/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY/$VIDEONAME $VIDEO_DST
+	sbatch process_video.slurm $VIDEO_DST/$VIDEONAME
+
+	done < "$2"
+
+	;;
+
+esac
