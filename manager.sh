@@ -43,9 +43,10 @@ case "$1" in
 	VIDEO_DST=$VIDEO_DST/"processed_list"
 
 	if ! [ -d "$VIDEO_DST" ]; then
-		mkdir -p $VIDEO_DST
+		rm -rf $VIDEO_DST
 	fi
-
+	mkdir -p $VIDEO_DST
+	
 	while read -r VIDEONAME || [[ -n "$VIDEONAME" ]]; do
     IFS='_' read -a videodate <<< "$VIDEONAME"
     IFS='-' read -a datearray <<< "${videodate[0]}"
@@ -53,7 +54,7 @@ case "$1" in
     YEAR="${datearray[0]}"
 	MONTH="${datearray[1]}"
 	DAY="${datearray[2]}"
-	
+
 	echo "Processing $VIDEONAME"
 
 	scp $SSH_LOC:$VIDEO_SRC/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY/$VIDEONAME $VIDEO_DST
