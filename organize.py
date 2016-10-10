@@ -15,12 +15,13 @@ def main():
 		label_data = []
 		for dir_name in dir_list:
 			if os.path.isdir(main_dir + dir_name):
+			
 				if os.path.exists(main_dir + dir_name + '/' + dir_name + annotations_file):
-
 					with open(main_dir + dir_name + '/' + dir_name + annotations_file) as labels_file:
 						labels = labels_file.readlines()
 					labels = [label.split('\t')[0] for label in labels]
 					label_data += labels
+					print dir_name, len(labels)
 
 		label_data = [label + '\n' for label in label_data]
 		print len(label_data)
@@ -28,12 +29,12 @@ def main():
 		with open('./train_labels_list.txt', 'w') as file:
 			file.writelines(label_data)			
 
-	elif sys.argv[1] == 'commercials':				## py org.py commercials /home/sxg755/dataset/train/all_frames/labels_list.txt ~/dataset/train/all_frames/sorted_keyframes_list.txt
+	elif sys.argv[1] == 'commercials':				## py org.py commercials /home/sxg755/dataset/train/all_frames/new_labels_list.txt /home/sxg755/dataset/train/all_frames/new_sorted_keyframes_list.txt
 													## ~/dataset/train/8class_train_keyframes/
 
 		labels_f = sys.argv[2]						
 		keyframes_f = sys.argv[3]
-		main_dir = sys.argv[4]						## ~/dataset/train/8class_train_keyframes/
+		main_dir = sys.argv[4]						## /home/sxg755/dataset/train/new_5class_train_keyframes/
 
 
 		# train_label_dir = '/home/sxg755/dataset/train/all_frames/labels_list.txt'
@@ -100,6 +101,22 @@ def main():
 
 		print len(final_list)
 		
+	elif sys.argv[1] == 'count':
+
+		with open('/home/sxg755/dataset/train/all_frames/new_sorted_keyframes_list.txt', 'r') as f:
+			files = f.readlines()
+
+		cur = ''
+		count = 0
+		for file in files:
+			name = file.rsplit('_',1)[0]
+			if name != cur:
+				print cur, count
+				cur = name
+				count = 1
+			else:
+				count += 1
+
 
 	else:
 		ntg = sys.argv[1]
@@ -110,14 +127,14 @@ def main():
 		# output_filename = clip 									## video
 		# clip_dir = rel_clip_path								## ../../dir/
 
-		source = os.listdir('/home/sxg755/trainset/')
+		source = os.listdir('/home/sxg755/trainset/new/')
 		temp = '/home/sxg755/dataset/train/new_all_frames/'		## ../../dir/all_frames/
 		if not os.path.exists(temp):
 			os.makedirs(temp)
 
 		for file in source:
 			if file.endswith('.mp4'):
-				clip_path = '/home/sxg755/trainset/' + file
+				clip_path = '/home/sxg755/trainset/new/' + file
 				keyframe_times = keyframes.keyframes(temp, clip_path)
 				keyframes_list = fileops.get_keyframeslist(temp, clip_path)
 

@@ -8,8 +8,8 @@ def cropframes(clip_dir, image_files, clip_path):
 	clip = clip_path.split('/')[-1]
 	clip_name = clip.split('.')[0]
 
-	# crop_dir = clip_dir + 'cropped/'
-	crop_dir = '/home/sxg755/dataset/train/all_frames/cropped/'
+	crop_dir = clip_dir + 'cropped/'
+	# crop_dir = '/home/sxg755/dataset/train/all_frames/cropped/'
 	if not os.path.exists(crop_dir):
 		os.makedirs(crop_dir)
 
