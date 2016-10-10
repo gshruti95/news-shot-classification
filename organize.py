@@ -116,7 +116,7 @@ def main():
 
 		for file in source:
 			if file.endswith('.mp4'):
-				clip_path = source + file
+				clip_path = '/home/sxg755/trainset/' + file
 				keyframe_times = keyframes.keyframes(temp, clip_path)
 				keyframes_list = fileops.get_keyframeslist(temp, clip_path)
 
