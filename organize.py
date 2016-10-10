@@ -123,7 +123,7 @@ def main():
 				image_files = cropframes.cropframes(temp, keyframes_list, clip_path)
 				image_files = [image_file.rsplit('/',1)[1] + '\n' for image_file in image_files]
 
-				with open(temp + 'keyframes_list.txt', 'aw') as file:
+				with open('/home/sxg755/dataset/train/all_frames/keyframes_list.txt', 'aw') as file:
 					file.writelines(image_files)
 
 
