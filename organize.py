@@ -7,7 +7,7 @@ def main():
 
 	if sys.argv[1] == 'labels':
 
-		main_dir = './full-clips/test/'
+		main_dir = './full-clips/train/'
 		annotations_file = '_new_shot_type_testuser.txt'
 
 		dir_list = sorted(os.listdir(main_dir))
@@ -25,7 +25,7 @@ def main():
 		label_data = [label + '\n' for label in label_data]
 		print len(label_data)
 
-		with open('./labels_list.txt', 'w') as file:
+		with open('./train_labels_list.txt', 'w') as file:
 			file.writelines(label_data)			
 
 	elif sys.argv[1] == 'commercials':				## py org.py commercials /home/sxg755/dataset/train/all_frames/labels_list.txt ~/dataset/train/all_frames/sorted_keyframes_list.txt
@@ -38,6 +38,7 @@ def main():
 
 		# train_label_dir = '/home/sxg755/dataset/train/all_frames/labels_list.txt'
 		# test_label_dir = '/home/sxg755/dataset/test/all_frames/labels_list.txt'
+		
 		# train_frames = '/home/sxg755/dataset/train/all_frames/cropped/'
 		# test_frames = '/home/sxg755/dataset/test/all_frames/cropped/'
 
@@ -108,7 +109,7 @@ def main():
 		output_filename = clip 									## video
 		clip_dir = rel_clip_path								## ../../dir/
 
-		temp = clip_dir + 'all_frames/'							## ../../dir/all_frames/
+		temp = '/home/sxg755/dataset/train/new_all_frames/'		## ../../dir/all_frames/
 		if not os.path.exists(temp):
 			os.makedirs(temp)
 

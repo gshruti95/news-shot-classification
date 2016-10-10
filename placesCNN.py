@@ -4,6 +4,53 @@ import matplotlib.pyplot as plt
 import caffe
 import path_params
 
+def get_labels(labels, scores, attribute_responses, scene_attributeNames):
+	
+	places_labels = []
+	final_label_list = []
+	scene_type_list = []
+	scene_attributes_list = []
+
+	for idx, output_prob in enumerate(scores['prob']):
+		vote = 0
+		toplabels_idx = output_prob.argsort()[::-1][:5]  # reverse sort and take five largest items
+	
+		if output_prob[toplabels_idx[0]] > .1 :			 # threshold for bad labels	
+			for top5_idx in toplabels_idx:
+				if labels[top5_idx][-1] == '1':
+					vote = vote + 1
+			if vote > 2:
+				scene_type = 'Indoor'
+			else:
+				scene_type = 'Outdoor'
+		else:
+			scene_type = 'None'
+
+		label_list = []
+		for label_prob, label_idx in zip(output_prob[toplabels_idx], toplabels_idx):
+			if label_prob > .2 :
+				label_list.append((re.findall(r"[\w]+", labels[label_idx])[1], float('%.2f' %label_prob)))			
+
+		label_list = ', '.join(map(str, label_list))
+		places_labels.append(label_list)
+		scene_type_list.append(scene_type)	
+
+		## Scene attributes
+		attribute_response = attribute_responses[idx]
+		attribute_index = attribute_response.argsort()[::-1][:5]
+		scene_attributes = scene_attributeNames[attribute_index]
+		scene_attributes = ", ".join(scene_attributes)
+		scene_attributes_list.append(scene_attributes)
+
+	return scene_type_list, places_labels, scene_attributes_list
+
+def get_scene_attribute_responses(scene_attributeValues, fc7):
+	# Returs the scene attributes for the fc7 features
+	scene_attributeValues = np.transpose(scene_attributeValues)
+	attribute_responses = np.dot(fc7, scene_attributeValues)
+
+	return attribute_responses
+	
 def placesCNN(pycaffe_path, model_path, image_files):
 
 	start = time.time()
@@ -77,50 +124,3 @@ def placesCNN(pycaffe_path, model_path, image_files):
 	print "Time : %.3f \n"  %(end - start)
 	
 	return fc7, scene_type_list, places_labels, scene_attributes_list
-
-def get_labels(labels, scores, attribute_responses, scene_attributeNames):
-	
-	places_labels = []
-	final_label_list = []
-	scene_type_list = []
-	scene_attributes_list = []
-
-	for idx, output_prob in enumerate(scores['prob']):
-		vote = 0
-		toplabels_idx = output_prob.argsort()[::-1][:5]  # reverse sort and take five largest items
-	
-		if output_prob[toplabels_idx[0]] > .1 :			 # threshold for bad labels	
-			for top5_idx in toplabels_idx:
-				if labels[top5_idx][-1] == '1':
-					vote = vote + 1
-			if vote > 2:
-				scene_type = 'Indoor'
-			else:
-				scene_type = 'Outdoor'
-		else:
-			scene_type = 'None'
-
-		label_list = []
-		for label_prob, label_idx in zip(output_prob[toplabels_idx], toplabels_idx):
-			if label_prob > .2 :
-				label_list.append((re.findall(r"[\w]+", labels[label_idx])[1], float('%.2f' %label_prob)))			
-
-		label_list = ', '.join(map(str, label_list))
-		places_labels.append(label_list)
-		scene_type_list.append(scene_type)	
-
-		## Scene attributes
-		attribute_response = attribute_responses[idx]
-		attribute_index = attribute_response.argsort()[::-1][:5]
-		scene_attributes = scene_attributeNames[attribute_index]
-		scene_attributes = ", ".join(scene_attributes)
-		scene_attributes_list.append(scene_attributes)
-
-	return scene_type_list, places_labels, scene_attributes_list
-
-def get_scene_attribute_responses(scene_attributeValues, fc7):
-	# Returs the scene attributes for the fc7 features
-	scene_attributeValues = np.transpose(scene_attributeValues)
-	attribute_responses = np.dot(fc7, scene_attributeValues)
-
-	return attribute_responses

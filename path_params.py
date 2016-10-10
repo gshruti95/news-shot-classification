@@ -32,3 +32,8 @@ finetune_caffemodel = finetune_path + '5class_newsshot_iter_100000.caffemodel'
 finetune_mean = imagenet_mean
 finetune_labels = finetune_path + '5class.csv'
 
+# Yolo paths
+yolo_path = caffe_path + 'models/yolo/'
+yolo_prototxt = yolo_path + 'yolo_small_deploy.prototxt'
+yolo_caffemodel = yolo_path + 'yolo_small.caffemodel'
+yolo_labels = yolo_path + 'yolo_labels.csv'
