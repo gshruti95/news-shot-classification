@@ -101,7 +101,7 @@ def main():
 		
 
 	else:
-
+		ntg = sys.argv[1]
 		# clip_path = sys.argv[1] 								## ../../dir/video.mp4
 		# rel_clip_path = clip_path.rsplit('/',1)[0] + '/'		## ../../dir/
 		# clip_name = clip_path.rsplit('/',1)[1]					## video.mp4
