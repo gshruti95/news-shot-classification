@@ -42,7 +42,7 @@ def main():
 		# if features_file == 'cropped_places_fc7.csv':
 		# 	image_files = cropframes.cropframes(clip_dir, keyframes_list, new_clip_path)
 
-		clip_path = sys.argv[1]								## ../../dir/video.mp4
+		clip_path = sys.argv[2]								## ../../dir/video.mp4
 		rel_clip_path = clip_path.rsplit('/',1)[0] + '/'	## ../../dir/
 		clip_name = clip_path.rsplit('/',1)[1]				## video.mp4
 		clip = clip_name.rsplit('.',1)[0]					## video
@@ -65,7 +65,7 @@ def main():
 		
 		[person_count, obj_loc_set] = yolo.yolo(pycaffe_path, yolo_path, image_files)
 		print "Retrieved yolo labels...\n"
-		
+
 		shutil.rmtree(clip_dir)
 		print "Processing complete!\n"
 		# ## Run a model and get labels for keyframe
