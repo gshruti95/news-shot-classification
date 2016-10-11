@@ -73,13 +73,15 @@ def main():
 					final_list.append(main_dir + all_frames[idx] + ' 1\n')					
 				
 				elif label == 'Weather' or label == 'Weather/Graphic' or label == 'Weather/Person':
+					print 'Weather ', all_frames[idx]
 					label = 'Weather'				
 					final_list.append(main_dir + all_frames[idx] + ' 2\n')
 				
 				elif label == 'Sports':
 					final_list.append(main_dir + all_frames[idx] + ' 3\n')
 				
-				elif label == 'Studio':		
+				elif label == 'Studio':
+					print 'Studio ', all_frames[idx]		
 					label = 'Newsperson(s)'
 					final_list.append(main_dir + all_frames[idx] + ' 4\n')
 				
