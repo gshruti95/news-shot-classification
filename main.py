@@ -24,29 +24,50 @@ def main():
 	
 	if sys.argv[1] == "snaps":
 
-		clip_dir = sys.argv[2]
+		# clip_dir = sys.argv[2]
 
-		source = sorted(os.listdir(clip_dir))
-		keyframes_list = []
+		# source = sorted(os.listdir(clip_dir))
+		# keyframes_list = []
 
-		for file in source:
-			if file.endswith(".jpg"):
-				image = clip_dir + os.path.basename(file)
-				print file
-				keyframes_list.append(image)
+		# for file in source:
+		# 	if file.endswith(".jpg"):
+		# 		image = clip_dir + os.path.basename(file)
+		# 		print file
+		# 		keyframes_list.append(image)
 
-		keyframes_list.sort(key = fileops.natural_sorting)
+		# keyframes_list.sort(key = fileops.natural_sorting)
 
 		# new_clip_path = clip_dir + 'temp.mp4'
 
 		# if features_file == 'cropped_places_fc7.csv':
 		# 	image_files = cropframes.cropframes(clip_dir, keyframes_list, new_clip_path)
 
+		clip_path = sys.argv[1]								## ../../dir/video.mp4
+		rel_clip_path = clip_path.rsplit('/',1)[0] + '/'	## ../../dir/
+		clip_name = clip_path.rsplit('/',1)[1]				## video.mp4
+		clip = clip_name.rsplit('.',1)[0]					## video
+		output_filename = clip 								## video
+		clip_dir = rel_clip_path + clip + '/'				## ../../dir/video/
+
+		if not os.path.exists(clip_dir):
+			os.makedirs(clip_dir)
+		else:
+			shutil.rmtree(clip_dir)
+			os.makedirs(clip_dir)
+		shutil.copy(clip_path, clip_dir)
+		new_clip_path = clip_dir + clip_name				## ../../dir/video/video.mp4
+
+		keyframe_times = keyframes.keyframes(clip_dir, new_clip_path)
+		keyframes_list = fileops.get_keyframeslist(clip_dir, new_clip_path)
+		if features_file == 'cropped_places_fc7.csv':
+			image_files = cropframes.cropframes(clip_dir, keyframes_list, new_clip_path)
 		print "Video preprocessing done...\n"
 		
-		[person_count, obj_loc_set] = yolo.yolo(pycaffe_path, yolo_path, keyframes_list)
+		[person_count, obj_loc_set] = yolo.yolo(pycaffe_path, yolo_path, image_files)
 		print "Retrieved yolo labels...\n"
-
+		
+		shutil.rmtree(clip_dir)
+		print "Processing complete!\n"
 		# ## Run a model and get labels for keyframe
 		# [fc7, scene_type_list, places_labels, scene_attributes_list] = placesCNN.placesCNN(pycaffe_path, placesCNN_path, image_files)
 		# fileops.save_features(clip_dir + features_file, fc7)
