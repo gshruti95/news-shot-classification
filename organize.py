@@ -114,6 +114,7 @@ def main():
 		for file in files:
 			path = file.split(' ')[0]
 			name = path.rsplit('_',1)[0]
+			name = name.rsplit('/',1)[1]
 			if name not in ['2015-04-15_2055_FR_France-3_Grand_Soir_3','2014-10-10_2200_FR_TV5_Le_Journal_de_France_2',
 			'2015-02-28_1800_FR_TV5_64_Minutes_Le_Monde_en_Francais','2014-11-25_1630_FR_KCET_France_24']:
 				with open('/home/sxg755/dataset/train/new_5class_train_keyframes/data_new.txt','aw') as new_f:
