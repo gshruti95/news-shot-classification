@@ -38,7 +38,7 @@ def shot_labels(finetune_class, svm_class, imagenet, scene):
 
 	return finetune_label, svm_label, imagenet_label, scene_label
 
-def output_labels(filename, name, timestamps, image_files, shot_boundaries, classifier_label_list, finetune_output, finetune_labels, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list):
+def output_labels(filename, name, timestamps, image_files, shot_boundaries, classifier_label_list, finetune_output, finetune_labels, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list, person_count, obj_loc_set):
 	
 	with open(filename + '.vis', 'w+'): pass
 
@@ -82,7 +82,8 @@ def output_labels(filename, name, timestamps, image_files, shot_boundaries, clas
 			obj_line = frame_timestamp_string + '| ' + frame_timestamp_string + '| OBJ_CLASS | ' + googlenet_cat[count] + ' | ' + googlenet_labels[count] + '\n'
 			scene_line = frame_timestamp_string + '| ' + frame_timestamp_string + '| SCENE_LOCATION | ' + scene_type_list[count] + ' | ' + places_labels[count] + '\n'
 			attr_line = frame_timestamp_string + '| ' + frame_timestamp_string + '| SCENE_ATTRIBUTES | ' + scene_attributes_list[count] + '\n'
-			frame_labels.append(finetune_line + svm_line + obj_line + scene_line + attr_line)
+			yolo_line = frame_timestamp_string + '| ' + frame_timestamp_string + '| PERSONS COUNT = ' + person_count[count] + ' | ' + obj_loc_set[count] + '\n'
+			frame_labels.append(finetune_line + svm_line + obj_line + scene_line + attr_line + yolo_line)
 			finetune_class.append(finetune_output[count])
 			svm_class.append(classifier_label_list[count])
 			imagenet.append(googlenet_cat[count])

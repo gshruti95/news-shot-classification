@@ -103,19 +103,28 @@ def main():
 		
 	elif sys.argv[1] == 'count':
 
-		with open('/home/sxg755/dataset/train/all_frames/new_sorted_keyframes_list.txt', 'r') as f:
+		# with open('/home/sxg755/dataset/train/all_frames/new_sorted_keyframes_list.txt', 'r') as f:
+		with open('/home/sxg755/dataset/train/new_5class_train_keyframes/data.txt', 'r') as f:
 			files = f.readlines()
 
-		cur = ''
-		count = 0
+		with open('/home/sxg755/dataset/train/new_5class_train_keyframes/data_new.txt','w') as new_f: pass
+
+		# cur = ''
+		# count = 0
 		for file in files:
 			name = file.rsplit('_',1)[0]
-			if name != cur:
-				print cur, count
-				cur = name
-				count = 1
+			if name in ['2015-04-15_2055_FR_France-3_Grand_Soir_3','2014-10-10_2200_FR_TV5_Le_Journal_de_France_2',
+			'2015-02-28_1800_FR_TV5_64_Minutes_Le_Monde_en_Francais','2014-11-25_1630_FR_KCET_France_24']:
+
 			else:
-				count += 1
+				new_f.write(file)
+
+			# if name != cur:
+			# 	print cur, count
+			# 	cur = name
+			# 	count = 1
+			# else:
+			# 	count += 1
 
 
 	else:
