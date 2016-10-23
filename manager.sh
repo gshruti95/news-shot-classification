@@ -15,7 +15,7 @@ case "$1" in
 	MONTH="${datearray[1]}"
 	DAY="${datearray[2]}"
 
-	SRC_DAY_LIST=$(ssh $SSH_LOC "ls -1 $VIDEO_SRC/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY/*.mp4")
+	SRC_DAY_LIST=$(rsync $SSH_LOC "ls -1 $VIDEO_SRC/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY/*.mp4")
 
 	#if [ ! -d "$LOGS_DIR/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY" ]; then
 	#	mkdir -p $LOGS_DIR/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY
@@ -32,7 +32,7 @@ case "$1" in
 
 	for f in $SRC_DAY_LIST;do 
 		FILENAME=$(basename $f)
-		scp $SSH_LOC:$f $VIDEO_DST
+		rsync -a $SSH_LOC:$f $VIDEO_DST
 		sbatch process_video.slurm $VIDEO_DST/$(basename $f)
 	done
 	;;
@@ -57,7 +57,7 @@ case "$1" in
 
 	echo "Processing $VIDEONAME"
 
-	scp $SSH_LOC:$VIDEO_SRC/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY/$VIDEONAME $VIDEO_DST
+	rsync -a $SSH_LOC:$VIDEO_SRC/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY/$VIDEONAME $VIDEO_DST
 	sbatch process_video.slurm $VIDEO_DST/$VIDEONAME
 
 	done < "$2"

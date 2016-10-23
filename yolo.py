@@ -143,10 +143,18 @@ def get_labels(scores, images_widths, images_heights):
 				persons += 1
 				obj_loc.append('(person[' + str(i+1) + '], ' + '{0:.2f}'.format(probs_filtered[i]) + ') -> ' + loc)
 			else:
-				obj_loc.append('(' + classes[classes_num_filtered[i]][1] + '[' + str(i+1) + '], ' + '{0:.2f}'.format(probs_filtered[i]) + ') -> ' + loc)
+				# obj_loc.append('(' + classes[classes_num_filtered[i]][1] + '[' + str(i+1) + '], ' + '{0:.2f}'.format(probs_filtered[i]) + ') -> ' + loc)
+				obj_loc.append('')
 
-		obj_loc = ', '.join(map(str, obj_loc))
-		obj_loc_set.append(obj_loc)
+		new_obj_loc = ''
+		for item in obj_loc:
+			if item != '' and new_obj_loc != '':
+				new_obj_loc += ', ' + item
+			elif item!= '' and new_obj_loc == '':
+				new_obj_loc = item
+
+		# obj_loc = ', '.join(map(str, obj_loc))
+		obj_loc_set.append(new_obj_loc)
 		persons_set.append(str(persons))
 
 		# print 'Persons count= ' + str(persons) + ' | ' + obj_loc
