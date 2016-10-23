@@ -48,7 +48,7 @@ def shot_labels(finetune_class, svm_class, imagenet, scene, person):
 
 def output_labels(filename, name, timestamps, image_files, shot_boundaries, classifier_label_list, finetune_output, finetune_labels, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list, person_count, obj_loc_set):
 	
-	with open(filename + '.vis', 'w+'): pass
+	with open(filename + '.sht', 'w+'): pass
 
 	date = name.split('_')[0]
 

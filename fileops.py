@@ -36,11 +36,11 @@ def get_pyframeslist(clip_dir, clip_name):
 
 	return pyframes_list
 
-def rename_frames(clip_dir, timestamps, keyframes, extra_timestamps, pyframes):
+def rename_frames(clip_dir, extra_timestamps, pyframes):
 
-	for timestamp, keyframe in zip(timestamps, keyframes):
-		timestamp = "{0:.3f}".format(float(timestamp))
-		os.rename(keyframe, clip_dir + timestamp + '.jpg')
+	# for timestamp, keyframe in zip(timestamps, keyframes):
+	# 	timestamp = "{0:.3f}".format(float(timestamp))
+	# 	os.rename(keyframe, clip_dir + timestamp + '.jpg')
 
 	for extra_timestamp, pyframe in zip(extra_timestamps, pyframes):
 		extra_timestamp = "{0:.3f}".format(float(extra_timestamp))
