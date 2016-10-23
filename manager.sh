@@ -32,7 +32,7 @@ case "$1" in
 
 	for f in $SRC_DAY_LIST;do 
 		FILENAME=$(basename $f)
-		rsync -a $SSH_LOC:$f $VIDEO_DST
+		rsync $SSH_LOC:$f $VIDEO_DST
 		sbatch process_video.slurm $VIDEO_DST/$(basename $f)
 	done
 	;;
@@ -57,7 +57,7 @@ case "$1" in
 
 	echo "Processing $VIDEONAME"
 
-	rsync -a $SSH_LOC:$VIDEO_SRC/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY/$VIDEONAME $VIDEO_DST
+	rsync $SSH_LOC:$VIDEO_SRC/$YEAR/$YEAR-$MONTH/$YEAR-$MONTH-$DAY/$VIDEONAME $VIDEO_DST
 	sbatch process_video.slurm $VIDEO_DST/$VIDEONAME
 
 	done < "$2"
