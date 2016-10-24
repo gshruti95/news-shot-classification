@@ -42,7 +42,7 @@ case "$1" in
 	
 	VIDEO_DST=$VIDEO_DST/"processed_list"
 
-	if ! [ -d "$VIDEO_DST" ]; then
+	if [ -d "$VIDEO_DST" ]; then
 		rm -rf $VIDEO_DST
 	fi
 	mkdir -p $VIDEO_DST
