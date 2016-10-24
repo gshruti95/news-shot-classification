@@ -40,7 +40,7 @@ case "$1" in
 	-l) 		# ./manager.sh -l files.txt
 				# files.txt contains YYYY-MM-DD_HOUR_NETWORKNAME.mp4 (only basenames of files)
 	
-	VIDEO_DST=$VIDEO_DST/"processed_list"
+	VIDEO_DST=$VIDEO_DST/"processed_list-iframes"
 
 	if [ -d "$VIDEO_DST" ]; then
 		rm -rf $VIDEO_DST
