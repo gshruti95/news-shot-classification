@@ -46,9 +46,11 @@ def shot_labels(finetune_class, svm_class, imagenet, scene, person):
 
 	return finetune_label, svm_label, imagenet_label, scene_label, person_label
 
-def output_labels(filename, name, timestamps, image_files, shot_boundaries, classifier_label_list, finetune_output, finetune_labels, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list, person_count, obj_loc_set):
-	
-	with open(filename + '.sht', 'w+'): pass
+def output_labels(exec_time, filename, name, timestamps, image_files, shot_boundaries, classifier_label_list, finetune_output, finetune_labels, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list, person_count, obj_loc_set):
+	 
+	with open(filename + '.sht', 'w+') as out_file:
+		credit_line = "SHT_01|" + exec_time + "|Source_Program=ShotClass-01.py|Source_Person=Shruti Gullapuram\n"
+		out_file.write(credit_line)
 
 	date = name.split('_')[0]
 
@@ -103,9 +105,9 @@ def output_labels(filename, name, timestamps, image_files, shot_boundaries, clas
 
 		[ft_shot_type, svm_shot_type, obj_type, scenetype, yolo_person] = shot_labels(finetune_class, svm_class, imagenet, scene, person)
 		if yolo_person == 'not':
-			boundary_label = cur_shot_timestamp_string + '|' + boundary_timestamp_string + '|SHT_01|SHOT_DETECTED >>|Finetuned_Shot_Class= ' + ft_shot_type + '|SVM_Shot_Class= '  + svm_shot_type + '|Obj_Class= ' + obj_type + '|Scene_Type= ' + scenetype + '\n'
+			boundary_label = cur_shot_timestamp_string + '|' + boundary_timestamp_string + '|SHT_01|SHOT_DETECTED >>|Finetuned_Shot_Class=' + ft_shot_type + '|SVM_Shot_Class='  + svm_shot_type + '|Obj_Class=' + obj_type + '|Scene_Type=' + scenetype + '\n'
 		else:
-			boundary_label = cur_shot_timestamp_string + '|' + boundary_timestamp_string + '|SHT_01|SHOT_DETECTED >>|' + yolo_person + '|Finetuned_Shot_Class= ' + ft_shot_type + '|SVM_Shot_Class= '  + svm_shot_type + '|Obj_Class= ' + obj_type + '|Scene_Type= ' + scenetype + '\n'
+			boundary_label = cur_shot_timestamp_string + '|' + boundary_timestamp_string + '|SHT_01|SHOT_DETECTED >>|' + yolo_person + '|Finetuned_Shot_Class=' + ft_shot_type + '|SVM_Shot_Class='  + svm_shot_type + '|Obj_Class=' + obj_type + '|Scene_Type=' + scenetype + '\n'
 
 		with open(filename + '.sht', 'aw') as file:
 			file.write(boundary_label)
