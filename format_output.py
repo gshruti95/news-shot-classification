@@ -86,12 +86,12 @@ def output_labels(filename, name, timestamps, image_files, shot_boundaries, clas
 			frame_time_struct =  datetime.datetime.fromtimestamp(new_frame_time)
 			frame_timestamp_string = frame_time_struct.strftime("%Y%m%d%H%M%S.%f")[:-3]
 
-			finetune_line = frame_timestamp_string + '| ' + frame_timestamp_string + '| FINETUNED_SHOT_CLASS | ' + finetune_output[count] + ' | ' + finetune_labels[count] + '\n'			
-			svm_line = frame_timestamp_string + '| ' + frame_timestamp_string + '| SVM_SHOT_CLASS | ' + classifier_label_list[count] + '\n'
-			obj_line = frame_timestamp_string + '| ' + frame_timestamp_string + '| OBJ_CLASS | ' + googlenet_cat[count] + ' | ' + googlenet_labels[count] + '\n'
-			scene_line = frame_timestamp_string + '| ' + frame_timestamp_string + '| SCENE_LOCATION | ' + scene_type_list[count] + ' | ' + places_labels[count] + '\n'
-			attr_line = frame_timestamp_string + '| ' + frame_timestamp_string + '| SCENE_ATTRIBUTES | ' + scene_attributes_list[count] + '\n'
-			yolo_line = frame_timestamp_string + '| ' + frame_timestamp_string + '| YOLO/PERSONS |' + ' Count = ' + person_count[count] + ' | ' + obj_loc_set[count] + '\n\n'
+			finetune_line = frame_timestamp_string + '|' + frame_timestamp_string + '|SHT_01|FINETUNED_SHOT_CLASS|' + finetune_output[count] + '|' + finetune_labels[count] + '\n'			
+			svm_line = frame_timestamp_string + '|' + frame_timestamp_string + '|SHT_01|SVM_SHOT_CLASS|' + classifier_label_list[count] + '\n'
+			obj_line = frame_timestamp_string + '|' + frame_timestamp_string + '|SHT_01|OBJ_CLASS|' + googlenet_cat[count] + '|' + googlenet_labels[count] + '\n'
+			scene_line = frame_timestamp_string + '|' + frame_timestamp_string + '|SHT_01|SCENE_LOCATION|' + scene_type_list[count] + '|' + places_labels[count] + '\n'
+			attr_line = frame_timestamp_string + '|' + frame_timestamp_string + '|SHT_01|SCENE_ATTRIBUTES|' + scene_attributes_list[count] + '\n'
+			yolo_line = frame_timestamp_string + '|' + frame_timestamp_string + '|SHT_01|YOLO/PERSONS|' + 'Count = ' + person_count[count] + '|' + obj_loc_set[count] + '\n\n'
 			
 			frame_labels.append(finetune_line + svm_line + obj_line + scene_line + attr_line + yolo_line)
 			finetune_class.append(finetune_output[count])
@@ -103,9 +103,9 @@ def output_labels(filename, name, timestamps, image_files, shot_boundaries, clas
 
 		[ft_shot_type, svm_shot_type, obj_type, scenetype, yolo_person] = shot_labels(finetune_class, svm_class, imagenet, scene, person)
 		if yolo_person == 'not':
-			boundary_label = cur_shot_timestamp_string + '| ' + boundary_timestamp_string + '| SHOT_DETECTED >> | Finetuned_Shot_Class= ' + ft_shot_type + ' | SVM_Shot_Class= '  + svm_shot_type + ' | Obj_Class= ' + obj_type + ' | Scene_Type= ' + scenetype + '\n'
+			boundary_label = cur_shot_timestamp_string + '|' + boundary_timestamp_string + '|SHT_01|SHOT_DETECTED >>|Finetuned_Shot_Class= ' + ft_shot_type + '|SVM_Shot_Class= '  + svm_shot_type + '|Obj_Class= ' + obj_type + '|Scene_Type= ' + scenetype + '\n'
 		else:
-			boundary_label = cur_shot_timestamp_string + '| ' + boundary_timestamp_string + '| SHOT_DETECTED >> | ' + yolo_person + ' | Finetuned_Shot_Class= ' + ft_shot_type + ' | SVM_Shot_Class= '  + svm_shot_type + ' | Obj_Class= ' + obj_type + ' | Scene_Type= ' + scenetype + '\n'
+			boundary_label = cur_shot_timestamp_string + '|' + boundary_timestamp_string + '|SHT_01|SHOT_DETECTED >>|' + yolo_person + '|Finetuned_Shot_Class= ' + ft_shot_type + '|SVM_Shot_Class= '  + svm_shot_type + '|Obj_Class= ' + obj_type + '|Scene_Type= ' + scenetype + '\n'
 
 		with open(filename + '.sht', 'aw') as file:
 			file.write(boundary_label)
