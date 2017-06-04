@@ -4,7 +4,7 @@ import fileops, cropframes
 import keyframes, shotdetect
 import placesCNN, googlenet, finetune, yolo
 import dataset, classifier, cPickle
-import format_output
+import format_output, sht_to_json
 import path_params
 
 def main():
@@ -79,6 +79,9 @@ def main():
 	finetune_output, finetune_labels, googlenet_cat, googlenet_labels, scene_type_list, places_labels, scene_attributes_list, person_count, obj_loc_set)
 	shutil.rmtree(clip_dir)
 	print "Processing complete!\n"
+	
+	sht_to_json.sht_to_json(rel_clip_path + output_filename + '.sht')
+	print "JSON lines ready!\n"
 
 	overall_end = time.time()	
 	print "Total time taken: %.2f" %(overall_end-overall_start)

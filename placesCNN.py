@@ -29,12 +29,12 @@ def get_labels(labels, scores, attribute_responses, scene_attributeNames):
 		label_list = []
 		for label_prob, label_idx in zip(output_prob[toplabels_idx], toplabels_idx):
 			if label_prob > .2 :
-				label_list.append((re.findall(r"[\w]+", labels[label_idx])[1], float('%.2f' %label_prob)))			
+				label_list.append('(' + re.findall(r"[\w]+", labels[label_idx])[1] + ', ' + str(float('%.2f' %label_prob)) + ')')			
 
 		label_list = ', '.join(map(str, label_list))
 		places_labels.append(label_list)
 		scene_type_list.append(scene_type)	
-
+		print places_labels
 		## Scene attributes
 		attribute_response = attribute_responses[idx]
 		attribute_index = attribute_response.argsort()[::-1][:5]

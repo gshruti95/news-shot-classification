@@ -82,7 +82,7 @@ def get_labels(labels, scores):
 		label_list = []
 		for label_prob, label_idx in zip(output_prob[toplabels_idx], toplabels_idx):
 			if label_prob > .2:
-				label_list.append((labels[label_idx][1], float('%.3f' %label_prob)))
+				label_list.append('(' + labels[label_idx][1] + ', ' + str(float('%.3f' %label_prob)) + ')')
 		label_list = ', '.join(map(str, label_list))	
 		labels_set.append(label_list)
 

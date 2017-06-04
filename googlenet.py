@@ -59,7 +59,7 @@ def googlenet(pycaffe_path, model_path, image_files):
 			label_list = []
 			for v in infogain_sort[:5]:
 				if expected_infogain[v] > .2:
-					label_list.append((bet['words'][v], float('%.2f' %expected_infogain[v])))
+					label_list.append('(' + bet['words'][v] + ', ' + str(float('%.2f' %expected_infogain[v])) + ')')
 					if bet['words'][v] in label_dict['vehicle']:
 						counter['v'] += 1
 						sums['v'] += expected_infogain[v]
@@ -125,6 +125,8 @@ def googlenet(pycaffe_path, model_path, image_files):
 			else:
 				result = bet_result
 			googlenet_category.append(result)
+
+	# print googlenet_labels
 
 	end = time.time()
 	print "Googlenet Time : %.3f \n"  %(end - start)

@@ -5,17 +5,27 @@ Author: Shruti Gullapuram (gshruti95)
 Clone the repository, while ensuring that all dependencies are correctly installed.
 
 ## Usage
-Run `python main.py <path-to-videofilen>`	
-The path to the video file is either absolute or relative with respect to the `main.py` file.
+Run `python ShotClass-01.py <path-to-videofile>`	
+The path to the video file is either absolute or relative with respect to the `ShotClass-01.py` file.
+
+### Usage on Case HPC
+- Process a list of videos using -l flag:
+	Run `./manager.sh -l <list>.txt`
+	<list>.txt contains YYYY-MM-DD_HOUR_NETWORKNAME.mp4 (only basenames of files)
+- Process a particular day's worth of news videos using -d flag:
+	Run `./manager.sh -d YYYY/MM/DD`
+	Run `./manager.sh <path-to-videofile>`
+- You can edit the variable VIDEO_DST in manager.sh to change the path of the processed video files.
 
 ## Output
-The output is stored as a file named `<videofilename>.vis` in the same directory as the video.  
+The output is stored as two files named `<videofilename>.sht` and `<videofilename>.json` (json lines format) in the same directory as the video.   
 - Camera shot type → [ Newsperson(s), Background_roll, Graphic, Weather, Sports ]
 - Object category → [ Vehicle, Natural formation, Building/Structure, Person(s)/Clothing, Weapon, Sports ]
 - Scene type → [ Indoor, Outdoor ]
 - Imagenet labels with probabilities
 - Places205 labels with probabilities
 - Scene attributes
+- YOLO/Persons with detected count, probability and position of each detection as x,y coordinates and height and width.
 
 ## Dependencies
 - Python (https://www.python.org/downloads/) : The language of the project. The code has been tested with Python 2.7.8 and 2.7.12. It should work with any recent version of Python 2.
@@ -49,3 +59,7 @@ The final work product submission is at https://shrutigullapuram.wordpress.com/2
 - Red Hen Lab NewsScape Dataset:
 	This work made use of the NewsScape dataset and the facilities of the Distributed Little Red Hen Lab, co-directed by Francis Steen and Mark Turner.
 	http://redhenlab.org
+- YOLO model:
+	https://arxiv.org/abs/1506.02640
+	Joseph Redmon, Santosh Divvala, Ross Girshick, Ali Farhadi, You Only Look Once: Unified, Real-Time Object Detection, CoRR 2015
+	A demo of the actual system and the source code can be found on their project website: http://pjreddie.com/yolo/
