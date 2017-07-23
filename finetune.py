@@ -17,7 +17,7 @@ def mynet(pycaffe_path, model_path, image_files, mode, available_GPU_ID):
 	if mode == 'gpu':
 		caffe.set_mode_gpu()
 		caffe.set_device(available_GPU_ID[0])
-	else
+	else:
 		caffe.set_mode_cpu()
 
 	my_labels = path_params.finetune_labels
