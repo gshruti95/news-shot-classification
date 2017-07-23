@@ -8,7 +8,7 @@ import format_output, sht_to_json
 import path_params
 import gpu_util as GPU
 
-def process_news_video(video_name):
+def process_news_video(video_name, mode, available_GPU_ID):
 	overall_start = time.time()
 	exec_time = time.strftime('%Y-%m-%d %H:%M')
 
@@ -57,11 +57,11 @@ def process_news_video(video_name):
 	print "Video preprocessing done...\n"
 	
 	# YOLO Person detection on a GPU node if available
-	[person_count, obj_loc_set] = yolo.yolo(pycaffe_path, yolo_path, image_files)
+	[person_count, obj_loc_set] = yolo.yolo(pycaffe_path, yolo_path, image_files, mode, available_GPU_ID)
 	print "Retrieved yolo labels...\n"
 
 	# placesCNN for scene type and scene attributes, GPU node used if available
-	[fc7, scene_type_list, places_labels, scene_attributes_list] = placesCNN.placesCNN(pycaffe_path, placesCNN_path, image_files)
+	[fc7, scene_type_list, places_labels, scene_attributes_list] = placesCNN.placesCNN(pycaffe_path, placesCNN_path, image_files, mode, available_GPU_ID)
 	fileops.save_features(clip_dir + features_file, fc7)
 	print "Extracted fc7 features...\n"
 
@@ -74,11 +74,11 @@ def process_news_video(video_name):
 	os.remove(clip_dir + features_file)
 
 	# Finetuned net news shot category classification on a GPU node if available
-	[finetune_output, finetune_labels] = finetune.mynet(pycaffe_path, finetune_path, image_files)
+	[finetune_output, finetune_labels] = finetune.mynet(pycaffe_path, finetune_path, image_files, mode, available_GPU_ID)
 	print "(Finetuned net) Classified frames...\n"
 
 	# Googlenet object category classification on a GPU node if available
-	[googlenet_cat, googlenet_labels] = googlenet.googlenet(pycaffe_path, googlenet_path, image_files)
+	[googlenet_cat, googlenet_labels] = googlenet.googlenet(pycaffe_path, googlenet_path, image_files, mode, available_GPU_ID)
 	print "Retrieved imagenet labels...\n"
 
 	# Create output labels in the SHT format
@@ -95,7 +95,19 @@ def process_news_video(video_name):
 	print "Total time taken: %.2f" %(overall_end-overall_start)
 
 if __name__ == '__main__':
-	if argc < 2:
-		print 'Usage: python '+sys.argv[0]+'<video-file-path>'
+
+	if len(sys.argv) != 2:
+		print 'Usage: python '+sys.argv[0]+' <video-file-path>'
 		exit(1)
-	process_news_video(sys.argv[1])
+
+	mode = 'cpu' #By default, we assume CPU mode
+	available_GPU_ID = None
+	try:
+		available_GPU_ID = GPU.getFirstAvailable()
+		mode = 'gpu'
+		print 'GPU found!'
+	except:
+		mode = 'cpu'
+		print 'GPU not found! Using CPU mode.'
+
+	process_news_video(sys.argv[1], mode, available_GPU_ID)
