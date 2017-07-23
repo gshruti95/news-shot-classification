@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import caffe
 import path_params
 
-def get_labels(labels, scores, attribute_responses, scene_attributeNames):
+def get_labels(labels, scores, attribute_responses, scene_attributeNames, mode, available_GPU_ID):
 	
 	places_labels = []
 	final_label_list = []
@@ -61,7 +61,11 @@ def placesCNN(pycaffe_path, model_path, image_files):
 	plt.rcParams['image.interpolation'] = 'nearest'
 	plt.rcParams['image.cmap'] = 'gray'
 
-	caffe.set_mode_cpu()
+	if mode == 'gpu':
+		caffe.set_mode_gpu()
+		caffe.set_device(available_GPU_ID[0])
+	else:
+		caffe.set_mode_cpu()
 
 	model_prototxt = path_params.placesCNN_prototxt
 	model_trained = path_params.placesCNN_caffemodel
