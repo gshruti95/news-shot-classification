@@ -8,7 +8,7 @@ import format_output, sht_to_json
 import path_params
 import gpu_util as GPU
 
-def main():
+def process_news_video(video_name):
 	overall_start = time.time()
 	exec_time = time.strftime('%Y-%m-%d %H:%M')
 
@@ -25,7 +25,7 @@ def main():
 	features_file = path_params.features_file
 
 	# Start video processing
-	clip_path = sys.argv[1]								## ../../dir/video.mp4
+	clip_path = video_name								## ../../dir/video.mp4
 	rel_clip_path = clip_path.rsplit('/',1)[0] + '/'	## ../../dir/
 	clip_name = clip_path.rsplit('/',1)[1]				## video.mp4
 	clip = clip_name.rsplit('.',1)[0]					## video
@@ -95,4 +95,7 @@ def main():
 	print "Total time taken: %.2f" %(overall_end-overall_start)
 
 if __name__ == '__main__':
-	main()
+	if argc < 2:
+		print 'Usage: python '+sys.argv[0]+'<video-file-path>'
+		exit(1)
+	process_news_video(sys.argv[1])
